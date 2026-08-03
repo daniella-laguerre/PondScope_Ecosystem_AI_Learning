@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Comments, Feedback &amp; Questions — PondScope Ecosystem</title>
+<style>
+  :root{
+    --ink:#081418;--deep:#0E2A31;--water:#2FB8B3;--foam:#D9E8E4;
+    --brass:#E0A94E;--mute:#5E7C7F;--rose:#D2685E;--violet:#9B7BD4;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{min-height:100%;background:var(--ink);color:var(--foam);
+    font-family:Arial,Helvetica,sans-serif}
+  body{
+    background:
+      radial-gradient(ellipse 80% 40% at 12% 0%, rgba(47,184,179,.14), transparent 50%),
+      radial-gradient(ellipse 60% 35% at 95% 15%, rgba(224,169,78,.09), transparent 45%),
+      var(--ink);
+  }
+  main{max-width:760px;margin:0 auto;padding:clamp(24px,5vw,48px) 18px 56px}
+  a.back{display:inline-block;font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--water);text-decoration:none;border-bottom:1px dotted rgba(47,184,179,.4);
+    margin-bottom:18px}
+  .tag{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--brass)}
+  h1{font-weight:560;font-size:clamp(26px,6vw,38px);line-height:1.08;margin-top:8px}
+  h1 em{font-style:italic;color:var(--water)}
+  .lead{margin:12px 0 20px;max-width:42em;font-size:12px;line-height:1.65;color:var(--mute)}
+  .lead b{color:var(--foam);font-weight:500}
+
+  .jump{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:22px}
+  .jump a{
+    font-size:9px;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;
+    color:var(--mute);padding:5px 8px;border:1px solid rgba(47,184,179,.22);border-radius:2px;
+  }
+  .jump a:hover{color:var(--water);border-color:rgba(47,184,179,.5)}
+
+  .labs{margin-bottom:28px}
+  .labs h2{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--brass);
+    margin-bottom:10px;font-weight:500}
+  .lab-list{display:flex;flex-direction:column;gap:8px}
+  a.lab{
+    display:block;text-decoration:none;color:inherit;
+    padding:11px 12px;border-radius:2px;border:1px solid rgba(47,184,179,.2);
+    background:rgba(14,42,49,.4);transition:border-color .15s;
+  }
+  a.lab:hover{border-color:rgba(47,184,179,.55)}
+  a.lab .n{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--brass);
+    margin-bottom:3px}
+  a.lab .t{font-size:14px;color:var(--foam)}
+  a.lab .t span{color:var(--water)}
+  a.lab .d{margin-top:4px;font-size:10px;line-height:1.5;color:var(--mute)}
+
+  .panel{
+    margin-bottom:22px;padding:16px 15px 14px;border-radius:3px;
+    border:1px solid rgba(47,184,179,.22);background:rgba(14,42,49,.4);
+  }
+  .panel.comments{border-left:3px solid var(--water)}
+  .panel.feedback{border-left:3px solid var(--brass)}
+  .panel.questions{border-left:3px solid var(--violet)}
+  .panel h2{font-size:18px;font-weight:560;margin-bottom:4px;color:var(--foam)}
+  .panel h2 em{font-style:italic;font-weight:400;color:var(--water)}
+  .panel.feedback h2 em{color:var(--brass)}
+  .panel.questions h2 em{color:var(--violet)}
+  .panel .blurb{font-size:11px;line-height:1.55;color:var(--mute);margin-bottom:12px}
+  .panel .blurb b{color:var(--foam);font-weight:500}
+
+  label{display:flex;flex-direction:column;gap:4px;font-size:9px;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--mute);margin-bottom:10px}
+  input,select,textarea{
+    font:inherit;font-size:12px;letter-spacing:0;text-transform:none;
+    color:var(--foam);background:var(--deep);border:1px solid rgba(47,184,179,.3);
+    border-radius:2px;padding:8px 9px;width:100%;
+  }
+  textarea{min-height:110px;resize:vertical;line-height:1.5}
+  input:focus,select:focus,textarea:focus{outline:1px solid var(--water);border-color:var(--water)}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  @media(max-width:560px){.row{grid-template-columns:1fr}}
+
+  button.send{
+    font:inherit;font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+    padding:9px 14px;border:none;border-radius:2px;cursor:pointer;
+    background:var(--brass);color:var(--ink);font-weight:500;margin-top:2px;
+  }
+  button.send:hover{filter:brightness(1.05)}
+  .hint{margin-top:8px;font-size:10px;line-height:1.5;color:var(--mute)}
+  .hint a{color:var(--water);text-decoration:none;border-bottom:1px dotted rgba(47,184,179,.4)}
+  .status{margin-top:8px;font-size:10px;color:var(--water);min-height:1.2em}
+
+  footer{margin-top:36px;padding-top:16px;border-top:1px solid rgba(47,184,179,.14);
+    font-size:10px;line-height:1.6;color:var(--mute)}
+  footer a{color:var(--water);text-decoration:none;border-bottom:1px dotted rgba(47,184,179,.4)}
+</style>
+</head>
+<body>
+<main>
+  <a class="back" href="index.html">← Home</a>
+  <p class="tag">PondScope Ecosystem · Contact</p>
+  <h1>Comments, feedback<br>&amp; <em>questions</em></h1>
+  <p class="lead">
+    Three separate channels — pick the one that fits. Name which <b>lab</b> your note is about
+    (or the whole site). Sending opens a GitHub issue so Daniella can read and reply in public.
+  </p>
+
+  <nav class="jump" aria-label="Jump to channel">
+    <a href="#labs">Labs</a>
+    <a href="#comments">Comments</a>
+    <a href="#feedback">Feedback</a>
+    <a href="#questions">Questions</a>
+  </nav>
+
+  <section class="labs" id="labs" aria-labelledby="labs-title">
+    <h2 id="labs-title">Labs on this site</h2>
+    <div class="lab-list">
+      <a class="lab" href="pond-continuous.html">
+        <div class="n">01 · Interactive lesson</div>
+        <div class="t">The Pond — <span>continuous state</span></div>
+        <div class="d">Fixed-size SSM / recurrent memory, dials, Fit, Cost tab.</div>
+      </a>
+      <a class="lab" href="pond-vs-attention.html">
+        <div class="n">02 · Interactive lesson</div>
+        <div class="t">Pond vs Notebook — <span>two memories</span></div>
+        <div class="d">SSM state vs attention / KV-style notebook on the same recall task.</div>
+      </a>
+      <a class="lab" href="multi-head.html">
+        <div class="n">03 · Interactive lesson</div>
+        <div class="t">Many Heads — <span>parallel lookup</span></div>
+        <div class="d">Why one head is not enough for several lookback questions.</div>
+      </a>
+      <a class="lab" href="issues-lab.html">
+        <div class="n">04 · Issues Lab</div>
+        <div class="t">Break what you learned — <span>visualized failures</span></div>
+        <div class="d">Tokens, latency/TTFT, grounding — with deep links into labs 01–03.</div>
+      </a>
+      <a class="lab" href="glossary.html">
+        <div class="n">Reference</div>
+        <div class="t">AI <span>glossary</span></div>
+        <div class="d">Industry terms and failure modes (optional topic for notes).</div>
+      </a>
+    </div>
+  </section>
+
+  <!-- COMMENTS -->
+  <section class="panel comments" id="comments">
+    <h2>Comments — <em>reactions &amp; thoughts</em></h2>
+    <p class="blurb">
+      General impressions, what clicked, what felt unclear — not a bug report and not a
+      specific question. Pick the lab if it applies.
+    </p>
+    <form id="form-comments" data-kind="Comment">
+      <div class="row">
+        <label>About which lab
+          <select name="lab" required>
+            <option value="">Select…</option>
+            <option value="01 The Pond">01 · The Pond</option>
+            <option value="02 Pond vs Notebook">02 · Pond vs Notebook</option>
+            <option value="03 Many Heads">03 · Many Heads</option>
+            <option value="04 Issues Lab">04 · Issues Lab</option>
+            <option value="Glossary">Glossary</option>
+            <option value="Home / whole site">Home / whole site</option>
+          </select>
+        </label>
+        <label>Your name (optional)
+          <input type="text" name="name" maxlength="80" placeholder="Optional">
+        </label>
+      </div>
+      <label>Comment
+        <textarea name="body" required maxlength="4000" placeholder="What stayed with you, or what you would tell the next learner…"></textarea>
+      </label>
+      <button class="send" type="submit">Send comment via GitHub</button>
+      <p class="hint">Opens a new issue titled <b>[Comment]</b> on the
+        <a href="https://github.com/daniella-laguerre/PondScope_Ecosystem_AI_Learning/issues" target="_blank" rel="noopener">learning-tool repo</a>.</p>
+      <p class="status" id="status-comments" aria-live="polite"></p>
+    </form>
+  </section>
+
+  <!-- FEEDBACK -->
+  <section class="panel feedback" id="feedback">
+    <h2>Feedback — <em>what to improve</em></h2>
+    <p class="blurb">
+      Concrete suggestions: UI friction, wrong wording, missing steps, accessibility,
+      or something that broke. Name the lab so it can be fixed in the right place.
+    </p>
+    <form id="form-feedback" data-kind="Feedback">
+      <div class="row">
+        <label>About which lab
+          <select name="lab" required>
+            <option value="">Select…</option>
+            <option value="01 The Pond">01 · The Pond</option>
+            <option value="02 Pond vs Notebook">02 · Pond vs Notebook</option>
+            <option value="03 Many Heads">03 · Many Heads</option>
+            <option value="04 Issues Lab">04 · Issues Lab</option>
+            <option value="Glossary">Glossary</option>
+            <option value="Home / whole site">Home / whole site</option>
+          </select>
+        </label>
+        <label>Your name (optional)
+          <input type="text" name="name" maxlength="80" placeholder="Optional">
+        </label>
+      </div>
+      <label>Feedback
+        <textarea name="body" required maxlength="4000" placeholder="What should change, and why…"></textarea>
+      </label>
+      <button class="send" type="submit">Send feedback via GitHub</button>
+      <p class="hint">Opens a new issue titled <b>[Feedback]</b>. Include steps to reproduce if something failed.</p>
+      <p class="status" id="status-feedback" aria-live="polite"></p>
+    </form>
+  </section>
+
+  <!-- QUESTIONS -->
+  <section class="panel questions" id="questions">
+    <h2>Questions — <em>ask about a lab</em></h2>
+    <p class="blurb">
+      Things you want explained: a dial, a Fit score, why the notebook grows, how Issues Lab
+      maps to a lesson, or a glossary term. Point at the lab so the answer can stay specific.
+    </p>
+    <form id="form-questions" data-kind="Question">
+      <div class="row">
+        <label>About which lab
+          <select name="lab" required>
+            <option value="">Select…</option>
+            <option value="01 The Pond">01 · The Pond</option>
+            <option value="02 Pond vs Notebook">02 · Pond vs Notebook</option>
+            <option value="03 Many Heads">03 · Many Heads</option>
+            <option value="04 Issues Lab">04 · Issues Lab</option>
+            <option value="Glossary">Glossary</option>
+            <option value="Home / whole site">Home / whole site</option>
+          </select>
+        </label>
+        <label>Your name (optional)
+          <input type="text" name="name" maxlength="80" placeholder="Optional">
+        </label>
+      </div>
+      <label>Question
+        <textarea name="body" required maxlength="4000" placeholder="What are you stuck on or curious about…"></textarea>
+      </label>
+      <button class="send" type="submit">Send question via GitHub</button>
+      <p class="hint">Opens a new issue titled <b>[Question]</b>. You will need a GitHub account to post.</p>
+      <p class="status" id="status-questions" aria-live="polite"></p>
+    </form>
+  </section>
+
+  <footer>
+    <b>Daniella M. LaGuerre</b> · PondScope Ecosystem<br>
+    <a href="index.html">Home</a> ·
+    <a href="glossary.html">Glossary</a> ·
+    <a href="issues-lab.html">Issues lab</a> ·
+    <a href="https://github.com/daniella-laguerre/PondScope_Ecosystem_AI_Learning" target="_blank" rel="noopener">GitHub</a>
+  </footer>
+</main>
+<script>
+(function () {
+  "use strict";
+  var REPO = "https://github.com/daniella-laguerre/PondScope_Ecosystem_AI_Learning/issues/new";
+
+  function buildBody(kind, lab, name, text) {
+    var lines = [
+      "## " + kind,
+      "",
+      "**Lab:** " + lab,
+      "**From:** " + (name || "(not given)"),
+      "",
+      text,
+      "",
+      "---",
+      "_Sent from feedback.html on the PondScope Ecosystem AI Learning Tool._"
+    ];
+    return lines.join("\n");
+  }
+
+  function wire(formId, statusId) {
+    var form = document.getElementById(formId);
+    var status = document.getElementById(statusId);
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var kind = form.getAttribute("data-kind");
+      var lab = form.lab.value;
+      var name = (form.name.value || "").trim();
+      var text = (form.body.value || "").trim();
+      if (!lab || !text) {
+        status.textContent = "Choose a lab and write a message.";
+        return;
+      }
+      var title = "[" + kind + "] " + lab;
+      var url = REPO +
+        "?title=" + encodeURIComponent(title) +
+        "&body=" + encodeURIComponent(buildBody(kind, lab, name, text));
+      status.textContent = "Opening GitHub…";
+      window.open(url, "_blank", "noopener");
+      status.textContent = "GitHub issue draft opened — submit there to send.";
+    });
+  }
+
+  wire("form-comments", "status-comments");
+  wire("form-feedback", "status-feedback");
+  wire("form-questions", "status-questions");
+
+  var hash = (location.hash || "").replace(/^#/, "");
+  if (hash && document.getElementById(hash)) {
+    document.getElementById(hash).scrollIntoView();
+  }
+})();
+</script>
+</body>
+</html>
