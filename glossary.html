@@ -19,9 +19,10 @@
       var(--ink);
   }
   main{max-width:760px;margin:0 auto;padding:clamp(24px,5vw,48px) 18px 56px}
-  a.back{display:inline-block;font-size:10px;letter-spacing:.1em;text-transform:uppercase;
-    color:var(--water);text-decoration:none;border-bottom:1px dotted rgba(47,184,179,.4);
-    margin-bottom:18px}
+  a.homebtn{display:inline-block;font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+    text-decoration:none;color:var(--ink);background:var(--brass);font-weight:500;
+    padding:8px 12px;border-radius:2px;margin-bottom:18px}
+  a.homebtn:hover{filter:brightness(1.05)}
   a.try{display:inline-block;margin-top:5px;font-size:9px;letter-spacing:.08em;text-transform:uppercase;
     color:var(--brass);text-decoration:none;border-bottom:1px dotted rgba(224,169,78,.5)}
   a.try:hover{color:var(--water);border-bottom-color:rgba(47,184,179,.5)}
@@ -56,7 +57,7 @@
 </head>
 <body>
 <main>
-  <a class="back" href="index.html">← Home</a>
+  <a class="homebtn" href="index.html">← Home</a>
   <p class="tag">PondScope Ecosystem · Reference</p>
   <h1>Artificial intelligence<br><em>glossary</em></h1>
   <p class="lead">
@@ -371,6 +372,7 @@
   <footer>
     <b>Daniella M. LaGuerre</b> · PondScope Ecosystem<br>
     <a href="index.html">Home</a> ·
+    <a href="context.html">Context</a> ·
     <a href="issues-lab.html">Issues lab</a> ·
     <a href="feedback.html">Comments / feedback / questions</a> ·
     <a href="pond-continuous.html">Pond</a> ·

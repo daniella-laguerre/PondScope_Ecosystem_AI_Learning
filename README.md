@@ -17,7 +17,9 @@ No install. Open [`index.html`](index.html) in a browser, or visit the GitHub Pa
 | 3 | [multi-head.html](multi-head.html) | Why attention needs many heads at once |
 | 4 | [issues-lab.html](issues-lab.html) | Failures **visualized on** the pond / notebook / multi-head systems from 01–03 — with **Reset** / **Reset all** |
 
-Landing page: [index.html](index.html) — **interactive lessons** are primary; industry definitions sit beside them. Issues Lab is after, with soft prerequisites (visit 01→03 so the visualizations have context; glossary deep links still work).
+Landing page: [index.html](index.html) — **interactive lessons** are primary; industry definitions sit beside them. Issues Lab is after; glossary deep links still work.
+
+Context: [context.html](context.html) — origin of the pond metaphor (conversation with Claude) and how this site was built (Cursor · Grok 4.5), with the embedded PDF `assets/from-tan-to-the-pond.pdf`.
 
 Glossary: [glossary.html](glossary.html) — AI / ML terms, plus an **Issues & failure modes** section with **Try it** links into the lab (`#tokens`, `#latency`, `#grounding`).
 

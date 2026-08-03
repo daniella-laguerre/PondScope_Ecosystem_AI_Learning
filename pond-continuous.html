@@ -12,7 +12,7 @@
     font-family:Arial,Helvetica,sans-serif;-webkit-tap-highlight-color:transparent}
   #stage{position:fixed;top:0;left:0;right:0}
   canvas{display:block}
-  header{position:fixed;top:0;left:0;right:0;padding:10px 46px 6px 14px;pointer-events:none;
+  header{position:fixed;top:0;left:0;right:0;padding:10px 46px 6px 88px;pointer-events:none;
     z-index:5;background:linear-gradient(180deg,rgba(8,20,24,.95),rgba(8,20,24,0))}
   h1{font-family:Arial,Helvetica,sans-serif;font-weight:560;font-size:clamp(16px,4vw,23px);line-height:1.06}
   h1 em{font-style:italic;color:var(--water)}
@@ -25,6 +25,10 @@
     font-family:Arial,Helvetica,sans-serif;font-style:italic;font-size:14px;color:var(--foam);
     opacity:0;transition:opacity .5s;pointer-events:none;
     text-shadow:0 2px 14px rgba(8,20,24,.95)}
+  #homebtn{position:fixed;left:12px;top:11px;z-index:9;padding:5px 10px;
+    border-radius:2px;background:var(--brass);color:var(--ink);font-size:9px;
+    letter-spacing:.1em;text-transform:uppercase;text-decoration:none;font-weight:500}
+  #homebtn:hover{filter:brightness(1.05)}
   #helpbtn{position:fixed;right:12px;top:11px;z-index:9;width:26px;height:26px;
     border-radius:50%;border:1px solid rgba(47,184,179,.5);background:rgba(8,20,24,.7);
     color:var(--water);font-size:12px;line-height:24px;text-align:center;cursor:pointer;
@@ -89,6 +93,8 @@
   body.issue-on.issue-help header{top:88px}
   body.issue-on #tick{top:72px}
   body.issue-on.issue-help #tick{top:122px}
+  body.issue-on #homebtn{top:42px}
+  body.issue-on.issue-help #homebtn{top:96px}
   body.issue-on #helpbtn{top:42px}
   body.issue-on.issue-help #helpbtn{top:96px}
   #losscv{height:52px} #diskcv{height:150px} #contcv{height:46px} #scancv{height:168px}
@@ -170,6 +176,7 @@
 <body>
 <div id="issuenow" role="status"><span class="tag">Now showing</span><strong id="issuenowlbl">issue</strong><a id="issuenowback" href="issues-lab.html">← Issues Lab</a></div>
 <div id="issueban" role="status"><span class="x" id="issuebanx" title="Dismiss help">&times;</span><span id="issuebanmsg"></span></div>
+<a id="homebtn" href="index.html">← Home</a>
 <div id="stage"></div>
 <header>
   <h1>The Pond — <em>a continuous system, sampled once per token</em></h1>

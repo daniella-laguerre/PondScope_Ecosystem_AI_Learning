@@ -19,9 +19,10 @@
       var(--ink);
   }
   main{max-width:820px;margin:0 auto;padding:clamp(22px,5vw,48px) 16px 56px}
-  a.back{display:inline-block;font-size:10px;letter-spacing:.1em;text-transform:uppercase;
-    color:var(--water);text-decoration:none;border-bottom:1px dotted rgba(47,184,179,.4);
-    margin-bottom:16px}
+  a.homebtn{display:inline-block;font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+    text-decoration:none;color:var(--ink);background:var(--brass);font-weight:500;
+    padding:8px 12px;border-radius:2px;margin-bottom:16px}
+  a.homebtn:hover{filter:brightness(1.05)}
   .tag{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--brass)}
   h1{font-family:Arial,Helvetica,sans-serif;font-weight:560;font-size:clamp(26px,6vw,38px);
     line-height:1.08;margin-top:8px}
@@ -125,7 +126,7 @@
 </head>
 <body>
 <main>
-  <a class="back" href="index.html">← Home</a>
+  <a class="homebtn" href="index.html">← Home</a>
   <p class="tag">PondScope Ecosystem · Issues Lab</p>
   <h1>Break what you learned — <em>visualized</em></h1>
   <p class="lead">
@@ -311,6 +312,7 @@
   <footer>
     <b>Daniella M. LaGuerre</b> · PondScope Ecosystem<br>
     <a href="index.html">Home</a> ·
+    <a href="context.html">Context</a> ·
     <a href="pond-continuous.html">01 Pond</a> ·
     <a href="pond-vs-attention.html">02 Notebook</a> ·
     <a href="multi-head.html">03 Heads</a> ·

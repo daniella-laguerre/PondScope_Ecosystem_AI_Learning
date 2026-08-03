@@ -98,11 +98,16 @@
   #issueban b{color:var(--brass)}
   #issueban a{color:var(--water);text-decoration:none;border-bottom:1px dotted rgba(47,184,179,.45)}
   #issueban .x{position:absolute;right:8px;top:6px;cursor:pointer;color:var(--mute);font-size:14px}
+  a.homebtn{display:inline-block;font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+    text-decoration:none;color:var(--ink);background:var(--brass);font-weight:500;
+    padding:7px 11px;border-radius:2px;margin:0 0 12px}
+  a.homebtn:hover{filter:brightness(1.05)}
 </style>
 </head>
 <body>
 <div id="issuenow" role="status"><span class="tag">Now showing</span><strong id="issuenowlbl">issue</strong><a id="issuenowback" href="issues-lab.html">← Issues Lab</a></div>
 <div id="issueban" role="status"><span class="x" id="issuebanx" title="Dismiss help">&times;</span><span id="issuebanmsg"></span></div>
+<a class="homebtn" href="index.html">← Home</a>
 
 <h1>The Pond and the <b>Notebook</b></h1>
 <div class="sub">Two ways to remember the same stream of symbols. One keeps a <span style="color:#2FB8B3">squeezed summary that never grows</span>. The other keeps <span style="color:#D2685E">a record of every symbol and looks things up</span>. Feed them both and watch where each one wins.</div>

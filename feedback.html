@@ -19,9 +19,10 @@
       var(--ink);
   }
   main{max-width:760px;margin:0 auto;padding:clamp(24px,5vw,48px) 18px 56px}
-  a.back{display:inline-block;font-size:10px;letter-spacing:.1em;text-transform:uppercase;
-    color:var(--water);text-decoration:none;border-bottom:1px dotted rgba(47,184,179,.4);
-    margin-bottom:18px}
+  a.homebtn{display:inline-block;font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+    text-decoration:none;color:var(--ink);background:var(--brass);font-weight:500;
+    padding:8px 12px;border-radius:2px;margin-bottom:18px}
+  a.homebtn:hover{filter:brightness(1.05)}
   .tag{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--brass)}
   h1{font-weight:560;font-size:clamp(26px,6vw,38px);line-height:1.08;margin-top:8px}
   h1 em{font-style:italic;color:var(--water)}
@@ -100,7 +101,7 @@
 </head>
 <body>
 <main>
-  <a class="back" href="index.html">← Home</a>
+  <a class="homebtn" href="index.html">← Home</a>
   <p class="tag">PondScope Ecosystem · Contact</p>
   <h1>Comments, feedback<br>&amp; <em>questions</em></h1>
   <p class="lead">
@@ -142,6 +143,11 @@
         <div class="n">Reference</div>
         <div class="t">AI <span>glossary</span></div>
         <div class="d">Industry terms and failure modes (optional topic for notes).</div>
+      </a>
+      <a class="lab" href="context.html">
+        <div class="n">Origin</div>
+        <div class="t">Context — <span>from tan to the pond</span></div>
+        <div class="d">Claude conversation + Cursor Grok 4.5 build story, with source PDF.</div>
       </a>
     </div>
   </section>
@@ -253,6 +259,7 @@
   <footer>
     <b>Daniella M. LaGuerre</b> · PondScope Ecosystem<br>
     <a href="index.html">Home</a> ·
+    <a href="context.html">Context</a> ·
     <a href="glossary.html">Glossary</a> ·
     <a href="issues-lab.html">Issues lab</a> ·
     <a href="https://github.com/daniella-laguerre/PondScope_Ecosystem_AI_Learning" target="_blank" rel="noopener">GitHub</a>

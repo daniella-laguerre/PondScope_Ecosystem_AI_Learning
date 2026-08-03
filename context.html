@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Context — From Tan to the Pond · PondScope Ecosystem</title>
+<style>
+  :root{
+    --ink:#081418;--deep:#0E2A31;--water:#2FB8B3;--foam:#D9E8E4;
+    --brass:#E0A94E;--mute:#5E7C7F;--rose:#D2685E;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{min-height:100%;background:var(--ink);color:var(--foam);
+    font-family:Arial,Helvetica,sans-serif}
+  body{
+    background:
+      radial-gradient(ellipse 80% 40% at 10% 0%, rgba(47,184,179,.14), transparent 50%),
+      radial-gradient(ellipse 60% 40% at 100% 15%, rgba(224,169,78,.08), transparent 45%),
+      var(--ink);
+  }
+  main{max-width:860px;margin:0 auto;padding:clamp(24px,5vw,48px) 18px 56px}
+  a.homebtn{
+    display:inline-block;font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+    text-decoration:none;color:var(--ink);background:var(--brass);font-weight:500;
+    padding:8px 12px;border-radius:2px;margin-bottom:18px;
+  }
+  a.homebtn:hover{filter:brightness(1.05)}
+  .tag{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--brass)}
+  h1{font-weight:560;font-size:clamp(26px,6vw,38px);line-height:1.08;margin-top:8px}
+  h1 em{font-style:italic;color:var(--water)}
+  .lead{margin:12px 0 18px;max-width:44em;font-size:12px;line-height:1.65;color:var(--mute)}
+  .lead b{color:var(--foam);font-weight:500}
+
+  .story{
+    margin-bottom:22px;padding:14px 14px 12px;border-radius:3px;
+    border:1px solid rgba(47,184,179,.22);border-left:3px solid var(--water);
+    background:rgba(14,42,49,.4);font-size:12px;line-height:1.65;color:var(--mute);
+  }
+  .story b{color:var(--foam);font-weight:500}
+  .story p+p{margin-top:10px}
+
+  .pdf-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;
+    gap:8px;margin-bottom:8px}
+  .pdf-head h2{font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--brass);font-weight:500}
+  .pdf-head a{font-size:10px;color:var(--water);text-decoration:none;
+    border-bottom:1px dotted rgba(47,184,179,.4)}
+  .pdf-wrap{
+    border:1px solid rgba(47,184,179,.25);border-radius:3px;overflow:hidden;
+    background:rgba(8,20,24,.6);min-height:70vh;
+  }
+  .pdf-wrap iframe,.pdf-wrap object{
+    display:block;width:100%;height:min(80vh,900px);border:0;background:#0a1418;
+  }
+  .pdf-fallback{padding:14px;font-size:11px;line-height:1.6;color:var(--mute)}
+  .pdf-fallback a{color:var(--water)}
+
+  footer{margin-top:36px;padding-top:16px;border-top:1px solid rgba(47,184,179,.14);
+    font-size:10px;line-height:1.6;color:var(--mute)}
+  footer a{color:var(--water);text-decoration:none;border-bottom:1px dotted rgba(47,184,179,.4)}
+</style>
+</head>
+<body>
+<main>
+  <a class="homebtn" href="index.html">← Home</a>
+  <p class="tag">PondScope Ecosystem · Origin</p>
+  <h1>Context — <em>from tan to the pond</em></h1>
+  <p class="lead">
+    How the pond metaphor and this learning tool came to be: a conversation that
+    named the idea, then an implementation pass that turned it into interactive labs.
+  </p>
+
+  <section class="story" aria-labelledby="origin-title">
+    <p id="origin-title">
+      The <b>pond</b> began in a conversation Daniella M. LaGuerre had with
+      <b>Claude</b> — working through memory, state-space models, and a clearer metaphor
+      than “hidden state.” That exchange is captured in the PDF below
+      (<b>From Tan to the Pond</b>).
+    </p>
+    <p>
+      The interactive site — lessons, Issues Lab, glossary, and the rest of this
+      PondScope Ecosystem AI Learning Tool — was built in <b>Cursor</b> with
+      <b>Grok 4.5</b>, turning that framing into something you can tap, fit, and break.
+    </p>
+  </section>
+
+  <div class="pdf-head">
+    <h2>Source conversation (PDF)</h2>
+    <a href="assets/from-tan-to-the-pond.pdf" target="_blank" rel="noopener">Open PDF in a new tab →</a>
+  </div>
+  <div class="pdf-wrap">
+    <object data="assets/from-tan-to-the-pond.pdf#view=FitH" type="application/pdf" aria-label="From Tan to the Pond PDF">
+      <iframe src="assets/from-tan-to-the-pond.pdf" title="From Tan to the Pond PDF"></iframe>
+      <div class="pdf-fallback">
+        Your browser could not display the PDF inline.
+        <a href="assets/from-tan-to-the-pond.pdf" target="_blank" rel="noopener">Download From Tan to the Pond</a>.
+      </div>
+    </object>
+  </div>
+
+  <footer>
+    <b>Daniella M. LaGuerre</b> · PondScope Ecosystem<br>
+    <a href="index.html">Home</a> ·
+    <a href="pond-continuous.html">01 Pond</a> ·
+    <a href="feedback.html">Comments / feedback / questions</a>
+  </footer>
+</main>
+</body>
+</html>
