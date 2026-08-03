@@ -86,9 +86,9 @@
   .def .aka{margin-top:5px;font-size:9px;color:var(--mute)}
   .def .aka span{color:var(--brass)}
 
-  .below{margin-top:28px;display:grid;grid-template-columns:1.2fr .9fr;gap:12px}
-  @media(max-width:700px){.below{grid-template-columns:1fr}}
-  .below-extra{margin-top:12px;display:grid;grid-template-columns:1fr;gap:12px}
+  .stack{margin-top:28px;display:grid;grid-template-columns:1fr;gap:12px}
+  .stack.lab-block{margin-top:28px}
+  .below{margin-top:12px;display:grid;grid-template-columns:1fr;gap:12px}
   a.tool{
     display:block;text-decoration:none;color:inherit;
     padding:14px 15px 13px;border-radius:3px;
@@ -149,32 +149,55 @@
   <p class="tag">PondScope Ecosystem · AI Learning Tool</p>
   <h1 class="brand">Three lessons in<br><em>machine memory</em></h1>
   <p class="lead">
-    Start with the <b>interactive lessons</b> — they are the core of this tool.
-    Definitions sit beside them so you can map each metaphor to its industry name
-    without leaving the path. The <b>Issues Lab</b> comes after: it visualizes failures
-    using the pond, notebook, and multi-head systems you just used.
+    Path on this page: <b>Context</b> → <b>Metaphor reference</b> → <b>AI Debugger</b> →
+    <b>Labs</b> (interactive lessons + Issues Lab) → <b>Comments / feedback / questions</b>.
   </p>
+
+  <div class="stack">
+    <a class="tool" href="context.html">
+      <div class="n">01 · Context</div>
+      <div class="title">From tan to the <span>pond</span></div>
+      <p class="blurb">Origin story: the pond metaphor from a conversation with Claude; this site built in Cursor with Grok 4.5. Includes the source PDF.</p>
+      <div class="go">Open context →</div>
+    </a>
+    <a class="tool" href="metaphor-reference.html">
+      <div class="n">02 · Metaphor reference</div>
+      <div class="title">Land, pond, water — <span>and where it breaks</span></div>
+      <p class="blurb">Every landscape term on the site: pre-training sediment, post-training surveyor/sea, runtime water, surroundings, and the seams.</p>
+      <div class="go">Open metaphor reference →</div>
+    </a>
+    <a class="tool" href="https://github.com/daniella-laguerre/PondScope_AI_Debugger" target="_blank" rel="noopener">
+      <div class="n">03 · AI Debugger · GitHub</div>
+      <div class="title">PondScope AI <span>Debugger</span></div>
+      <p class="blurb">Separate Python causal debugger for hybrid drawer / SSM-style models — probes, interventions, and evidence analyses.</p>
+      <div class="go">Open debugger repo →</div>
+    </a>
+  </div>
+
+  <div class="stack lab-block">
+    <p class="path">04 · Labs <span class="hint">— interactive lessons, then Issues Lab</span></p>
+  </div>
 
   <div class="split">
     <div class="col-lessons">
-      <p class="path">Interactive lessons <span class="hint">— start here, in order</span></p>
+      <p class="path">Interactive lessons <span class="hint">— in order</span></p>
       <nav class="lessons" aria-label="Interactive lessons">
         <a class="lesson" href="pond-continuous.html" data-lesson="pond">
-          <div class="n">01 · The Pond</div>
+          <div class="n">Lab 01 · The Pond</div>
           <div class="title">A continuous system, <span>sampled once per token</span></div>
           <p class="blurb">Diagonal state-space memory: ripples, dials, decay, and why fixed-size state stays cheap forever.</p>
           <div class="go">Open pond-continuous →</div>
         </a>
 
         <a class="lesson" href="pond-vs-attention.html" data-lesson="notebook">
-          <div class="n">02 · Pond vs Notebook</div>
+          <div class="n">Lab 02 · Pond vs Notebook</div>
           <div class="title">Two ways to remember <span>the same stream</span></div>
           <p class="blurb">SSM state vs attention on the same recall task — where each wins, and why hybrids exist.</p>
           <div class="go">Open pond-vs-attention →</div>
         </a>
 
         <a class="lesson" href="multi-head.html" data-lesson="heads">
-          <div class="n">03 · Many Heads</div>
+          <div class="n">Lab 03 · Many Heads</div>
           <div class="title">Looking in <span>several places at once</span></div>
           <p class="blurb">Three lookback questions at once. One head must choose; more heads specialize.</p>
           <div class="go">Open multi-head →</div>
@@ -214,13 +237,19 @@
           </p>
           <p class="aka"><span>Also:</span> MHA, MHSA</p>
         </article>
+        <a class="tool" href="glossary.html" style="margin-top:4px">
+          <div class="n">Glossary</div>
+          <div class="title">AI <span>terms</span></div>
+          <p class="blurb">Full industry definitions and failure modes.</p>
+          <div class="go">Open glossary →</div>
+        </a>
       </section>
     </aside>
   </div>
 
   <div class="below">
     <a class="tool" id="issues-card" href="issues-lab.html">
-      <div class="n">04 · Issues Lab</div>
+      <div class="n">Lab 04 · Issues Lab</div>
       <div class="title">Break what you learned — <span>visualized failures</span></div>
       <p class="blurb">Token bloat, latency/TTFT, and grounding — shown on the pond, notebook, and multi-head machinery from lessons 01–03.</p>
       <div class="dep" id="issues-dep">
@@ -232,39 +261,14 @@
       </div>
       <div class="go">Open issues lab →</div>
     </a>
-
-    <a class="tool" href="glossary.html">
-      <div class="n">Glossary</div>
-      <div class="title">AI <span>terms</span></div>
-      <p class="blurb">Industry definitions, including issues &amp; failure modes, with Try-it links into the lab.</p>
-      <div class="go">Open glossary →</div>
-    </a>
   </div>
 
-  <div class="below-extra">
-    <a class="tool" href="metaphor-reference.html">
-      <div class="n">Metaphor reference</div>
-      <div class="title">Land, pond, water — <span>and where it breaks</span></div>
-      <p class="blurb">Every landscape term on the site: pre-training sediment, post-training surveyor/sea, runtime water, surroundings, and the seams.</p>
-      <div class="go">Open metaphor reference →</div>
-    </a>
-    <a class="tool" href="context.html">
-      <div class="n">Context</div>
-      <div class="title">From tan to the <span>pond</span></div>
-      <p class="blurb">Origin story: the pond metaphor from a conversation with Claude; this site built in Cursor with Grok 4.5. Includes the source PDF.</p>
-      <div class="go">Open context →</div>
-    </a>
+  <div class="stack" style="margin-top:12px">
     <a class="tool" href="feedback.html">
-      <div class="n">Comments · Feedback · Questions</div>
+      <div class="n">05 · Comments · Feedback · Questions</div>
       <div class="title">Write back — <span>by channel, by lab</span></div>
       <p class="blurb">Comments are live on the page. Feedback and questions go to GitHub. Labs are listed so you can point at 01–04, the glossary, or the whole site.</p>
       <div class="go">Open feedback page →</div>
-    </a>
-    <a class="tool" href="https://github.com/daniella-laguerre/PondScope_AI_Debugger" target="_blank" rel="noopener">
-      <div class="n">Related · GitHub</div>
-      <div class="title">PondScope AI <span>Debugger</span></div>
-      <p class="blurb">Separate Python causal debugger for hybrid drawer / SSM-style models — probes, interventions, and evidence analyses.</p>
-      <div class="go">Open debugger repo →</div>
     </a>
   </div>
 
@@ -319,24 +323,27 @@
     </div>
     <p class="howto-path">
       <b>Suggested path:</b>
-      <a href="pond-continuous.html">01 Pond</a> →
+      <a href="context.html">Context</a> →
+      <a href="metaphor-reference.html">Metaphor reference</a> →
+      <a href="https://github.com/daniella-laguerre/PondScope_AI_Debugger" target="_blank" rel="noopener">AI Debugger</a> →
+      <a href="pond-continuous.html">Lab 01 Pond</a> →
       <a href="pond-vs-attention.html">02 Notebook</a> →
       <a href="multi-head.html">03 Heads</a> →
-      <a href="issues-lab.html">04 Issues Lab</a>
-      · then the <a href="metaphor-reference.html">metaphor reference</a> for land / pond / water
-      and post-training (SFT / RLHF / RLVR). In the Issues Lab, use <b>Reset</b> / <b>Reset all</b>.
+      <a href="issues-lab.html">04 Issues Lab</a> →
+      <a href="feedback.html">Comments / feedback / questions</a>.
+      In the Issues Lab, use <b>Reset</b> / <b>Reset all</b>.
     </p>
   </section>
 
   <footer>
     <b>Daniella M. LaGuerre</b> · PondScope Ecosystem<br>
     Self-contained HTML — no install.
-    <a href="metaphor-reference.html">Metaphor reference</a> ·
     <a href="context.html">Context</a> ·
-    <a href="glossary.html">Glossary</a> ·
-    <a href="issues-lab.html">Issues lab</a> ·
+    <a href="metaphor-reference.html">Metaphor reference</a> ·
+    <a href="https://github.com/daniella-laguerre/PondScope_AI_Debugger" target="_blank" rel="noopener">AI Debugger</a> ·
+    <a href="issues-lab.html">Labs</a> ·
     <a href="feedback.html">Comments / feedback / questions</a> ·
-    <a href="https://github.com/daniella-laguerre/PondScope_AI_Debugger" target="_blank" rel="noopener">AI Debugger (GitHub)</a>
+    <a href="glossary.html">Glossary</a>
   </footer>
 </main>
 <script>
