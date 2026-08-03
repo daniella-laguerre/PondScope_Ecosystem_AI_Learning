@@ -70,7 +70,17 @@
   .sq.newest{border-bottom-color:var(--brass)}
 
   #embcv,#injcv,#wcv,#costcv,#losscv,#diskcv,#contcv{width:100%;display:block}
-  #embcv{height:30px} #injcv{height:40px} #wcv{height:44px} #costcv{height:108px}
+  #embcv{height:30px} #injcv{height:40px} #wcv{height:44px} #costcv{height:138px}
+  #issueban{display:none;position:fixed;left:0;right:0;top:0;z-index:12;
+    padding:9px 40px 9px 12px;background:rgba(14,42,49,.96);
+    border-bottom:1px solid rgba(224,169,78,.45);font-size:10.5px;line-height:1.5;color:var(--foam)}
+  #issueban.on{display:block}
+  #issueban b{color:var(--brass)}
+  #issueban a{color:var(--water);text-decoration:none;border-bottom:1px dotted rgba(47,184,179,.45)}
+  #issueban .x{position:absolute;right:10px;top:8px;cursor:pointer;color:var(--mute);font-size:14px}
+  body.issue-on header{top:52px}
+  body.issue-on #tick{top:86px}
+  body.issue-on #helpbtn{top:60px}
   #losscv{height:52px} #diskcv{height:150px} #contcv{height:46px} #scancv{height:168px}
   #dials{overflow-x:auto;scrollbar-width:none;margin:0 -3px}
   #dials::-webkit-scrollbar{display:none}
@@ -148,6 +158,7 @@
 </style>
 </head>
 <body>
+<div id="issueban" role="status"><span class="x" id="issuebanx" title="Dismiss">&times;</span><span id="issuebanmsg"></span></div>
 <div id="stage"></div>
 <header>
   <h1>The Pond — <em>a continuous system, sampled once per token</em></h1>
@@ -958,29 +969,29 @@ function drawCost(){
   var T=parseInt(document.getElementById('ctxT').value,10);
   ctx.clearRect(0,0,w,h);
   var kvPer=2*L_REF*DMODEL,kv=kvPer*T,ssm=L_REF*DINNER*DSTATE,TMAX=8192,maxv=kvPer*TMAX;
-  var pad=54,bw=w-pad-6;
+  var pad=58,bw=w-pad-8;
   function fmt(n){return n>=1e9?(n/1e9).toFixed(2)+'B':n>=1e6?(n/1e6).toFixed(1)+'M':n>=1e3?(n/1e3).toFixed(0)+'K':''+n;}
-  ctx.font='8.5px Arial';ctx.textAlign='right';ctx.fillStyle='#5E7C7F';
-  ctx.fillText('KV cache',pad-6,23);ctx.fillText('SSM state',pad-6,63);
-  ctx.fillStyle='rgba(210,104,94,.2)';ctx.fillRect(pad,12,bw,15);
-  ctx.fillStyle='#D2685E';ctx.fillRect(pad,12,Math.max(2,bw*kv/maxv),15);
-  // texture, not just hue: diagonal hatch marks the growing series
-  ctx.save();ctx.beginPath();ctx.rect(pad,12,Math.max(2,bw*kv/maxv),15);ctx.clip();
-  ctx.strokeStyle='rgba(8,20,24,.45)';ctx.lineWidth=1;
-  for(var hx=pad-15;hx<pad+bw;hx+=6){ctx.beginPath();ctx.moveTo(hx,27);ctx.lineTo(hx+15,12);ctx.stroke();}
-  ctx.restore();
-  ctx.fillStyle='rgba(47,184,179,.2)';ctx.fillRect(pad,52,bw,15);
-  ctx.fillStyle='#2FB8B3';ctx.fillRect(pad,52,Math.max(2,bw*ssm/maxv),15);
   var xT=ssm/kvPer,cxp=pad+bw*(ssm/maxv);
-  ctx.strokeStyle='rgba(224,169,78,.6)';ctx.setLineDash([3,3]);
-  ctx.beginPath();ctx.moveTo(cxp,8);ctx.lineTo(cxp,72);ctx.stroke();ctx.setLineDash([]);
-  ctx.textAlign='left';ctx.fillStyle='#E0A94E';ctx.font='7.5px Arial';
-  ctx.fillText('cross @ T\u2248'+Math.round(xT),cxp+3,82);
-  ctx.fillStyle='#D9E8E4';ctx.font='8.5px Arial';
-  ctx.fillText(fmt(kv)+'  = 2\u00B7L\u00B7T\u00B7d_model',pad+3,39);
-  ctx.fillText(fmt(ssm)+'  = L\u00B7d_inner\u00B7d_state (no T)',pad+3,79);
-  ctx.fillStyle='#5E7C7F';ctx.font='8px Arial';
-  ctx.fillText('this toy: 1 layer \u2192 '+(2*S.N)+' reals after '+S.steps+' tokens',3,h-3);
+  ctx.font='9px Arial';ctx.textAlign='right';ctx.fillStyle='#5E7C7F';
+  ctx.fillText('KV cache',pad-6,22);ctx.fillText('SSM state',pad-6,58);
+  ctx.fillStyle='rgba(210,104,94,.2)';ctx.fillRect(pad,10,bw,16);
+  ctx.fillStyle='#D2685E';ctx.fillRect(pad,10,Math.max(2,bw*kv/maxv),16);
+  ctx.save();ctx.beginPath();ctx.rect(pad,10,Math.max(2,bw*kv/maxv),16);ctx.clip();
+  ctx.strokeStyle='rgba(8,20,24,.45)';ctx.lineWidth=1;
+  for(var hx=pad-15;hx<pad+bw;hx+=6){ctx.beginPath();ctx.moveTo(hx,26);ctx.lineTo(hx+15,10);ctx.stroke();}
+  ctx.restore();
+  ctx.fillStyle='rgba(47,184,179,.2)';ctx.fillRect(pad,46,bw,16);
+  ctx.fillStyle='#2FB8B3';ctx.fillRect(pad,46,Math.max(2,bw*ssm/maxv),16);
+  ctx.strokeStyle='rgba(224,169,78,.7)';ctx.setLineDash([3,3]);
+  ctx.beginPath();ctx.moveTo(cxp,6);ctx.lineTo(cxp,68);ctx.stroke();ctx.setLineDash([]);
+  ctx.textAlign='left';ctx.fillStyle='#D9E8E4';ctx.font='9px Arial';
+  ctx.fillText(fmt(kv)+'  =  2 \u00B7 L \u00B7 T \u00B7 d_model',pad+2,38);
+  ctx.fillText(fmt(ssm)+'  =  L \u00B7 d_inner \u00B7 d_state  (no T)',pad+2,74);
+  // Own row so it never compresses under the 4.2M formula
+  ctx.fillStyle='#E0A94E';ctx.font='10px Arial';
+  ctx.fillText('Dashed line: KV overtakes SSM at T \u2248 '+Math.round(xT)+'  (drag the slider)',pad,96);
+  ctx.fillStyle='#5E7C7F';ctx.font='9px Arial';
+  ctx.fillText('this toy: 1 layer \u2192 '+(2*S.N)+' reals after '+S.steps+' tokens',pad,h-8);
   document.getElementById('coststat').innerHTML='ratio <b>'+(kv/ssm).toFixed(kv/ssm<10?1:0)+'\u00D7</b>';
 }
 
@@ -1093,10 +1104,68 @@ function loop(ts){
   if(renderer){deform();renderer.render(scene,camera);}
   drawDials();updateEmpty();
 }
+function selectTab(name){
+  var tabs=document.querySelectorAll('.tab');
+  for(var k=0;k<tabs.length;k++){
+    var on=tabs[k].dataset.p===name;
+    tabs[k].classList.toggle('on',on);
+    document.getElementById('pane-'+tabs[k].dataset.p).classList.toggle('on',on);
+  }
+  layout();
+  requestAnimationFrame(function(){
+    if(name==='learn'){safe(drawLoss);safe(drawW);}
+    if(name==='spec'){safe(drawDisk);safe(drawCont);}
+    if(name==='scan'){runScanDemo();safe(drawScan);updateScanStat();}
+    if(name==='cost')safe(drawCost);
+    if(name==='pipe'){safe(drawEmb);safe(drawInj);safe(drawSeq);}
+  });
+}
+function applyIssueState(){
+  var q=new URLSearchParams(location.search);
+  var issue=(q.get('issue')||'').toLowerCase();
+  if(!issue)return;
+  var ban=document.getElementById('issueban');
+  var msg=document.getElementById('issuebanmsg');
+  var back=' <a href="issues-lab.html#'+issue+'">← Issues Lab</a>';
+  document.body.classList.add('issue-on');
+  ban.classList.add('on');
+  document.getElementById('issuebanx').onclick=function(){
+    ban.classList.remove('on');document.body.classList.remove('issue-on');layout();
+  };
+  if(issue==='tokens'){
+    msg.innerHTML='<b>Issue state · tokens / context bloat.</b> Cost tab: KV cache grows with T; pond state stays flat. '+
+      'This is a <b>memory-system</b> cost — the pond dynamics can be fine while history storage balloons.'+back;
+    selectTab('cost');
+    var ctx=document.getElementById('ctxT');ctx.value='2048';
+    document.getElementById('ctxv').textContent='2048';drawCost();
+  }else if(issue==='latency'){
+    msg.innerHTML='<b>Issue state · latency / TTFT.</b> Each token is one pond step (Pipeline). '+
+      'Waiting before the first step is TTFT; cold load is serving delay. Often <b>not</b> a wrong model — a stepping / infrastructure timing issue.'+back;
+    selectTab('pipe');
+    STEP_MS=700;
+    streaming=true;document.getElementById('streambtn').textContent='Pause';
+  }else if(issue==='grounding'){
+    msg.innerHTML='<b>Issue state · grounding / exact fact.</b> Learn tab, large K: the pond compresses — far-back exact symbols fade. '+
+      'That is a <b>fixed-size memory limit</b>, not necessarily a failed Fit. Compare the notebook in lesson 02.'+back;
+    selectTab('learn');
+    var kd=document.getElementById('kdelay');kd.value='24';S.K=24;
+    document.getElementById('kv').textContent='24';
+    S.mode='readout';
+    var segs=document.querySelectorAll('#modeseg div');
+    for(var i=0;i<segs.length;i++)segs[i].classList.toggle('on',segs[i].dataset.m==='readout');
+    S.fitted=false;hits=0;tries=0;S.hist=[];
+    document.getElementById('trainstat').textContent='issue state — press Fit, then compare notebook';
+    drawLoss();drawW();
+  }else{
+    msg.innerHTML='<b>Issue state.</b> Opened from Issues Lab.'+back;
+  }
+  setTimeout(layout,80);
+}
 layout();
 requestAnimationFrame(loop);
 step(0);
 setTimeout(layout,60);
+applyIssueState();
 })();
 </script>
 <script>

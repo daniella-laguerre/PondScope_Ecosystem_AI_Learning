@@ -108,6 +108,24 @@
   .log{margin-top:8px;font-size:10px;color:var(--mute);line-height:1.55}
   .log .ok{color:var(--ok)} .log .bad{color:var(--rose)} .log .warn{color:var(--brass)}
 
+  .seelab{margin:12px 0 10px;padding:12px 12px 10px;border-radius:2px;
+    border:1px solid rgba(224,169,78,.4);background:rgba(224,169,78,.06)}
+  .seelab .k{font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:var(--brass);
+    margin-bottom:6px}
+  .seelab p{font-size:11px;line-height:1.55;color:var(--mute);margin-bottom:8px}
+  .seelab p b{color:var(--foam);font-weight:500}
+  .seelab .btns{display:flex;flex-wrap:wrap;gap:8px}
+  a.labbtn{
+    display:inline-block;text-decoration:none;font-size:9px;letter-spacing:.08em;
+    text-transform:uppercase;padding:8px 12px;border-radius:2px;
+    background:var(--brass);color:var(--ink);font-weight:500;
+  }
+  a.labbtn.ghost{background:transparent;color:var(--water);
+    border:1px solid rgba(47,184,179,.5)}
+  .memnote{margin:10px 0 0;padding:10px 11px;border-left:3px solid var(--brass);
+    background:rgba(8,20,24,.45);font-size:10.5px;line-height:1.55;color:var(--mute)}
+  .memnote b{color:var(--brass);font-weight:500}
+
   .scenario{display:none} .scenario.on{display:block}
   footer{margin-top:28px;padding-top:14px;border-top:1px solid rgba(47,184,179,.14);
     font-size:10px;line-height:1.6;color:var(--mute)}
@@ -120,12 +138,12 @@
   <p class="tag">PondScope Ecosystem · Issues Lab</p>
   <h1>Break what you learned — <em>visualized</em></h1>
   <p class="lead">
-    These failures are staged on the <b>same three systems</b> as the interactive lessons:
-    the <b>pond</b> (fixed state), the <b>notebook</b> (growing attention memory), and
-    <b>multi-head</b> lookup. Open lessons 01→03 first so the visualizations have context.
+    Use <b>See in the labs</b> on each tab — that opens lessons 01–03 already set to the
+    issue state so you can watch where the failure shows up. If the model Fit still works
+    but memory grows, fades, or cannot look up a fact, treat it as a <b>memory issue</b>.
   </p>
   <p class="warn">
-    Illustrative simulation for teaching — not a security audit, load test, or production benchmark.
+    Illustrative teaching tool — not a security audit, load test, or production benchmark.
   </p>
 
   <div class="prereq" id="prereq">
@@ -151,13 +169,25 @@
   <!-- TOKENS: lesson 02 notebook grows -->
   <section class="scenario on" id="sc-tokens">
     <div class="panel">
-      <div class="from">Builds on lesson 02 · Pond vs Notebook</div>
+      <div class="from">Builds on lessons 01 + 02 · Pond Cost &amp; Notebook</div>
       <h2>Token overconsumption as <span>notebook growth</span></h2>
       <p class="blurb">
         The <b>pond</b> keeps a fixed state (cheap, constant). The <b>notebook</b> stores an entry
         per token — long history is context bloat. Verbose replies burn completion tokens.
-        Compare the two memory drawings when you run.
       </p>
+      <div class="seelab">
+        <div class="k">See where it hits the model / memory</div>
+        <p>Open the real labs in this issue state — watch Cost (KV vs flat pond) and the notebook memory counter while streaming.</p>
+        <div class="btns">
+          <a class="labbtn" href="pond-vs-attention.html?issue=tokens">02 · Notebook bloat state →</a>
+          <a class="labbtn ghost" href="pond-continuous.html?issue=tokens">01 · Cost tab (flat pond) →</a>
+          <a class="labbtn ghost" href="multi-head.html?issue=tokens">03 · Heads = more KV →</a>
+        </div>
+      </div>
+      <div class="memnote">
+        <b>Memory note:</b> If Fit / Teach still looks fine but the notebook counter or KV bar grows with T,
+        this is a <b>memory / context</b> issue — not proof that the learned weights are wrong.
+      </div>
       <div class="viz">
         <div class="viz-card">
           <div class="lab">From lesson 01 · <em>Pond</em></div>
@@ -200,10 +230,22 @@
       <div class="from">Builds on lesson 01 · The Pond</div>
       <h2>Latency as <span>slow pond steps</span></h2>
       <p class="blurb">
-        In the pond lesson, time advances <b>once per token</b>. Here, TTFT is the wait before the
-        first step writes into the state; streaming is later steps. Cold start = loading the poles
-        before any ripple can move.
+        In the pond lesson, time advances <b>once per token</b>. TTFT is the wait before the
+        first step; streaming is later steps. Cold start = loading poles before any ripple moves.
       </p>
+      <div class="seelab">
+        <div class="k">See where it hits the model / memory</div>
+        <p>Open the pond Pipeline already streaming slowly — each token is one step. Compare with the notebook lesson: both step once per symbol.</p>
+        <div class="btns">
+          <a class="labbtn" href="pond-continuous.html?issue=latency">01 · Pond latency state →</a>
+          <a class="labbtn ghost" href="pond-vs-attention.html?issue=latency">02 · One step per symbol →</a>
+        </div>
+      </div>
+      <div class="memnote">
+        <b>Memory note:</b> Slow TTFT / cold start often does <b>not</b> mean the pond learned the wrong poles.
+        It is usually a <b>serving / stepping</b> delay (load, queue, generate one token at a time).
+        If accuracy after Fit is fine, treat latency as infrastructure timing, not a model bug.
+      </div>
       <div class="viz">
         <div class="viz-card" style="grid-column:1/-1">
           <div class="lab">From lesson 01 · <em>Pond dials / steps</em></div>
@@ -233,13 +275,26 @@
   <!-- GROUNDING: lesson 02+03 notebook heads vs pond -->
   <section class="scenario" id="sc-grounding">
     <div class="panel">
-      <div class="from">Builds on lessons 02 + 03 · Notebook &amp; Many Heads</div>
+      <div class="from">Builds on lessons 01 + 02 + 03</div>
       <h2>Grounding as <span>heads on the page</span></h2>
       <p class="blurb">
-        With retrieval <b>off</b>, only the <b>pond</b> compressed “memory” answers — it confabulates.
-        With retrieval <b>on</b>, <b>multi-head</b> attention looks up the notebook document
-        (as in lessons 02–03) and cites it.
+        With retrieval <b>off</b>, only the <b>pond</b> compressed memory answers — it confabulates.
+        With retrieval <b>on</b>, <b>multi-head</b> attention looks up the notebook and cites it.
       </p>
+      <div class="seelab">
+        <div class="k">See where it hits the model / memory</div>
+        <p>Open each lab in grounding state: pond with large K (fade), notebook vs pond at K=30, then 1-head attention that cannot cover three facts.</p>
+        <div class="btns">
+          <a class="labbtn" href="pond-vs-attention.html?issue=grounding">02 · Pond fade vs notebook →</a>
+          <a class="labbtn" href="multi-head.html?issue=grounding">03 · 1-head miss →</a>
+          <a class="labbtn ghost" href="pond-continuous.html?issue=grounding">01 · Learn @ large K →</a>
+        </div>
+      </div>
+      <div class="memnote">
+        <b>Memory note:</b> If the notebook / multi-head lookup gets the fact right but the pond alone invents a number,
+        the failure is a <b>memory-type</b> limit (compressed state vs exact lookup) — not proof the whole model is “wrong.”
+        Fixing grounding often means retrieving into a notebook, not only re-fitting the pond.
+      </div>
       <div class="viz">
         <div class="viz-card">
           <div class="lab">From lesson 01 · <em>Pond-only</em></div>

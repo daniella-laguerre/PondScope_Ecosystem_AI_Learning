@@ -85,9 +85,17 @@
     line-height:1.6;color:var(--mute);margin-top:12px}
   .mine b{color:var(--foam)}
   @media(min-width:620px){ .pair{display:flex;gap:10px} .pair>.card{flex:1} }
+  #issueban{display:none;margin:0 0 12px;padding:9px 28px 9px 11px;position:relative;
+    background:rgba(14,42,49,.95);border:1px solid rgba(224,169,78,.45);border-radius:2px;
+    font-size:10.5px;line-height:1.5;color:var(--foam)}
+  #issueban.on{display:block}
+  #issueban b{color:var(--brass)}
+  #issueban a{color:var(--water);text-decoration:none;border-bottom:1px dotted rgba(47,184,179,.45)}
+  #issueban .x{position:absolute;right:8px;top:6px;cursor:pointer;color:var(--mute);font-size:14px}
 </style>
 </head>
 <body>
+<div id="issueban" role="status"><span class="x" id="issuebanx" title="Dismiss">&times;</span><span id="issuebanmsg"></span></div>
 
 <h1>The Pond and the <b>Notebook</b></h1>
 <div class="sub">Two ways to remember the same stream of symbols. One keeps a <span style="color:#2FB8B3">squeezed summary that never grows</span>. The other keeps <span style="color:#D2685E">a record of every symbol and looks things up</span>. Feed them both and watch where each one wins.</div>
@@ -698,6 +706,35 @@ buildPond();buildAtt();
 drawSeq();drawPond();drawDials();drawAtt();drawCache();drawBias();
 document.getElementById('progress').innerHTML='press <b>Teach both</b> to begin';
 step(0);
+
+(function applyIssueState(){
+  var issue=(new URLSearchParams(location.search).get('issue')||'').toLowerCase();
+  if(!issue)return;
+  var ban=document.getElementById('issueban');
+  var msg=document.getElementById('issuebanmsg');
+  var back=' <a href="issues-lab.html#'+issue+'">← Issues Lab</a>';
+  ban.classList.add('on');
+  document.getElementById('issuebanx').onclick=function(){ban.classList.remove('on');};
+  if(issue==='tokens'){
+    msg.innerHTML='<b>Issue state · tokens / notebook bloat.</b> Press <b>Stream</b> — watch notebook memory climb while the pond stays flat. '+
+      'That growth is a <b>memory / context</b> issue; the Fit weights can still be correct.'+back;
+    streaming=true;document.getElementById('stream').textContent='Pause';
+    timer=setInterval(function(){step((Math.random()*V)|0);},280);
+    document.getElementById('progress').innerHTML='streaming — compare the two <b>memory held</b> counters';
+  }else if(issue==='grounding'){
+    msg.innerHTML='<b>Issue state · grounding.</b> K is set far back. Teach both: the notebook still looks up the fact; the pond fades. '+
+      'When only the pond fails, treat it as a <b>memory-type</b> limit (compressed state), not a broken model.'+back;
+    K=30;document.getElementById('kd').value='30';document.getElementById('kv').textContent='30';
+    document.getElementById('progress').innerHTML='issue state K=30 — press <b>Teach both</b>, then stream';
+    drawSeq();
+  }else if(issue==='latency'){
+    msg.innerHTML='<b>Issue state · latency.</b> Each feed is one step for both memories. Latency is mostly stepping / serving timing; '+
+      'open the pond lesson Cost/Pipeline views for TTFT framing.'+back+
+      ' · <a href="pond-continuous.html?issue=latency">Open pond latency state</a>';
+  }else{
+    msg.innerHTML='<b>Issue state.</b> Opened from Issues Lab.'+back;
+  }
+})();
 })();
 </script>
 <script>

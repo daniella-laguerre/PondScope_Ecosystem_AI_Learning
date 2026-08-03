@@ -67,9 +67,17 @@
   .mine{border-left:2px solid var(--brass);padding-left:9px;font-size:9.5px;
     line-height:1.6;color:var(--mute);margin-top:12px}
   .mine b{color:var(--foam)}
+  #issueban{display:none;margin:0 0 12px;padding:9px 28px 9px 11px;position:relative;
+    background:rgba(14,42,49,.95);border:1px solid rgba(224,169,78,.45);border-radius:2px;
+    font-size:10.5px;line-height:1.5;color:var(--foam)}
+  #issueban.on{display:block}
+  #issueban b{color:var(--brass)}
+  #issueban a{color:var(--water);text-decoration:none;border-bottom:1px dotted rgba(47,184,179,.45)}
+  #issueban .x{position:absolute;right:8px;top:6px;cursor:pointer;color:var(--mute);font-size:14px}
 </style>
 </head>
 <body>
+<div id="issueban" role="status"><span class="x" id="issuebanx" title="Dismiss">&times;</span><span id="issuebanmsg"></span></div>
 
 <h1>Many Heads — <em>looking in several places at once</em></h1>
 <div class="sub">One attention head can point at one place. Ask it three questions at the same time and it has to choose. Give it more heads and each one goes to a different place. That is all "multi-head" means &mdash; and you can watch it happen.</div>
@@ -495,6 +503,31 @@ window.addEventListener('resize',function(){drawHeads();drawQ();});
 
 build();
 for(var z=0;z<30;z++)step((Math.random()*V)|0);
+
+(function applyIssueState(){
+  var issue=(new URLSearchParams(location.search).get('issue')||'').toLowerCase();
+  if(!issue)return;
+  var ban=document.getElementById('issueban');
+  var msg=document.getElementById('issuebanmsg');
+  var back=' <a href="issues-lab.html#'+issue+'">← Issues Lab</a>';
+  ban.classList.add('on');
+  document.getElementById('issuebanx').onclick=function(){ban.classList.remove('on');};
+  if(issue==='grounding'){
+    msg.innerHTML='<b>Issue state · grounding / multi-fact lookup.</b> Heads set to <b>1</b> — one look-place cannot serve three distances. '+
+      'Press Teach: two questions fail. That is an <b>attention capacity</b> limit (how memory is read), not random noise. '+
+      'Raise heads to 3 and teach again to recover.'+back;
+    H=1;document.getElementById('hd').value='1';document.getElementById('hv').textContent='1';
+    build();live=look();fitted=false;
+    document.getElementById('progress').innerHTML='issue state: 1 head — press <b>Teach</b>, then try 3 heads';
+    drawHeads();drawQ();
+  }else if(issue==='tokens'){
+    msg.innerHTML='<b>Issue state · tokens.</b> Every head still stores an entry per symbol — more heads means more memory per token. '+
+      'That is a <b>memory footprint</b> tradeoff; see lesson 02 for notebook growth vs the pond.'+back+
+      ' · <a href="pond-vs-attention.html?issue=tokens">Open notebook bloat state</a>';
+  }else{
+    msg.innerHTML='<b>Issue state.</b> Opened from Issues Lab.'+back;
+  }
+})();
 })();
 </script>
 <script>
