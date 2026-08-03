@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>Pond vs Notebook — two kinds of memory</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,340;9..144,560&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{--ink:#081418;--deep:#0E2A31;--water:#2FB8B3;--foam:#D9E8E4;
+        --brass:#E0A94E;--mute:#5E7C7F;--rose:#D2685E;--violet:#9B7BD4;}
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{background:var(--ink);color:var(--foam);font-family:'IBM Plex Mono',monospace;
+    -webkit-tap-highlight-color:transparent;overflow-x:hidden}
+  body{padding:14px 13px 30px;max-width:760px;margin:0 auto}
+  h1{font-family:'Fraunces',serif;font-weight:560;font-size:clamp(19px,5vw,28px);line-height:1.08}
+  h1 em{font-style:italic;color:var(--water)}
+  h1 b{font-weight:560;color:var(--brass)}
+  .sub{font-size:9.5px;color:var(--mute);margin:5px 0 14px;line-height:1.6}
+
+  .lbl{font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);margin:0 0 4px}
+  .card{border:1px solid rgba(47,184,179,.18);border-radius:3px;padding:9px 10px 10px;margin-bottom:10px}
+  .card.att{border-color:rgba(210,104,94,.25)}
+  .title{font-family:'Fraunces',serif;font-size:14px;margin-bottom:2px}
+  .title.p{color:var(--water)} .title.a{color:var(--rose)}
+  .tline{font-size:9px;color:var(--mute);margin-bottom:7px;line-height:1.5}
+  canvas{width:100%;display:block;border-radius:2px}
+  #pondcv{height:112px} #attcv{height:112px} #biascv{height:52px} #dialcv{height:40px}
+  #cachecv{height:26px}
+
+  #chips{display:flex;gap:6px;margin-bottom:8px}
+  .chip{flex:1;padding:9px 0 8px;text-align:center;border-radius:3px;cursor:pointer;
+    font-size:17px;line-height:1;border:1px solid rgba(47,184,179,.3);
+    background:rgba(47,184,179,.06);transition:transform .1s}
+  .chip:active{transform:scale(.93)}
+  .chip .id{display:block;font-size:7px;color:var(--mute);margin-top:3px}
+  #seqstrip{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;padding-bottom:3px}
+  #seqstrip::-webkit-scrollbar{display:none}
+  .sq{flex:0 0 auto;width:22px;text-align:center;font-size:11px;
+    border-bottom:1px solid rgba(47,184,179,.18);padding-bottom:2px}
+  .sq span{display:block;font-size:6px;color:var(--mute)}
+  .sq.newest{border-bottom-color:var(--brass)}
+  .sq.target{background:rgba(224,169,78,.14);border-bottom-color:var(--brass)}
+
+  .row{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin:9px 0}
+  button{font-family:inherit;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;
+    padding:8px 13px;border-radius:2px;cursor:pointer;background:var(--brass);
+    color:var(--ink);border:none;font-weight:500}
+  button.ghost{background:transparent;color:var(--water);border:1px solid rgba(47,184,179,.45)}
+  button:disabled{opacity:.45}
+  label.ctl{display:flex;flex-direction:column;gap:2px;font-size:8px;
+    letter-spacing:.07em;text-transform:uppercase;color:var(--mute)}
+  input[type=range]{-webkit-appearance:none;appearance:none;width:110px;height:18px;background:transparent}
+  input[type=range]::-webkit-slider-runnable-track{height:2px;background:var(--deep)}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;
+    border-radius:50%;background:var(--brass);margin-top:-5.5px;border:2px solid var(--ink)}
+  input[type=range]::-moz-range-track{height:2px;background:var(--deep)}
+  input[type=range]::-moz-range-thumb{width:12px;height:12px;border-radius:50%;
+    background:var(--brass);border:2px solid var(--ink)}
+
+  .stat{font-size:9.5px;color:var(--mute);line-height:1.6}
+  .stat b{color:var(--foam);font-weight:500}
+  .big{font-family:'Fraunces',serif;font-size:22px;line-height:1}
+  .big.p{color:var(--water)} .big.a{color:var(--rose)}
+  .pred{font-size:11px;margin-top:6px;color:var(--mute)}
+  .pred .g{font-size:15px;vertical-align:-2px}
+  .hit{color:var(--water)} .miss{color:var(--rose)}
+  .mem{font-size:9px;color:var(--mute);margin-top:5px}
+  .mem b{color:var(--foam)}
+
+  .note{font-size:9.5px;line-height:1.65;color:var(--mute);margin-top:8px}
+  .note b{color:var(--foam);font-weight:500}
+  .note em{color:var(--brass);font-style:normal}
+  h2{font-family:'Fraunces',serif;font-size:16px;margin:20px 0 6px}
+  h2 em{font-style:italic;color:var(--water)}
+  table{width:100%;border-collapse:collapse;font-size:10px;margin:8px 0}
+  th,td{text-align:left;padding:5px 4px;border-bottom:1px solid rgba(47,184,179,.12)}
+  th{color:var(--mute);font-weight:400;font-size:8px;letter-spacing:.1em;text-transform:uppercase}
+  td.w{color:var(--water)} td.r{color:var(--rose)}
+  #srcbtn{width:100%;margin-top:16px}
+  #sources{display:none;margin-top:10px}
+  #sources.on{display:block}
+  #sources p{font-size:9.5px;line-height:1.6;color:var(--mute);margin-bottom:7px}
+  #sources p b{color:var(--foam)}
+  #sources a{color:var(--water);text-decoration:none;border-bottom:1px dotted rgba(47,184,179,.4)}
+  .mine{border-left:2px solid var(--brass);padding-left:9px;font-size:9.5px;
+    line-height:1.6;color:var(--mute);margin-top:12px}
+  .mine b{color:var(--foam)}
+  @media(min-width:620px){ .pair{display:flex;gap:10px} .pair>.card{flex:1} }
+</style>
+</head>
+<body>
+
+<h1>The Pond and the <b>Notebook</b></h1>
+<div class="sub">Two ways to remember the same stream of symbols. One keeps a <span style="color:#2FB8B3">squeezed summary that never grows</span>. The other keeps <span style="color:#D2685E">a record of every symbol and looks things up</span>. Feed them both and watch where each one wins.</div>
+
+<div class="lbl">feed a symbol — both memories take the same step</div>
+<div id="chips"></div>
+<div id="seqstrip"></div>
+
+<div class="row">
+  <label class="ctl" for="kd">ask: which symbol, K = <span id="kv">12</span> steps back?
+    <input id="kd" type="range" min="2" max="34" step="1" value="12"></label>
+  <button class="ghost" id="stream">Stream</button>
+  <button id="fit">Teach both</button>
+</div>
+<div class="stat" id="progress"></div>
+
+<div class="pair">
+  <div class="card">
+    <div class="title p">The Pond</div>
+    <div class="tline">fixed-size state · h &larr; &Lambda;h + Be</div>
+    <canvas id="pondcv"></canvas>
+    <canvas id="dialcv"></canvas>
+    <div class="row" style="margin:6px 0 0">
+      <div><span class="big p" id="pacc">—</span><span class="stat"> held-out</span></div>
+    </div>
+    <div class="pred" id="ppred">teach it first</div>
+    <div class="mem">memory held: <b id="pmem">48</b> numbers &mdash; <span style="color:#2FB8B3">never grows</span></div>
+  </div>
+
+  <div class="card att">
+    <div class="title a">The Notebook</div>
+    <div class="tline">one entry per symbol · look up the useful one</div>
+    <canvas id="attcv"></canvas>
+    <canvas id="cachecv"></canvas>
+    <div class="row" style="margin:6px 0 0">
+      <div><span class="big a" id="aacc">—</span><span class="stat"> held-out</span></div>
+    </div>
+    <div class="pred" id="apred">teach it first</div>
+    <div class="mem">memory held: <b id="amem">0</b> numbers &mdash; <span style="color:#D2685E">grows with every symbol</span></div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="lbl">what the notebook learned: how far back to look</div>
+  <canvas id="biascv"></canvas>
+  <div class="note" id="biasnote">After teaching, this curve spikes at exactly the distance you asked for. That spike <em>is</em> the lookup rule &mdash; "the answer is K entries back." The pond has no equivalent: it cannot point at a position, only carry a blend forward.</div>
+</div>
+
+<h2>What you should find</h2>
+<div class="note">Set K small &mdash; say 4 &mdash; and teach both. They tie at 100%. The past is recent, so a squeezed summary still holds it.</div>
+<div class="note">Now push K to 20, then 30, and teach again. The notebook stays at 100%. The pond slides. Not because it is badly built, but because <b>a fixed number of numbers cannot keep an unlimited number of separate details</b>. As the answer moves further back, more symbols have been stirred in on top of it.</div>
+
+<table>
+  <tr><th>K steps back</th><th>Pond (24 dials)</th><th>Notebook</th></tr>
+  <tr><td>4</td><td class="w">~98%</td><td class="r">100%</td></tr>
+  <tr><td>10</td><td class="w">~87%</td><td class="r">100%</td></tr>
+  <tr><td>20</td><td class="w">~59%</td><td class="r">100%</td></tr>
+  <tr><td>30</td><td class="w">~50%</td><td class="r">100%</td></tr>
+</table>
+<div class="note" style="margin-top:0">Measured by this page, at its own teaching budget; your run will vary by a few points. Chance is 25%. Given longer teaching the pond improves somewhat &mdash; but the <em>shape</em> holds: it falls away with distance while the notebook does not.</div>
+
+<h2>So why not always use the <em>notebook?</em></h2>
+<div class="note">Look at the two memory counters while you stream. The pond's stays put forever. The notebook's climbs with every symbol &mdash; and so does the work of searching it, because each new symbol must be compared against every entry so far. Double the conversation and you roughly quadruple that work.</div>
+<div class="note">That is the whole trade, and neither side wins outright:</div>
+<table>
+  <tr><th></th><th>Pond</th><th>Notebook</th></tr>
+  <tr><td>memory</td><td class="w">fixed</td><td class="r">grows with length</td></tr>
+  <tr><td>work per symbol</td><td class="w">constant</td><td class="r">grows with length</td></tr>
+  <tr><td>exact recall</td><td class="w">fades with distance</td><td class="r">reliable</td></tr>
+  <tr><td>long streams</td><td class="w">cheap forever</td><td class="r">eventually unaffordable</td></tr>
+</table>
+<div class="note">Which is why the strongest current designs are <b>hybrids</b>: mostly pond layers for cheap continuity, plus an occasional notebook layer for the moments when you need an exact lookup. You get the flat memory cost almost everywhere and buy back precise recall where it matters.</div>
+
+<h2>Honest limits of this page</h2>
+<div class="note"><b>The task is easy.</b> Four symbols, one fixed distance, chance 25%. Real memory problems ask many different questions about many different details, with distances the model could not prepare for. That is where the fixed-state limit bites much harder than it does here.</div>
+<div class="note"><b>Both sides are one layer.</b> A real model stacks dozens with nonlinear blocks between them. The mechanisms shown are faithful; the scale is not.</div>
+<div class="note"><b>The notebook here is a single attention head</b> with a learned distance preference. Real attention uses many heads and content-based matching, which is more capable and more expensive than what you see.</div>
+
+<button class="ghost" id="srcbtn">Show sources</button>
+<div id="sources">
+  <p><b>The limitation this page demonstrates</b> — Jelassi, Brandfonbrener, Kakade &amp; Malach, "Repeat After Me: Transformers are Better than State Space Models at Copying," ICML 2024. <a href="https://arxiv.org/abs/2402.01032">arXiv:2402.01032</a>. Proves a fixed-size state is fundamentally limited at copying and retrieval while a two-layer transformer is not.</p>
+  <p><b>The pond side</b> — Gu, Goel &amp; R&eacute;, "Efficiently Modeling Long Sequences with Structured State Spaces" (S4), ICLR 2022. <a href="https://arxiv.org/abs/2111.00396">arXiv:2111.00396</a>; and Gu &amp; Dao, "Mamba," 2023. <a href="https://arxiv.org/abs/2312.00752">arXiv:2312.00752</a>. Stability parameterization from S4D, <a href="https://arxiv.org/abs/2206.11893">arXiv:2206.11893</a>.</p>
+  <p><b>The notebook side</b> — Vaswani et al., "Attention Is All You Need," NeurIPS 2017. <a href="https://arxiv.org/abs/1706.03762">arXiv:1706.03762</a>. The learned distance preference used here is a relative-position bias, as in Raffel et al. (T5), <a href="https://arxiv.org/abs/1910.10683">arXiv:1910.10683</a>.</p>
+  <p><b>Hybrids</b> — Griffin, De et al. 2024, <a href="https://arxiv.org/abs/2402.19427">arXiv:2402.19427</a>; Jamba, Lieber et al. 2024, <a href="https://arxiv.org/abs/2403.19887">arXiv:2403.19887</a>; RWKV, Peng et al. 2023, <a href="https://arxiv.org/abs/2305.13048">arXiv:2305.13048</a>.</p>
+  <div class="mine"><b>Not from the literature.</b> The pond and notebook metaphors are an exposition choice. The numbers in the tables come from this page's own code on its own deliberately easy task — they illustrate a real, published effect, but they are not a benchmark and should not be quoted as one. By Daniella M. LaGuerre, August 2026.</div>
+</div>
+
+<script>
+(function(){
+"use strict";
+/* ============ shared setup ============ */
+var V=4, DE=4, N=24, DH=8, DV=8, MAXREL=40;
+var GLYPH=['\u25B2','\u25CF','\u25C6','\u25A0'];
+var TCOL=['#2FB8B3','#E0A94E','#D2685E','#9B7BD4'];
+function LCG(x){var s=x>>>0;return function(){s=(s*1664525+1013904223)>>>0;return s/4294967296;};}
+
+var K=12, seq=[], steps=0;
+
+/* ---- shared token embeddings ---- */
+var E=new Float64Array(V*DE);
+(function(){var R=LCG(20260802);
+  for(var v=0;v<V;v++)for(var d=0;d<DE;d++)E[v*DE+d]=(d===v?1.6:(R()*2-1)*0.25);})();
+
+/* ============ SIDE 1: the pond (diagonal SSM) ============ */
+var P={p:new Float64Array(N),w:new Float64Array(N),q:0,
+       Bre:new Float64Array(N*DE),Bim:new Float64Array(N*DE),
+       Cre:new Float64Array(N*V),Cim:new Float64Array(N*V),
+       lr:null,li:null,hr:new Float64Array(N),hi:new Float64Array(N),
+       fitted:false,acc:0,hits:0,tries:0};
+function buildPond(){
+  var R=LCG(77);
+  for(var j=0;j<N;j++){
+    P.p[j]=Math.log(0.004*Math.pow(10,1.3*j/(N-1)));
+    P.w[j]=0.9*Math.PI*Math.pow(10,-1.15+1.15*j/(N-1));
+  }
+  for(var i=0;i<N*DE;i++){P.Bre[i]=(R()*2-1)*0.7;P.Bim[i]=(R()*2-1)*0.7;}
+  for(var i2=0;i2<N*V;i2++){P.Cre[i2]=(R()*2-1)*0.1;P.Cim[i2]=(R()*2-1)*0.1;}
+  pondLam();
+}
+function pondLam(){
+  var D=Math.exp(P.q);P.lr=new Float64Array(N);P.li=new Float64Array(N);
+  for(var j=0;j<N;j++){
+    var a=-Math.exp(P.p[j]),m=Math.exp(D*a),th=D*P.w[j];
+    P.lr[j]=m*Math.cos(th);P.li[j]=m*Math.sin(th);
+  }
+}
+function pondInj(v){
+  var re=new Float64Array(N),im=new Float64Array(N);
+  for(var j=0;j<N;j++){var a=0,b=0;
+    for(var d=0;d<DE;d++){a+=P.Bre[j*DE+d]*E[v*DE+d];b+=P.Bim[j*DE+d]*E[v*DE+d];}
+    re[j]=a;im[j]=b;}
+  return [re,im];
+}
+function pondStep(v){
+  var I=pondInj(v);
+  for(var j=0;j<N;j++){
+    var a=P.hr[j],b=P.hi[j];
+    P.hr[j]=P.lr[j]*a-P.li[j]*b+I[0][j];
+    P.hi[j]=P.lr[j]*b+P.li[j]*a+I[1][j];
+  }
+}
+function pondRun(s){
+  var T=s.length,F=new Float64Array(T*2*N),hr=new Float64Array(N),hi=new Float64Array(N);
+  var inj=[];for(var v=0;v<V;v++)inj.push(pondInj(v));
+  for(var t=0;t<T;t++){
+    var I=inj[s[t]];
+    for(var j=0;j<N;j++){
+      var a=hr[j],b=hi[j];
+      hr[j]=P.lr[j]*a-P.li[j]*b+I[0][j];
+      hi[j]=P.lr[j]*b+P.li[j]*a+I[1][j];
+      F[t*2*N+j]=hr[j];F[t*2*N+N+j]=hi[j];
+    }
+  }
+  return F;
+}
+function pondFwdBwd(seqs,wantGrad){
+  var D=Math.exp(P.q),lr=P.lr,li=P.li,inj=[];
+  for(var v=0;v<V;v++)inj.push(pondInj(v));
+  var g=wantGrad?{p:new Float64Array(N),w:new Float64Array(N),q:0,
+    Bre:new Float64Array(N*DE),Bim:new Float64Array(N*DE),
+    Cre:new Float64Array(N*V),Cim:new Float64Array(N*V)}:null;
+  var loss=0,ok=0,cnt=0;
+  for(var si=0;si<seqs.length;si++){
+    var s=seqs[si],T=s.length;
+    var Hr=new Float64Array((T+1)*N),Hi=new Float64Array((T+1)*N);
+    for(var t=0;t<T;t++){
+      var I=inj[s[t]],o=t*N,o1=(t+1)*N;
+      for(var j=0;j<N;j++){
+        var a=Hr[o+j],b=Hi[o+j];
+        Hr[o1+j]=lr[j]*a-li[j]*b+I[0][j];
+        Hi[o1+j]=lr[j]*b+li[j]*a+I[1][j];
+      }
+    }
+    var dHr=new Float64Array((T+1)*N),dHi=new Float64Array((T+1)*N);
+    for(var t2=K;t2<T;t2++){
+      var ob=(t2+1)*N,tgt=s[t2-K],lg=new Float64Array(V),mx=-1e18;
+      for(var v2=0;v2<V;v2++){var z=0;
+        for(var j2=0;j2<N;j2++)z+=Hr[ob+j2]*P.Cre[j2*V+v2]+Hi[ob+j2]*P.Cim[j2*V+v2];
+        lg[v2]=z;if(z>mx)mx=z;}
+      var sm=0;for(var v3=0;v3<V;v3++){lg[v3]=Math.exp(lg[v3]-mx);sm+=lg[v3];}
+      var best=0,bv=-1;
+      for(var v4=0;v4<V;v4++){lg[v4]/=sm;if(lg[v4]>bv){bv=lg[v4];best=v4;}}
+      loss+=-Math.log(Math.max(lg[tgt],1e-12));cnt++;if(best===tgt)ok++;
+      if(wantGrad)for(var v5=0;v5<V;v5++){
+        var dz=lg[v5]-(v5===tgt?1:0);
+        for(var j3=0;j3<N;j3++){
+          g.Cre[j3*V+v5]+=dz*Hr[ob+j3];g.Cim[j3*V+v5]+=dz*Hi[ob+j3];
+          dHr[ob+j3]+=dz*P.Cre[j3*V+v5];dHi[ob+j3]+=dz*P.Cim[j3*V+v5];
+        }
+      }
+    }
+    if(!wantGrad)continue;
+    var dlr=new Float64Array(N),dli=new Float64Array(N),
+        dir=new Float64Array(V*N),dii=new Float64Array(V*N);
+    for(var t3=T-1;t3>=0;t3--){
+      var v6=s[t3],o2=t3*N,o3=(t3+1)*N;
+      for(var j4=0;j4<N;j4++){
+        var dr=dHr[o3+j4],di=dHi[o3+j4];
+        if(dr===0&&di===0)continue;
+        var a2=Hr[o2+j4],b2=Hi[o2+j4];
+        dlr[j4]+=dr*a2+di*b2;dli[j4]+=-dr*b2+di*a2;
+        dir[v6*N+j4]+=dr;dii[v6*N+j4]+=di;
+        dHr[o2+j4]+=dr*lr[j4]+di*li[j4];
+        dHi[o2+j4]+=-dr*li[j4]+di*lr[j4];
+      }
+    }
+    for(var j5=0;j5<N;j5++){
+      var av=-Math.exp(P.p[j5]),mag=Math.exp(D*av),th=D*P.w[j5],
+          cs=Math.cos(th),sn=Math.sin(th);
+      g.p[j5]+=(dlr[j5]*(D*mag*cs)+dli[j5]*(D*mag*sn))*av;
+      g.w[j5]+= dlr[j5]*(-D*mag*sn)+dli[j5]*(D*mag*cs);
+      g.q   +=(dlr[j5]*(av*mag*cs-P.w[j5]*mag*sn)+dli[j5]*(av*mag*sn+P.w[j5]*mag*cs))*D;
+    }
+    for(var v7=0;v7<V;v7++)for(var j6=0;j6<N;j6++){
+      var dr3=dir[v7*N+j6],di3=dii[v7*N+j6];
+      if(dr3===0&&di3===0)continue;
+      for(var d3=0;d3<DE;d3++){
+        g.Bre[j6*DE+d3]+=dr3*E[v7*DE+d3];
+        g.Bim[j6*DE+d3]+=di3*E[v7*DE+d3];
+      }
+    }
+  }
+  return {loss:loss/Math.max(1,cnt),acc:ok/Math.max(1,cnt),g:g};
+}
+function pondPredict(){
+  var best=0,bv=-1e18;
+  for(var v=0;v<V;v++){
+    var s=0;for(var j=0;j<N;j++)s+=P.hr[j]*P.Cre[j*V+v]+P.hi[j]*P.Cim[j*V+v];
+    if(s>bv){bv=s;best=v;}
+  }
+  return best;
+}
+
+/* ============ SIDE 2: the notebook (causal attention) ============ */
+var A={Wq:new Float64Array(DE*DH),Wk:new Float64Array(DE*DH),Wv:new Float64Array(DE*DV),
+       bias:new Float64Array(MAXREL+1),C:new Float64Array(DV*V),
+       cacheK:[],cacheV:[],lastW:null,fitted:false,acc:0,hits:0,tries:0};
+function buildAtt(){
+  var R=LCG(31);
+  for(var i=0;i<DE*DH;i++){A.Wq[i]=(R()*2-1)*0.6;A.Wk[i]=(R()*2-1)*0.6;}
+  for(var i2=0;i2<DE*DV;i2++)A.Wv[i2]=(R()*2-1)*0.6;
+  for(var i3=0;i3<DV*V;i3++)A.C[i3]=(R()*2-1)*0.1;
+  for(var i4=0;i4<=MAXREL;i4++)A.bias[i4]=0;
+  A.cacheK=[];A.cacheV=[];A.lastW=null;
+}
+function proj(v,W,dout){
+  var o=new Float64Array(dout);
+  for(var a=0;a<dout;a++){var s=0;
+    for(var d=0;d<DE;d++)s+=E[v*DE+d]*W[d*dout+a];o[a]=s;}
+  return o;
+}
+function attStep(v){                       // append to the notebook
+  A.cacheK.push(proj(v,A.Wk,DH));
+  A.cacheV.push(proj(v,A.Wv,DV));
+}
+function attLook(){                        // read it, return [weights, out]
+  var T=A.cacheK.length;if(!T)return null;
+  var t=T-1,q=proj(seq[t],A.Wq,DH),scale=1/Math.sqrt(DH);
+  var lo=Math.max(0,t-MAXREL),n=t-lo+1,sc=new Float64Array(n),mx=-1e18;
+  for(var i=0;i<n;i++){
+    var s=lo+i,dot=0;
+    for(var a=0;a<DH;a++)dot+=q[a]*A.cacheK[s][a];
+    sc[i]=dot*scale+A.bias[t-s];if(sc[i]>mx)mx=sc[i];
+  }
+  var sum=0;for(var i2=0;i2<n;i2++){sc[i2]=Math.exp(sc[i2]-mx);sum+=sc[i2];}
+  for(var i3=0;i3<n;i3++)sc[i3]/=sum;
+  var out=new Float64Array(DV);
+  for(var i4=0;i4<n;i4++)for(var b=0;b<DV;b++)out[b]+=sc[i4]*A.cacheV[lo+i4][b];
+  return {w:sc,lo:lo,out:out};
+}
+function attPredict(){
+  var r=A.lastW;if(!r)return -1;
+  var best=0,bv=-1e18;
+  for(var v=0;v<V;v++){var z=0;
+    for(var b=0;b<DV;b++)z+=r.out[b]*A.C[b*V+v];
+    if(z>bv){bv=z;best=v;}}
+  return best;
+}
+function attFwdBwd(seqs,wantGrad){
+  var g=wantGrad?{Wq:new Float64Array(DE*DH),Wk:new Float64Array(DE*DH),
+    Wv:new Float64Array(DE*DV),bias:new Float64Array(MAXREL+1),
+    C:new Float64Array(DV*V)}:null;
+  var loss=0,ok=0,cnt=0,scale=1/Math.sqrt(DH);
+  for(var si=0;si<seqs.length;si++){
+    var s=seqs[si],T=s.length;
+    var Q=new Float64Array(T*DH),Kk=new Float64Array(T*DH),Vv=new Float64Array(T*DV);
+    for(var t=0;t<T;t++){
+      var e=s[t]*DE;
+      for(var a=0;a<DH;a++){var qs=0,ks=0;
+        for(var d=0;d<DE;d++){qs+=E[e+d]*A.Wq[d*DH+a];ks+=E[e+d]*A.Wk[d*DH+a];}
+        Q[t*DH+a]=qs;Kk[t*DH+a]=ks;}
+      for(var b=0;b<DV;b++){var vs=0;
+        for(var d2=0;d2<DE;d2++)vs+=E[e+d2]*A.Wv[d2*DV+b];
+        Vv[t*DV+b]=vs;}
+    }
+    var dQ=wantGrad?new Float64Array(T*DH):null,
+        dK=wantGrad?new Float64Array(T*DH):null,
+        dV=wantGrad?new Float64Array(T*DV):null;
+    for(var t2=K;t2<T;t2++){
+      var lo=Math.max(0,t2-MAXREL),n=t2-lo+1,sc=new Float64Array(n),mx=-1e18;
+      for(var i=0;i<n;i++){
+        var sp=lo+i,dot=0;
+        for(var a2=0;a2<DH;a2++)dot+=Q[t2*DH+a2]*Kk[sp*DH+a2];
+        sc[i]=dot*scale+A.bias[t2-sp];if(sc[i]>mx)mx=sc[i];
+      }
+      var sum=0;for(var i2=0;i2<n;i2++){sc[i2]=Math.exp(sc[i2]-mx);sum+=sc[i2];}
+      for(var i3=0;i3<n;i3++)sc[i3]/=sum;
+      var out=new Float64Array(DV);
+      for(var i4=0;i4<n;i4++){var s2=lo+i4,w=sc[i4];
+        for(var b2=0;b2<DV;b2++)out[b2]+=w*Vv[s2*DV+b2];}
+      var lg=new Float64Array(V),lmx=-1e18;
+      for(var v2=0;v2<V;v2++){var z=0;
+        for(var b3=0;b3<DV;b3++)z+=out[b3]*A.C[b3*V+v2];
+        lg[v2]=z;if(z>lmx)lmx=z;}
+      var ls=0;for(var v3=0;v3<V;v3++){lg[v3]=Math.exp(lg[v3]-lmx);ls+=lg[v3];}
+      var best=0,bv=-1;
+      for(var v4=0;v4<V;v4++){lg[v4]/=ls;if(lg[v4]>bv){bv=lg[v4];best=v4;}}
+      var tgt=s[t2-K];
+      loss+=-Math.log(Math.max(lg[tgt],1e-12));cnt++;if(best===tgt)ok++;
+      if(!wantGrad)continue;
+      var dout=new Float64Array(DV);
+      for(var v5=0;v5<V;v5++){
+        var dz=lg[v5]-(v5===tgt?1:0);
+        for(var b4=0;b4<DV;b4++){g.C[b4*V+v5]+=dz*out[b4];dout[b4]+=dz*A.C[b4*V+v5];}
+      }
+      var dsc=new Float64Array(n);
+      for(var i5=0;i5<n;i5++){
+        var s3=lo+i5,acc=0;
+        for(var b5=0;b5<DV;b5++){acc+=dout[b5]*Vv[s3*DV+b5];dV[s3*DV+b5]+=sc[i5]*dout[b5];}
+        dsc[i5]=acc;
+      }
+      var dotp=0;for(var i6=0;i6<n;i6++)dotp+=dsc[i6]*sc[i6];
+      for(var i7=0;i7<n;i7++){
+        var ds=sc[i7]*(dsc[i7]-dotp),s4=lo+i7;
+        g.bias[t2-s4]+=ds;
+        for(var a3=0;a3<DH;a3++){
+          dQ[t2*DH+a3]+=ds*scale*Kk[s4*DH+a3];
+          dK[s4*DH+a3]+=ds*scale*Q[t2*DH+a3];
+        }
+      }
+    }
+    if(!wantGrad)continue;
+    for(var t3=0;t3<T;t3++){
+      var e2=s[t3]*DE;
+      for(var a4=0;a4<DH;a4++){
+        var dq=dQ[t3*DH+a4],dk=dK[t3*DH+a4];
+        if(dq)for(var d3=0;d3<DE;d3++)g.Wq[d3*DH+a4]+=dq*E[e2+d3];
+        if(dk)for(var d4=0;d4<DE;d4++)g.Wk[d4*DH+a4]+=dk*E[e2+d4];
+      }
+      for(var b6=0;b6<DV;b6++){
+        var dv=dV[t3*DV+b6];
+        if(dv)for(var d5=0;d5<DE;d5++)g.Wv[d5*DV+b6]+=dv*E[e2+d5];
+      }
+    }
+  }
+  return {loss:loss/Math.max(1,cnt),acc:ok/Math.max(1,cnt),g:g};
+}
+
+/* ============ token feed ============ */
+function step(v){
+  seq.push(v);steps++;
+  if(seq.length>60){seq.shift();}
+  pondStep(v);
+  attStep(v);
+  A.lastW=attLook();
+  drawSeq();drawPond();drawDials();drawAtt();drawCache();updatePreds();
+}
+function resetAll(){
+  P.hr=new Float64Array(N);P.hi=new Float64Array(N);
+  A.cacheK=[];A.cacheV=[];A.lastW=null;
+  seq=[];steps=0;P.hits=P.tries=A.hits=A.tries=0;
+}
+
+/* ============ training (both, interleaved, time-budgeted) ============ */
+var TR=null;
+function startFit(){
+  var keysP=['p','w','Bre','Bim','Cre','Cim'],keysA=['Wq','Wk','Wv','bias','C'];
+  var stP={},stA={};
+  keysP.forEach(function(k){stP[k]={m:new Float64Array(P[k].length),v:new Float64Array(P[k].length)};});
+  keysA.forEach(function(k){stA[k]={m:new Float64Array(A[k].length),v:new Float64Array(A[k].length)};});
+  var seqs=[];for(var i=0;i<4;i++){var q=[];for(var t=0;t<110;t++)q.push((Math.random()*V)|0);seqs.push(q);}
+  buildPond();buildAtt();
+  TR={it:0,iters:110,seqs:seqs,keysP:keysP,keysA:keysA,stP:stP,stA:stA,stq:{m:0,v:0}};
+  P.fitted=A.fitted=false;
+}
+function adam(obj,keys,st,grad,it,lr,nseq){
+  var b1=.9,b2=.999;
+  keys.forEach(function(k){
+    var arr=obj[k],gr=grad[k],S=st[k];
+    for(var i=0;i<arr.length;i++){
+      var gv=gr[i]/nseq;
+      S.m[i]=b1*S.m[i]+(1-b1)*gv;S.v[i]=b2*S.v[i]+(1-b2)*gv*gv;
+      arr[i]-=lr*(S.m[i]/(1-Math.pow(b1,it)))/(Math.sqrt(S.v[i]/(1-Math.pow(b2,it)))+1e-8);
+    }
+  });
+}
+function fitChunk(){
+  if(!TR)return false;
+  var t0=Date.now(),BUDGET=9;
+  while(TR.it<TR.iters){
+    TR.it++;
+    var lr=0.055*(1-TR.it/(TR.iters*1.3));
+    var rp=pondFwdBwd(TR.seqs,true);
+    adam(P,TR.keysP,TR.stP,rp.g,TR.it,lr,TR.seqs.length);
+    var gq=rp.g.q/TR.seqs.length;
+    TR.stq.m=.9*TR.stq.m+.1*gq;TR.stq.v=.999*TR.stq.v+.001*gq*gq;
+    P.q-=lr*(TR.stq.m/(1-Math.pow(.9,TR.it)))/(Math.sqrt(TR.stq.v/(1-Math.pow(.999,TR.it)))+1e-8);
+    pondLam();
+    var ra=attFwdBwd(TR.seqs,true);
+    adam(A,TR.keysA,TR.stA,ra.g,TR.it,lr,TR.seqs.length);
+    document.getElementById('progress').innerHTML=
+      'teaching &hellip; <b>'+Math.round(TR.it/TR.iters*100)+'%</b>';
+    if(Date.now()-t0>BUDGET)break;
+  }
+  drawBias();
+  if(TR.it>=TR.iters){
+    var ts=[];for(var i=0;i<3;i++){var q=[];for(var t=0;t<110;t++)q.push((Math.random()*V)|0);ts.push(q);}
+    P.acc=pondFwdBwd(ts,false).acc;A.acc=attFwdBwd(ts,false).acc;
+    P.fitted=A.fitted=true;P.hits=P.tries=A.hits=A.tries=0;
+    document.getElementById('pacc').textContent=Math.round(P.acc*100)+'%';
+    document.getElementById('aacc').textContent=Math.round(A.acc*100)+'%';
+    document.getElementById('progress').innerHTML=
+      'taught at K='+K+' &mdash; now press <b>Stream</b> and watch them answer live';
+    document.getElementById('fit').disabled=false;
+    document.getElementById('fit').textContent='Teach again';
+    // rebuild the notebook cache with the new projections
+    var old=seq.slice();resetAll();
+    for(var z=0;z<old.length;z++)step(old[z]);
+    TR=null;drawBias();
+    return false;
+  }
+  return true;
+}
+
+/* ============ drawing ============ */
+function fit2(id){
+  var cv=document.getElementById(id);if(!cv)return null;
+  var w=cv.clientWidth,h=cv.clientHeight;
+  if(!(w>0&&h>0))return null;
+  var r=Math.min(window.devicePixelRatio||1,2);
+  cv.width=Math.max(1,Math.round(w*r));cv.height=Math.max(1,Math.round(h*r));
+  var c=cv.getContext('2d');if(!c)return null;
+  c.setTransform(r,0,0,r,0,0);return [c,w,h];
+}
+var chips=document.getElementById('chips');
+for(var v0=0;v0<V;v0++)(function(v){
+  var c=document.createElement('div');c.className='chip';c.style.color=TCOL[v];
+  c.innerHTML=GLYPH[v]+'<span class="id">id '+v+'</span>';
+  c.addEventListener('click',function(){step(v);});chips.appendChild(c);
+})(v0);
+
+function drawSeq(){
+  var st=document.getElementById('seqstrip');st.innerHTML='';
+  var start=Math.max(0,steps-seq.length);
+  var tgt=seq.length-1-K;
+  for(var i=0;i<seq.length;i++){
+    var d=document.createElement('div');
+    d.className='sq'+(i===seq.length-1?' newest':'')+(i===tgt?' target':'');
+    d.style.color=TCOL[seq[i]];
+    d.innerHTML=GLYPH[seq[i]]+'<span>'+(start+i+1)+'</span>';
+    st.appendChild(d);
+  }
+  st.scrollLeft=st.scrollWidth;
+}
+function drawPond(){
+  var F=fit2('pondcv');if(!F)return;var ctx=F[0],w=F[1],h=F[2];
+  ctx.clearRect(0,0,w,h);
+  var cx=w/2,cy=h/2,RMAX=Math.min(w,h)/2-2;
+  var mx=1e-9;for(var j=0;j<N;j++)mx=Math.max(mx,Math.hypot(P.hr[j],P.hi[j]));
+  if(mx<1e-8){ctx.fillStyle='#5E7C7F';ctx.font='9px IBM Plex Mono';ctx.textAlign='center';
+    ctx.fillText('still water — feed a symbol',cx,cy+3);ctx.textAlign='left';return;}
+  for(var ri=44;ri>=1;ri--){
+    var rr=ri/44,d=rr*26,val=0;
+    for(var j2=0;j2<N;j2++){
+      var kd=2.2*Math.abs(Math.exp(P.q)*P.w[j2])*d;
+      val+=P.hr[j2]*Math.cos(kd)+P.hi[j2]*Math.sin(kd);
+    }
+    val=val/(1+0.28*d)/Math.sqrt(N)/mx*2.4;
+    var a=Math.max(-1,Math.min(1,val));
+    ctx.beginPath();ctx.arc(cx,cy,rr*RMAX,0,6.2832);
+    ctx.strokeStyle=a>0?'rgba(224,169,78,'+(0.15+0.7*a).toFixed(3)+')'
+                       :'rgba(47,184,179,'+(0.15+0.7*Math.abs(a)).toFixed(3)+')';
+    ctx.lineWidth=1.6;ctx.stroke();
+  }
+}
+function drawDials(){
+  var F=fit2('dialcv');if(!F)return;var ctx=F[0],w=F[1],h=F[2];
+  ctx.clearRect(0,0,w,h);
+  var bw=w/N,mx=1e-9;
+  for(var j=0;j<N;j++)mx=Math.max(mx,Math.hypot(P.hr[j],P.hi[j]));
+  for(var j2=0;j2<N;j2++){
+    var m=Math.hypot(P.hr[j2],P.hi[j2])/mx,bh=Math.max(1,m*(h-11));
+    ctx.fillStyle='rgba(47,184,179,.75)';ctx.fillRect(j2*bw+1,h-9-bh,bw-2,bh);
+  }
+  ctx.fillStyle='#5E7C7F';ctx.font='7px IBM Plex Mono';
+  ctx.fillText('the whole memory: '+(2*N)+' numbers, whatever the length',2,h-1);
+}
+function drawAtt(){
+  var F=fit2('attcv');if(!F)return;var ctx=F[0],w=F[1],h=F[2];
+  ctx.clearRect(0,0,w,h);
+  var r=A.lastW;
+  if(!r){ctx.fillStyle='#5E7C7F';ctx.font='9px IBM Plex Mono';ctx.textAlign='center';
+    ctx.fillText('empty notebook — feed a symbol',w/2,h/2+3);ctx.textAlign='left';return;}
+  var n=r.w.length,bw=w/Math.max(1,n),mxw=0,arg=0;
+  for(var i=0;i<n;i++)if(r.w[i]>mxw){mxw=r.w[i];arg=i;}
+  var tgtIdx=(seq.length-1-K)-r.lo;
+  for(var i2=0;i2<n;i2++){
+    var bh=Math.max(1,r.w[i2]/mxw*(h-22));
+    ctx.fillStyle=(i2===arg)?'#D2685E':'rgba(210,104,94,.32)';
+    ctx.fillRect(i2*bw+.6,h-14-bh,Math.max(1,bw-1.2),bh);
+  }
+  if(tgtIdx>=0&&tgtIdx<n){
+    var x=tgtIdx*bw+bw/2;
+    ctx.strokeStyle='rgba(224,169,78,.85)';ctx.setLineDash([2,2]);
+    ctx.beginPath();ctx.moveTo(x,2);ctx.lineTo(x,h-13);ctx.stroke();ctx.setLineDash([]);
+    ctx.fillStyle='#E0A94E';ctx.font='7.5px IBM Plex Mono';ctx.textAlign='center';
+    ctx.fillText('the answer',x,h-16<10?12:9);ctx.textAlign='left';
+  }
+  ctx.fillStyle='#5E7C7F';ctx.font='7px IBM Plex Mono';
+  ctx.fillText('older \u2190 entries in the notebook \u2192 newest',2,h-3);
+}
+function drawCache(){
+  var F=fit2('cachecv');if(!F)return;var ctx=F[0],w=F[1],h=F[2];
+  ctx.clearRect(0,0,w,h);
+  var n=A.cacheK.length,cap=60,bw=w/cap;
+  for(var i=0;i<Math.min(n,cap);i++){
+    ctx.fillStyle='rgba(210,104,94,'+(0.35+0.5*i/cap).toFixed(2)+')';
+    ctx.fillRect(i*bw+.6,4,Math.max(1,bw-1.2),h-12);
+  }
+  ctx.fillStyle='#5E7C7F';ctx.font='7px IBM Plex Mono';
+  ctx.fillText(n+' entries and counting',2,h-1);
+}
+function drawBias(){
+  var F=fit2('biascv');if(!F)return;var ctx=F[0],w=F[1],h=F[2];
+  ctx.clearRect(0,0,w,h);
+  var mn=1e18,mx=-1e18;
+  for(var i=0;i<=MAXREL;i++){mn=Math.min(mn,A.bias[i]);mx=Math.max(mx,A.bias[i]);}
+  var span=Math.max(1e-6,mx-mn),bw=w/(MAXREL+1),peak=0;
+  for(var i2=0;i2<=MAXREL;i2++)if(A.bias[i2]>A.bias[peak])peak=i2;
+  for(var i3=0;i3<=MAXREL;i3++){
+    var bh=Math.max(1,(A.bias[i3]-mn)/span*(h-13));
+    ctx.fillStyle=(i3===peak&&A.fitted)?'#E0A94E':'rgba(210,104,94,.45)';
+    ctx.fillRect(i3*bw+.5,h-11-bh,Math.max(1,bw-1),bh);
+  }
+  ctx.fillStyle='#5E7C7F';ctx.font='7.5px IBM Plex Mono';
+  ctx.fillText('0',2,h-2);ctx.fillText(MAXREL+' back',w-42,h-2);
+  if(A.fitted){
+    ctx.fillStyle='#E0A94E';ctx.font='8px IBM Plex Mono';
+    ctx.fillText('peak at '+peak+' back  (you asked for '+K+')',Math.min(peak*bw+4,w-140),11);
+  }
+}
+function updatePreds(){
+  var pe=document.getElementById('ppred'),ae=document.getElementById('apred');
+  document.getElementById('pmem').textContent=2*N;
+  document.getElementById('amem').textContent=A.cacheK.length*(DH+DV);
+  if(!P.fitted){pe.textContent='teach it first';ae.textContent='teach it first';return;}
+  if(seq.length<=K){
+    pe.innerHTML='need '+(K+1-seq.length)+' more';
+    ae.innerHTML='need '+(K+1-seq.length)+' more';return;
+  }
+  var truth=seq[seq.length-1-K];
+  var pp=pondPredict(),ap=attPredict();
+  P.tries++;if(pp===truth)P.hits++;
+  A.tries++;if(ap===truth)A.hits++;
+  function line(pred,hits,tries){
+    return 'said <span class="g" style="color:'+TCOL[pred]+'">'+GLYPH[pred]+
+      '</span> &middot; actual <span class="g" style="color:'+TCOL[truth]+'">'+GLYPH[truth]+
+      '</span> '+(pred===truth?'<span class="hit">hit</span>':'<span class="miss">miss</span>')+
+      ' <span style="color:#5E7C7F">live '+hits+'/'+tries+'</span>';
+  }
+  pe.innerHTML=line(pp,P.hits,P.tries);
+  ae.innerHTML=line(ap,A.hits,A.tries);
+}
+
+/* ============ controls ============ */
+document.getElementById('kd').addEventListener('input',function(e){
+  if(TR)return;
+  K=parseInt(e.target.value,10);
+  document.getElementById('kv').textContent=K;
+  P.fitted=A.fitted=false;P.hits=P.tries=A.hits=A.tries=0;
+  document.getElementById('pacc').textContent='—';
+  document.getElementById('aacc').textContent='—';
+  document.getElementById('progress').innerHTML='distance changed — press <b>Teach both</b>';
+  drawSeq();drawBias();updatePreds();
+});
+document.getElementById('fit').addEventListener('click',function(){
+  if(TR)return;
+  this.disabled=true;this.textContent='teaching…';
+  startFit();
+  (function pump(){ if(fitChunk()) setTimeout(pump,0); })();
+});
+var streaming=false,timer=null;
+document.getElementById('stream').addEventListener('click',function(){
+  streaming=!streaming;this.textContent=streaming?'Pause':'Stream';
+  if(streaming){timer=setInterval(function(){step((Math.random()*V)|0);},420);}
+  else clearInterval(timer);
+});
+document.getElementById('srcbtn').addEventListener('click',function(){
+  var s=document.getElementById('sources');
+  this.textContent=s.classList.toggle('on')?'Hide sources':'Show sources';
+});
+window.addEventListener('resize',function(){
+  drawPond();drawDials();drawAtt();drawCache();drawBias();
+});
+
+/* ============ go ============ */
+buildPond();buildAtt();
+drawSeq();drawPond();drawDials();drawAtt();drawCache();drawBias();
+document.getElementById('progress').innerHTML='press <b>Teach both</b> to begin';
+step(0);
+})();
+</script>
+</body>
+</html>

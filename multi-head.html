@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>Many Heads — why attention looks in several places at once</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,340;9..144,560&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{--ink:#081418;--deep:#0E2A31;--water:#2FB8B3;--foam:#D9E8E4;
+        --brass:#E0A94E;--mute:#5E7C7F;--rose:#D2685E;--violet:#9B7BD4;}
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{background:var(--ink);color:var(--foam);font-family:'IBM Plex Mono',monospace;
+    -webkit-tap-highlight-color:transparent;overflow-x:hidden}
+  body{padding:14px 13px 34px;max-width:760px;margin:0 auto}
+  h1{font-family:'Fraunces',serif;font-weight:560;font-size:clamp(19px,5vw,28px);line-height:1.08}
+  h1 em{font-style:italic;color:var(--water)}
+  .sub{font-size:9.5px;color:var(--mute);margin:5px 0 14px;line-height:1.6}
+  h2{font-family:'Fraunces',serif;font-size:16px;margin:20px 0 6px}
+  h2 em{font-style:italic;color:var(--water)}
+  .lbl{font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);margin:0 0 4px}
+  .card{border:1px solid rgba(47,184,179,.18);border-radius:3px;padding:9px 10px 10px;margin-bottom:10px}
+  canvas{width:100%;display:block;border-radius:2px}
+  #headscv{height:210px} #qcv{height:74px}
+
+  #chips{display:flex;gap:6px;margin-bottom:8px}
+  .chip{flex:1;padding:9px 0 8px;text-align:center;border-radius:3px;cursor:pointer;
+    font-size:17px;line-height:1;border:1px solid rgba(47,184,179,.3);
+    background:rgba(47,184,179,.06);transition:transform .1s}
+  .chip:active{transform:scale(.93)}
+  .chip .id{display:block;font-size:7px;color:var(--mute);margin-top:3px}
+  #seqstrip{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;padding-bottom:3px}
+  #seqstrip::-webkit-scrollbar{display:none}
+  .sq{flex:0 0 auto;width:22px;text-align:center;font-size:11px;
+    border-bottom:2px solid rgba(47,184,179,.15);padding-bottom:2px}
+  .sq span{display:block;font-size:6px;color:var(--mute)}
+  .sq.newest{border-bottom-color:var(--foam)}
+
+  .row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:9px 0}
+  button{font-family:inherit;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;
+    padding:8px 13px;border-radius:2px;cursor:pointer;background:var(--brass);
+    color:var(--ink);border:none;font-weight:500}
+  button.ghost{background:transparent;color:var(--water);border:1px solid rgba(47,184,179,.45)}
+  button:disabled{opacity:.45}
+  label.ctl{display:flex;flex-direction:column;gap:2px;font-size:8px;
+    letter-spacing:.07em;text-transform:uppercase;color:var(--mute)}
+  input[type=range]{-webkit-appearance:none;appearance:none;width:120px;height:18px;background:transparent}
+  input[type=range]::-webkit-slider-runnable-track{height:2px;background:var(--deep)}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;
+    border-radius:50%;background:var(--brass);margin-top:-6px;border:2px solid var(--ink)}
+  input[type=range]::-moz-range-track{height:2px;background:var(--deep)}
+  input[type=range]::-moz-range-thumb{width:12px;height:12px;border-radius:50%;
+    background:var(--brass);border:2px solid var(--ink)}
+  .stat{font-size:9.5px;color:var(--mute);line-height:1.6}
+  .stat b{color:var(--foam);font-weight:500}
+  .note{font-size:9.5px;line-height:1.65;color:var(--mute);margin-top:8px}
+  .note b{color:var(--foam);font-weight:500}
+  .note em{color:var(--brass);font-style:normal}
+  table{width:100%;border-collapse:collapse;font-size:10px;margin:8px 0}
+  th,td{text-align:left;padding:5px 4px;border-bottom:1px solid rgba(47,184,179,.12)}
+  th{color:var(--mute);font-weight:400;font-size:8px;letter-spacing:.1em;text-transform:uppercase}
+  .good{color:var(--water)} .bad{color:var(--rose)}
+  #srcbtn{width:100%;margin-top:16px}
+  #sources{display:none;margin-top:10px}
+  #sources.on{display:block}
+  #sources p{font-size:9.5px;line-height:1.6;color:var(--mute);margin-bottom:7px}
+  #sources p b{color:var(--foam)}
+  #sources a{color:var(--water);text-decoration:none;border-bottom:1px dotted rgba(47,184,179,.4)}
+  .mine{border-left:2px solid var(--brass);padding-left:9px;font-size:9.5px;
+    line-height:1.6;color:var(--mute);margin-top:12px}
+  .mine b{color:var(--foam)}
+</style>
+</head>
+<body>
+
+<h1>Many Heads — <em>looking in several places at once</em></h1>
+<div class="sub">One attention head can point at one place. Ask it three questions at the same time and it has to choose. Give it more heads and each one goes to a different place. That is all "multi-head" means &mdash; and you can watch it happen.</div>
+
+<div class="lbl">feed symbols</div>
+<div id="chips"></div>
+<div id="seqstrip"></div>
+
+<div class="card">
+  <div class="lbl">three questions, asked at every step</div>
+  <canvas id="qcv"></canvas>
+  <div class="note" style="margin-top:6px">At each new symbol the model must answer all three at once: what came <b>4</b> back, <b>13</b> back, and <b>25</b> back. One place to look is not enough.</div>
+</div>
+
+<div class="row">
+  <label class="ctl" for="hd">heads = <span id="hv">3</span>
+    <input id="hd" type="range" min="1" max="4" step="1" value="3"></label>
+  <button id="fit">Teach</button>
+  <button class="ghost" id="stream">Stream</button>
+</div>
+<div class="stat" id="progress">press <b>Teach</b> — then try it again with 1 head</div>
+
+<div class="card">
+  <div class="lbl">where each head is looking</div>
+  <canvas id="headscv"></canvas>
+  <div class="note" id="headnote">Each row is one head. The bars show how much attention it is paying to each earlier position, newest on the right. The dashed lines mark the three answers. After teaching, watch each head park itself on a different line.</div>
+</div>
+
+<h2>What you should find</h2>
+<div class="note"><b>Set heads to 1 and teach.</b> It picks one distance and gets that question right. The other two collapse toward guessing (25%). It is not stupid &mdash; it physically has one place to look, and a single blended answer cannot serve three different questions.</div>
+<div class="note"><b>Now set heads to 3 and teach again.</b> All three questions go to 100%, and the head rows separate &mdash; they spread out to cover the different distances. Nobody told them to divide the work that way; it falls out of the training, because dividing is the only way to answer everything at once. The split is not always tidy: a head can sit between two answers and still carry enough for both, so you will sometimes see two heads prefer the same distance while all three questions are still answered.</div>
+<div class="note"><b>Try 4 heads.</b> Still 100%, and now a head is spare &mdash; you will usually see two settle on the same distance. Real models have this too: a large fraction of heads can be pruned with little loss.</div>
+
+<table>
+  <tr><th>heads</th><th>4 back</th><th>13 back</th><th>25 back</th><th>what the heads learned</th></tr>
+  <tr><td>1</td><td class="bad">~35%</td><td class="bad">~23%</td><td class="good">~99%</td><td>one place only: [25]</td></tr>
+  <tr><td>2</td><td class="good">100%</td><td class="good">99%</td><td>~87%</td><td>[4, 13] — third question suffers</td></tr>
+  <tr><td>3</td><td class="good">100%</td><td class="good">100%</td><td class="good">100%</td><td>[25, 4, 25] — covers all three</td></tr>
+  <tr><td>4</td><td class="good">100%</td><td class="good">100%</td><td class="good">100%</td><td>[13, 25, 4, 13] — one doubles up</td></tr>
+</table>
+<div class="note" style="margin-top:0">Measured by this page. Chance is 25%. Your runs will vary &mdash; which head takes which distance is arbitrary, and heads sometimes share or double up. What is reliable is the <em>shape</em>: one head cannot serve three questions, and enough heads can.</div>
+
+<h2>What a head actually <em>is</em></h2>
+<div class="note">A head is three small tables of numbers. One turns the current symbol into a <b>question</b>, one turns every past symbol into a <b>label</b>, and one turns every past symbol into the <b>content</b> to hand back. The question is compared against every label, the matches become weights, and the contents are blended by those weights. That blend is the head's answer.</div>
+<div class="note">Heads run <b>side by side, not in sequence</b>, on the same input. Their answers are stuck together end to end and passed on. Because they share nothing while they work, adding heads costs width, not depth &mdash; which is why hardware likes them.</div>
+<div class="note">In this page each head also learns a plain preference for <em>distance</em> &mdash; "look about this far back" &mdash; which is what makes the specialization so visible. Real heads mostly match on <b>content</b>: this word looks for its verb, that one for a matching bracket. Same machinery, harder to draw.</div>
+
+<h2>Honest limits</h2>
+<div class="note"><b>The task is built to reward specialization.</b> Three fixed distances is close to the friendliest possible case for showing heads divide work. Real heads are messier, often overlapping, and frequently hard to label at all.</div>
+<div class="note"><b>One layer, four symbols, distance-based matching.</b> Real attention stacks many layers, matches on content, and adds an output projection that mixes head results before passing them on. The mechanism here is faithful; it is a simplification, not a miniature GPT.</div>
+<div class="note"><b>Every head still stores an entry per symbol.</b> More heads means more memory per symbol and more comparisons per step. That cost is the reason the pond-style fixed-state models exist at all.</div>
+
+<button class="ghost" id="srcbtn">Show sources</button>
+<div id="sources">
+  <p><b>Multi-head attention</b> — Vaswani et al., "Attention Is All You Need," NeurIPS 2017. <a href="https://arxiv.org/abs/1706.03762">arXiv:1706.03762</a>. Heads run in parallel on the same input and their outputs are concatenated.</p>
+  <p><b>The learned distance preference</b> is a relative-position bias, as in Raffel et al. (T5), <a href="https://arxiv.org/abs/1910.10683">arXiv:1910.10683</a>, and in spirit ALiBi, Press et al., <a href="https://arxiv.org/abs/2108.12409">arXiv:2108.12409</a>.</p>
+  <p><b>Redundant heads</b> — Michel, Levy &amp; Neubig, "Are Sixteen Heads Really Better than One?", NeurIPS 2019. <a href="https://arxiv.org/abs/1905.10650">arXiv:1905.10650</a>. Many heads can be pruned at little cost, which is what the 4-head run hints at.</p>
+  <p><b>Heads with identifiable jobs</b> — Voita et al., "Analyzing Multi-Head Self-Attention," ACL 2019. <a href="https://arxiv.org/abs/1905.09418">arXiv:1905.09418</a>; and Olsson et al., "In-context Learning and Induction Heads," 2022. <a href="https://arxiv.org/abs/2209.11895">arXiv:2209.11895</a>.</p>
+  <p><b>Why fixed-state models exist</b> — Jelassi et al., "Repeat After Me," ICML 2024. <a href="https://arxiv.org/abs/2402.01032">arXiv:2402.01032</a>.</p>
+  <div class="mine"><b>Not from the literature.</b> The three-distance task is designed to make specialization legible; it is a teaching setup, not a benchmark. The numbers come from this page's own code and should not be quoted as results.  By Daniella M. LaGuerre, August 2026.</div>
+</div>
+
+<script>
+(function(){
+"use strict";
+var V=4, DE=4, DH=6, DVH=6, MAXREL=36, QK=[4,13,25];
+var GLYPH=['\u25B2','\u25CF','\u25C6','\u25A0'];
+var TCOL=['#2FB8B3','#E0A94E','#D2685E','#9B7BD4'];
+var QCOL=['#2FB8B3','#E0A94E','#9B7BD4'];      // colour per question
+var HCOL=['#2FB8B3','#E0A94E','#D2685E','#9B7BD4'];
+function LCG(x){var s=x>>>0;return function(){s=(s*1664525+1013904223)>>>0;return s/4294967296;};}
+
+var E=new Float64Array(V*DE);
+(function(){var R=LCG(20260802);
+ for(var v=0;v<V;v++)for(var d=0;d<DE;d++)E[v*DE+d]=(d===v?1.6:(R()*2-1)*0.25);})();
+
+var H=3, M=null, seq=[], steps=0, live=null, fitted=false;
+var hits=[0,0,0], tries=0;
+
+function build(){
+  var R=LCG(13);
+  M={H:H,
+    Wq:new Float64Array(H*DE*DH),Wk:new Float64Array(H*DE*DH),
+    Wv:new Float64Array(H*DE*DVH),bias:new Float64Array(H*(MAXREL+1)),
+    C:new Float64Array(QK.length*H*DVH*V)};
+  for(var i=0;i<M.Wq.length;i++){M.Wq[i]=(R()*2-1)*0.6;M.Wk[i]=(R()*2-1)*0.6;}
+  for(var i2=0;i2<M.Wv.length;i2++)M.Wv[i2]=(R()*2-1)*0.6;
+  for(var i3=0;i3<M.C.length;i3++)M.C[i3]=(R()*2-1)*0.12;
+  fitted=false;hits=[0,0,0];tries=0;
+}
+function fwdbwd(seqs,wantGrad){
+  var Hh=M.H,DO=Hh*DVH,NQ=QK.length,scale=1/Math.sqrt(DH),KMAX=Math.max.apply(null,QK);
+  var g=wantGrad?{Wq:new Float64Array(M.Wq.length),Wk:new Float64Array(M.Wk.length),
+    Wv:new Float64Array(M.Wv.length),bias:new Float64Array(M.bias.length),
+    C:new Float64Array(M.C.length)}:null;
+  var loss=0,ok=[0,0,0],cnt=0;
+  for(var si=0;si<seqs.length;si++){
+    var s=seqs[si],T=s.length;
+    var Q=new Float64Array(T*Hh*DH),Kk=new Float64Array(T*Hh*DH),Vv=new Float64Array(T*Hh*DVH);
+    for(var t=0;t<T;t++){
+      var e=s[t]*DE;
+      for(var h=0;h<Hh;h++){
+        for(var a=0;a<DH;a++){
+          var qs=0,ks=0;
+          for(var d=0;d<DE;d++){qs+=E[e+d]*M.Wq[(h*DE+d)*DH+a];ks+=E[e+d]*M.Wk[(h*DE+d)*DH+a];}
+          Q[(t*Hh+h)*DH+a]=qs;Kk[(t*Hh+h)*DH+a]=ks;
+        }
+        for(var b=0;b<DVH;b++){
+          var vs=0;for(var d2=0;d2<DE;d2++)vs+=E[e+d2]*M.Wv[(h*DE+d2)*DVH+b];
+          Vv[(t*Hh+h)*DVH+b]=vs;
+        }
+      }
+    }
+    var dQ=wantGrad?new Float64Array(T*Hh*DH):null,
+        dK=wantGrad?new Float64Array(T*Hh*DH):null,
+        dV=wantGrad?new Float64Array(T*Hh*DVH):null;
+    for(var t2=KMAX;t2<T;t2++){
+      var lo=Math.max(0,t2-MAXREL),n=t2-lo+1,W=[],out=new Float64Array(DO);
+      for(var h2=0;h2<Hh;h2++){
+        var sc=new Float64Array(n),mx=-1e18;
+        for(var i=0;i<n;i++){
+          var sp=lo+i,dot=0;
+          for(var a2=0;a2<DH;a2++)dot+=Q[(t2*Hh+h2)*DH+a2]*Kk[(sp*Hh+h2)*DH+a2];
+          sc[i]=dot*scale+M.bias[h2*(MAXREL+1)+(t2-sp)];if(sc[i]>mx)mx=sc[i];
+        }
+        var sum=0;for(var i2=0;i2<n;i2++){sc[i2]=Math.exp(sc[i2]-mx);sum+=sc[i2];}
+        for(var i3=0;i3<n;i3++)sc[i3]/=sum;
+        for(var i4=0;i4<n;i4++){var w=sc[i4],sp2=lo+i4;
+          for(var b2=0;b2<DVH;b2++)out[h2*DVH+b2]+=w*Vv[(sp2*Hh+h2)*DVH+b2];}
+        W.push(sc);
+      }
+      var dout=wantGrad?new Float64Array(DO):null;
+      for(var qi=0;qi<NQ;qi++){
+        var tgt=s[t2-QK[qi]],lg=new Float64Array(V),lmx=-1e18,base=qi*DO*V;
+        for(var v2=0;v2<V;v2++){var z=0;
+          for(var o=0;o<DO;o++)z+=out[o]*M.C[base+o*V+v2];
+          lg[v2]=z;if(z>lmx)lmx=z;}
+        var ls=0;for(var v3=0;v3<V;v3++){lg[v3]=Math.exp(lg[v3]-lmx);ls+=lg[v3];}
+        var best=0,bv=-1;
+        for(var v4=0;v4<V;v4++){lg[v4]/=ls;if(lg[v4]>bv){bv=lg[v4];best=v4;}}
+        loss+=-Math.log(Math.max(lg[tgt],1e-12));
+        if(best===tgt)ok[qi]++;
+        if(wantGrad)for(var v5=0;v5<V;v5++){
+          var dz=lg[v5]-(v5===tgt?1:0);
+          for(var o2=0;o2<DO;o2++){g.C[base+o2*V+v5]+=dz*out[o2];dout[o2]+=dz*M.C[base+o2*V+v5];}
+        }
+      }
+      cnt++;
+      if(!wantGrad)continue;
+      for(var h3=0;h3<Hh;h3++){
+        var sc2=W[h3],dsc=new Float64Array(n);
+        for(var i5=0;i5<n;i5++){
+          var sp3=lo+i5,acc=0;
+          for(var b3=0;b3<DVH;b3++){
+            acc+=dout[h3*DVH+b3]*Vv[(sp3*Hh+h3)*DVH+b3];
+            dV[(sp3*Hh+h3)*DVH+b3]+=sc2[i5]*dout[h3*DVH+b3];
+          }
+          dsc[i5]=acc;
+        }
+        var dp=0;for(var i6=0;i6<n;i6++)dp+=dsc[i6]*sc2[i6];
+        for(var i7=0;i7<n;i7++){
+          var ds=sc2[i7]*(dsc[i7]-dp),sp4=lo+i7;
+          g.bias[h3*(MAXREL+1)+(t2-sp4)]+=ds;
+          for(var a3=0;a3<DH;a3++){
+            dQ[(t2*Hh+h3)*DH+a3]+=ds*scale*Kk[(sp4*Hh+h3)*DH+a3];
+            dK[(sp4*Hh+h3)*DH+a3]+=ds*scale*Q[(t2*Hh+h3)*DH+a3];
+          }
+        }
+      }
+    }
+    if(!wantGrad)continue;
+    for(var t3=0;t3<T;t3++){
+      var e2=s[t3]*DE;
+      for(var h4=0;h4<Hh;h4++){
+        for(var a4=0;a4<DH;a4++){
+          var dq=dQ[(t3*Hh+h4)*DH+a4],dk=dK[(t3*Hh+h4)*DH+a4];
+          if(dq)for(var d3=0;d3<DE;d3++)g.Wq[(h4*DE+d3)*DH+a4]+=dq*E[e2+d3];
+          if(dk)for(var d4=0;d4<DE;d4++)g.Wk[(h4*DE+d4)*DH+a4]+=dk*E[e2+d4];
+        }
+        for(var b4=0;b4<DVH;b4++){
+          var dv=dV[(t3*Hh+h4)*DVH+b4];
+          if(dv)for(var d5=0;d5<DE;d5++)g.Wv[(h4*DE+d5)*DVH+b4]+=dv*E[e2+d5];
+        }
+      }
+    }
+  }
+  return {loss:loss/Math.max(1,cnt*NQ),accs:ok.map(function(o){return o/Math.max(1,cnt);}),g:g};
+}
+/* live read of the current sequence */
+function look(){
+  var T=seq.length;if(T===0)return null;
+  var t=T-1,Hh=M.H,scale=1/Math.sqrt(DH),DO=Hh*DVH;
+  var lo=Math.max(0,t-MAXREL),n=t-lo+1,W=[],out=new Float64Array(DO);
+  for(var h=0;h<Hh;h++){
+    var q=new Float64Array(DH);
+    for(var a=0;a<DH;a++){var z=0;
+      for(var d=0;d<DE;d++)z+=E[seq[t]*DE+d]*M.Wq[(h*DE+d)*DH+a];q[a]=z;}
+    var sc=new Float64Array(n),mx=-1e18;
+    for(var i=0;i<n;i++){
+      var sp=lo+i,k=new Float64Array(DH),dot=0;
+      for(var a2=0;a2<DH;a2++){var zz=0;
+        for(var d2=0;d2<DE;d2++)zz+=E[seq[sp]*DE+d2]*M.Wk[(h*DE+d2)*DH+a2];
+        dot+=q[a2]*zz;}
+      sc[i]=dot*scale+M.bias[h*(MAXREL+1)+(t-sp)];if(sc[i]>mx)mx=sc[i];
+    }
+    var sum=0;for(var i2=0;i2<n;i2++){sc[i2]=Math.exp(sc[i2]-mx);sum+=sc[i2];}
+    for(var i3=0;i3<n;i3++)sc[i3]/=sum;
+    for(var i4=0;i4<n;i4++){
+      var sp2=lo+i4;
+      for(var b=0;b<DVH;b++){var vz=0;
+        for(var d3=0;d3<DE;d3++)vz+=E[seq[sp2]*DE+d3]*M.Wv[(h*DE+d3)*DVH+b];
+        out[h*DVH+b]+=sc[i4]*vz;}
+    }
+    W.push(sc);
+  }
+  var preds=[];
+  for(var qi=0;qi<QK.length;qi++){
+    var base=qi*DO*V,best=0,bv=-1e18;
+    for(var v=0;v<V;v++){var z2=0;
+      for(var o=0;o<DO;o++)z2+=out[o]*M.C[base+o*V+v];
+      if(z2>bv){bv=z2;best=v;}}
+    preds.push(best);
+  }
+  return {W:W,lo:lo,preds:preds};
+}
+function step(v){
+  seq.push(v);steps++;if(seq.length>70)seq.shift();
+  live=look();
+  if(fitted&&seq.length>Math.max.apply(null,QK)){
+    tries++;
+    for(var qi=0;qi<QK.length;qi++)
+      if(live.preds[qi]===seq[seq.length-1-QK[qi]])hits[qi]++;
+  }
+  drawSeq();drawHeads();drawQ();
+}
+/* training, chunked */
+var TR=null;
+function startFit(){
+  build();
+  var keys=['Wq','Wk','Wv','bias','C'],st={};
+  keys.forEach(function(k){st[k]={m:new Float64Array(M[k].length),v:new Float64Array(M[k].length)};});
+  var seqs=[];for(var i=0;i<4;i++){var q=[];for(var t=0;t<120;t++)q.push((Math.random()*V)|0);seqs.push(q);}
+  TR={it:0,iters:110,keys:keys,st:st,seqs:seqs};
+}
+function fitChunk(){
+  if(!TR)return false;
+  var t0=Date.now(),BUDGET=10;
+  while(TR.it<TR.iters){
+    TR.it++;
+    var r=fwdbwd(TR.seqs,true),lr=0.06*(1-TR.it/(TR.iters*1.3)),b1=.9,b2=.999;
+    TR.keys.forEach(function(k){
+      var arr=M[k],gr=r.g[k],A=TR.st[k];
+      for(var i=0;i<arr.length;i++){
+        var gv=gr[i]/TR.seqs.length;
+        A.m[i]=b1*A.m[i]+(1-b1)*gv;A.v[i]=b2*A.v[i]+(1-b2)*gv*gv;
+        arr[i]-=lr*(A.m[i]/(1-Math.pow(b1,TR.it)))/(Math.sqrt(A.v[i]/(1-Math.pow(b2,TR.it)))+1e-8);
+      }
+    });
+    document.getElementById('progress').innerHTML='teaching &hellip; <b>'+
+      Math.round(TR.it/TR.iters*100)+'%</b>';
+    if(Date.now()-t0>BUDGET)break;
+  }
+  drawHeads();
+  if(TR.it>=TR.iters){
+    var ts=[];for(var i=0;i<3;i++){var q=[];for(var t=0;t<120;t++)q.push((Math.random()*V)|0);ts.push(q);}
+    var ev=fwdbwd(ts,false);
+    fitted=true;hits=[0,0,0];tries=0;
+    var pk=peaks();
+    document.getElementById('progress').innerHTML=
+      '<b>'+H+(H===1?' head':' heads')+'</b> &rarr; '+
+      ev.accs.map(function(a,i){
+        return '<span style="color:'+QCOL[i]+'">'+QK[i]+' back: '+Math.round(a*100)+'%</span>';
+      }).join(' &nbsp; ')+
+      ' &nbsp;&middot;&nbsp; heads parked at ['+pk.join(', ')+']';
+    document.getElementById('fit').disabled=false;
+    document.getElementById('fit').textContent='Teach again';
+    live=look();TR=null;drawHeads();drawQ();
+    return false;
+  }
+  return true;
+}
+function peaks(){
+  var out=[];
+  for(var h=0;h<M.H;h++){
+    var p=0;
+    for(var i=1;i<=MAXREL;i++)
+      if(M.bias[h*(MAXREL+1)+i]>M.bias[h*(MAXREL+1)+p])p=i;
+    out.push(p);
+  }
+  return out;
+}
+/* ---------- drawing ---------- */
+function fit2(id){
+  var cv=document.getElementById(id);if(!cv)return null;
+  var w=cv.clientWidth,h=cv.clientHeight;if(!(w>0&&h>0))return null;
+  var r=Math.min(window.devicePixelRatio||1,2);
+  cv.width=Math.max(1,Math.round(w*r));cv.height=Math.max(1,Math.round(h*r));
+  var c=cv.getContext('2d');if(!c)return null;
+  c.setTransform(r,0,0,r,0,0);return [c,w,h];
+}
+var chips=document.getElementById('chips');
+for(var v0=0;v0<V;v0++)(function(v){
+  var c=document.createElement('div');c.className='chip';c.style.color=TCOL[v];
+  c.innerHTML=GLYPH[v]+'<span class="id">id '+v+'</span>';
+  c.addEventListener('click',function(){step(v);});chips.appendChild(c);
+})(v0);
+
+function drawSeq(){
+  var st=document.getElementById('seqstrip');st.innerHTML='';
+  var start=Math.max(0,steps-seq.length),L=seq.length;
+  var marks={};
+  for(var qi=0;qi<QK.length;qi++)marks[L-1-QK[qi]]=QCOL[qi];
+  for(var i=0;i<L;i++){
+    var d=document.createElement('div');
+    d.className='sq'+(i===L-1?' newest':'');
+    d.style.color=TCOL[seq[i]];
+    if(marks[i])d.style.borderBottomColor=marks[i];
+    d.innerHTML=GLYPH[seq[i]]+'<span>'+(start+i+1)+'</span>';
+    st.appendChild(d);
+  }
+  st.scrollLeft=st.scrollWidth;
+}
+function drawHeads(){
+  var F=fit2('headscv');if(!F)return;var ctx=F[0],w=F[1],h=F[2];
+  ctx.clearRect(0,0,w,h);
+  var Hh=M.H,rowH=(h-14)/Hh,pad=30;
+  var pk=peaks();
+  for(var hi=0;hi<Hh;hi++){
+    var y0=hi*rowH+2,bh=rowH-11;
+    ctx.fillStyle=HCOL[hi%HCOL.length];ctx.font='8px IBM Plex Mono';
+    ctx.fillText('head '+(hi+1),2,y0+bh/2);
+    var wts=live?live.W[hi]:null;
+    var n=wts?wts.length:0,plotW=w-pad-4;
+    // baseline
+    ctx.strokeStyle='rgba(47,184,179,.1)';ctx.beginPath();
+    ctx.moveTo(pad,y0+bh);ctx.lineTo(pad+plotW,y0+bh);ctx.stroke();
+    if(wts&&n>1){
+      var bw=plotW/n,mx=0;
+      for(var i=0;i<n;i++)mx=Math.max(mx,wts[i]);
+      for(var i2=0;i2<n;i2++){
+        var bar=Math.max(.7,wts[i2]/mx*bh);
+        ctx.fillStyle=HCOL[hi%HCOL.length]+'B0';
+        ctx.fillRect(pad+i2*bw+.4,y0+bh-bar,Math.max(.8,bw-.8),bar);
+      }
+      // question markers: distance back from the newest (rightmost) entry
+      for(var qi=0;qi<QK.length;qi++){
+        var idx=n-1-QK[qi];
+        if(idx<0)continue;
+        var x=pad+idx*bw+bw/2;
+        ctx.strokeStyle=QCOL[qi]+'99';ctx.setLineDash([2,2]);ctx.lineWidth=1;
+        ctx.beginPath();ctx.moveTo(x,y0);ctx.lineTo(x,y0+bh);ctx.stroke();ctx.setLineDash([]);
+      }
+    } else {
+      ctx.fillStyle='#5E7C7F';ctx.font='8px IBM Plex Mono';
+      ctx.fillText('feed symbols to see attention',pad+4,y0+bh/2);
+    }
+    if(fitted){
+      ctx.fillStyle='#5E7C7F';ctx.font='7.5px IBM Plex Mono';
+      var lab='prefers '+pk[hi]+' back';
+      var qm=-1;for(var q2=0;q2<QK.length;q2++)if(QK[q2]===pk[hi])qm=q2;
+      if(qm>=0){ctx.fillStyle=QCOL[qm];lab+='  \u2713 answers "'+QK[qm]+' back"';}
+      ctx.fillText(lab,pad+2,y0+bh+8);
+    }
+  }
+  ctx.fillStyle='#5E7C7F';ctx.font='7px IBM Plex Mono';
+  ctx.fillText('older \u2190 positions \u2192 newest',pad,h-2);
+}
+function drawQ(){
+  var F=fit2('qcv');if(!F)return;var ctx=F[0],w=F[1],h=F[2];
+  ctx.clearRect(0,0,w,h);
+  var cw=w/QK.length;
+  for(var qi=0;qi<QK.length;qi++){
+    var x=qi*cw;
+    ctx.fillStyle=QCOL[qi];ctx.font='8px IBM Plex Mono';
+    ctx.fillText(QK[qi]+' steps back',x+4,11);
+    var truth=(seq.length>QK[qi])?seq[seq.length-1-QK[qi]]:-1;
+    var pred=(fitted&&live)?live.preds[qi]:-1;
+    ctx.font='20px IBM Plex Mono';
+    ctx.fillStyle=truth>=0?TCOL[truth]:'#1A2E33';
+    ctx.fillText(truth>=0?GLYPH[truth]:'\u2013',x+4,36);
+    ctx.font='9px IBM Plex Mono';ctx.fillStyle='#5E7C7F';
+    ctx.fillText('actual',x+30,30);
+    if(pred>=0){
+      ctx.font='20px IBM Plex Mono';ctx.fillStyle=TCOL[pred];
+      ctx.fillText(GLYPH[pred],x+4,60);
+      ctx.font='9px IBM Plex Mono';
+      ctx.fillStyle=(pred===truth)?'#2FB8B3':'#D2685E';
+      ctx.fillText((pred===truth)?'said \u2713':'said \u2717',x+30,54);
+      if(tries>0){ctx.fillStyle='#5E7C7F';ctx.font='8px IBM Plex Mono';
+        ctx.fillText(hits[qi]+'/'+tries,x+30,64);}
+    } else {
+      ctx.font='9px IBM Plex Mono';ctx.fillStyle='#5E7C7F';
+      ctx.fillText('not taught yet',x+4,56);
+    }
+  }
+}
+/* ---------- controls ---------- */
+document.getElementById('hd').addEventListener('input',function(e){
+  if(TR)return;
+  H=parseInt(e.target.value,10);
+  document.getElementById('hv').textContent=H;
+  build();live=look();
+  document.getElementById('progress').innerHTML='head count changed — press <b>Teach</b>';
+  drawHeads();drawQ();
+});
+document.getElementById('fit').addEventListener('click',function(){
+  if(TR)return;
+  this.disabled=true;this.textContent='teaching…';
+  startFit();
+  (function pump(){ if(fitChunk()) setTimeout(pump,0); })();
+});
+var streaming=false,timer=null;
+document.getElementById('stream').addEventListener('click',function(){
+  streaming=!streaming;this.textContent=streaming?'Pause':'Stream';
+  if(streaming)timer=setInterval(function(){step((Math.random()*V)|0);},430);
+  else clearInterval(timer);
+});
+document.getElementById('srcbtn').addEventListener('click',function(){
+  var s=document.getElementById('sources');
+  this.textContent=s.classList.toggle('on')?'Hide sources':'Show sources';
+});
+window.addEventListener('resize',function(){drawHeads();drawQ();});
+
+build();
+for(var z=0;z<30;z++)step((Math.random()*V)|0);
+})();
+</script>
+</body>
+</html>

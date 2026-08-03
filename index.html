@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>PondScope Ecosystem — AI Learning Tool</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,340;9..144,560&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#081418;--deep:#0E2A31;--water:#2FB8B3;--foam:#D9E8E4;
+    --brass:#E0A94E;--mute:#5E7C7F;--rose:#D2685E;--violet:#9B7BD4;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{min-height:100%;background:var(--ink);color:var(--foam);
+    font-family:'IBM Plex Mono',monospace}
+  body{
+    background:
+      radial-gradient(ellipse 90% 55% at 15% -10%, rgba(47,184,179,.22), transparent 55%),
+      radial-gradient(ellipse 70% 45% at 90% 10%, rgba(224,169,78,.10), transparent 50%),
+      radial-gradient(ellipse 80% 50% at 50% 100%, rgba(14,42,49,.9), transparent 55%),
+      var(--ink);
+  }
+  main{max-width:720px;margin:0 auto;padding:clamp(28px,6vw,56px) 18px 48px}
+  .brand{font-family:'Fraunces',serif;font-weight:560;
+    font-size:clamp(28px,7vw,44px);line-height:1.05;letter-spacing:-.02em}
+  .brand em{font-style:italic;color:var(--water)}
+  .tag{margin-top:10px;font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--brass)}
+  .lead{margin-top:14px;max-width:34em;font-size:12px;line-height:1.65;color:var(--mute)}
+  .lead b{color:var(--foam);font-weight:500}
+
+  .path{margin:34px 0 10px;font-size:8px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--mute)}
+  nav{display:flex;flex-direction:column;gap:10px}
+  a.lesson{
+    display:block;text-decoration:none;color:inherit;
+    padding:16px 16px 15px;border-radius:3px;
+    border:1px solid rgba(47,184,179,.22);
+    background:linear-gradient(135deg, rgba(47,184,179,.07), rgba(8,20,24,.35));
+    transition:border-color .15s, transform .15s, background .15s;
+  }
+  a.lesson:hover{border-color:rgba(47,184,179,.55);transform:translateY(-1px);
+    background:linear-gradient(135deg, rgba(47,184,179,.12), rgba(8,20,24,.45))}
+  a.lesson:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+  .n{font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--brass);
+    margin-bottom:6px}
+  .title{font-family:'Fraunces',serif;font-size:clamp(17px,3.5vw,22px);line-height:1.15;
+    color:var(--foam)}
+  .title span{color:var(--water)}
+  .blurb{margin-top:7px;font-size:11px;line-height:1.55;color:var(--mute)}
+  .go{margin-top:10px;font-size:10px;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--water)}
+
+  footer{margin-top:36px;padding-top:16px;border-top:1px solid rgba(47,184,179,.14);
+    font-size:10px;line-height:1.6;color:var(--mute)}
+  footer b{color:var(--foam);font-weight:500}
+</style>
+</head>
+<body>
+<main>
+  <p class="tag">PondScope Ecosystem · AI Learning Tool</p>
+  <h1 class="brand">Three lessons in<br><em>machine memory</em></h1>
+  <p class="lead">
+    Interactive pages that show how a fixed-size <b>pond</b> remembers,
+    how a growing <b>notebook</b> looks things up, and why attention needs
+    <b>many heads</b>. Open them in order — each builds on the last.
+  </p>
+
+  <p class="path">Start here</p>
+  <nav aria-label="Lessons">
+    <a class="lesson" href="pond-continuous.html">
+      <div class="n">01 · The Pond</div>
+      <div class="title">A continuous system, <span>sampled once per token</span></div>
+      <p class="blurb">Feed symbols into a diagonal state-space memory. Watch ripples, dials, decay, and why fixed-size state stays cheap forever.</p>
+      <div class="go">Open pond-continuous →</div>
+    </a>
+
+    <a class="lesson" href="pond-vs-attention.html">
+      <div class="n">02 · Pond vs Notebook</div>
+      <div class="title">Two ways to remember <span>the same stream</span></div>
+      <p class="blurb">Teach both memories to recall K steps back. See where the pond fades, where the notebook wins, and why hybrids exist.</p>
+      <div class="go">Open pond-vs-attention →</div>
+    </a>
+
+    <a class="lesson" href="multi-head.html">
+      <div class="n">03 · Many Heads</div>
+      <div class="title">Looking in <span>several places at once</span></div>
+      <p class="blurb">Ask three lookback questions at once. One head must choose; more heads specialize. That is all multi-head means.</p>
+      <div class="go">Open multi-head →</div>
+    </a>
+  </nav>
+
+  <footer>
+    <b>Daniella M. LaGuerre</b> · PondScope Ecosystem<br>
+    Self-contained HTML — no install. Works offline once opened.
+  </footer>
+</main>
+</body>
+</html>

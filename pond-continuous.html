@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>The Pond — a continuous system, sampled once per token</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,340;9..144,560&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{--ink:#081418;--deep:#0E2A31;--water:#2FB8B3;--foam:#D9E8E4;
+        --brass:#E0A94E;--mute:#5E7C7F;--rose:#D2685E;--violet:#9B7BD4;}
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%;overflow:hidden;background:var(--ink);color:var(--foam);
+    font-family:'IBM Plex Mono',monospace;-webkit-tap-highlight-color:transparent}
+  #stage{position:fixed;top:0;left:0;right:0}
+  canvas{display:block}
+  header{position:fixed;top:0;left:0;right:0;padding:10px 46px 6px 14px;pointer-events:none;
+    z-index:5;background:linear-gradient(180deg,rgba(8,20,24,.95),rgba(8,20,24,0))}
+  h1{font-family:'Fraunces',serif;font-weight:560;font-size:clamp(16px,4vw,23px);line-height:1.06}
+  h1 em{font-style:italic;color:var(--water)}
+  .sub{font-size:9px;color:var(--mute);margin-top:3px;letter-spacing:.03em;line-height:1.5}
+  #tick{position:fixed;left:14px;top:70px;z-index:5;font-size:9px;color:var(--mute);
+    pointer-events:none;line-height:1.4}
+  #tick b{color:var(--brass);font-weight:500;font-size:15px}
+
+  #empty{position:fixed;left:0;right:0;top:34%;z-index:4;text-align:center;
+    font-family:'Fraunces',serif;font-style:italic;font-size:14px;color:var(--foam);
+    opacity:0;transition:opacity .5s;pointer-events:none;
+    text-shadow:0 2px 14px rgba(8,20,24,.95)}
+  #helpbtn{position:fixed;right:12px;top:11px;z-index:9;width:26px;height:26px;
+    border-radius:50%;border:1px solid rgba(47,184,179,.5);background:rgba(8,20,24,.7);
+    color:var(--water);font-size:12px;line-height:24px;text-align:center;cursor:pointer;
+    font-family:'Fraunces',serif}
+
+  #panel{position:fixed;left:0;right:0;bottom:0;z-index:7;
+    transition:transform .34s cubic-bezier(.4,0,.2,1);
+    background:linear-gradient(0deg,rgba(8,20,24,.99) 74%,rgba(8,20,24,.9));
+    border-top:1px solid rgba(47,184,179,.22)}
+  #grip{display:flex;align-items:center;justify-content:center;height:24px;cursor:pointer;
+    position:relative;border-bottom:1px solid rgba(47,184,179,.1)}
+  #grip::before{content:'';width:36px;height:3px;border-radius:2px;background:rgba(47,184,179,.45)}
+  #grip .gl{position:absolute;left:12px;font-size:8px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--mute)}
+  #grip .gr{position:absolute;right:12px;font-size:8px;letter-spacing:.1em;color:var(--brass)}
+  #panel.min{transform:translateY(calc(100% - 24px))}
+  #tabs{display:flex;border-bottom:1px solid rgba(47,184,179,.14)}
+  .tab{flex:1;padding:7px 2px 6px;text-align:center;font-size:8.5px;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--mute);cursor:pointer;border-bottom:2px solid transparent}
+  .tab.on{color:var(--water);border-bottom-color:var(--water)}
+  .pane{display:none;padding:7px 11px 5px;max-height:46vh;overflow-y:auto;
+    -webkit-overflow-scrolling:touch}
+  .pane::-webkit-scrollbar{width:0}
+  .pane.on{display:block}
+  .cap{font-size:8.8px;line-height:1.5;color:var(--mute);margin-top:6px}
+  .cap b{color:var(--foam);font-weight:500}
+  .cap em{color:var(--brass);font-style:normal}
+  .lbl{font-size:7.8px;letter-spacing:.11em;text-transform:uppercase;color:var(--mute);
+    margin:6px 0 3px}
+  .row{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+
+  #chips{display:flex;gap:6px}
+  .chip{flex:1;padding:7px 0 6px;text-align:center;border-radius:3px;cursor:pointer;
+    font-size:15px;line-height:1;border:1px solid rgba(47,184,179,.3);
+    background:rgba(47,184,179,.06);transition:transform .12s}
+  .chip:active{transform:scale(.93)}
+  .chip .id{display:block;font-size:7px;color:var(--mute);margin-top:3px}
+  #seqstrip{display:flex;gap:3px;overflow-x:auto;scrollbar-width:none;padding:2px 0}
+  #seqstrip::-webkit-scrollbar{display:none}
+  .sq{flex:0 0 auto;width:25px;text-align:center;font-size:11px;
+    border-bottom:1px solid rgba(47,184,179,.2);padding-bottom:2px}
+  .sq span{display:block;font-size:6.5px;color:var(--mute)}
+  .sq.newest{border-bottom-color:var(--brass)}
+
+  #embcv,#injcv,#wcv,#costcv,#losscv,#diskcv,#contcv{width:100%;display:block}
+  #embcv{height:30px} #injcv{height:40px} #wcv{height:44px} #costcv{height:108px}
+  #losscv{height:52px} #diskcv{height:150px} #contcv{height:46px} #scancv{height:168px}
+  #dials{overflow-x:auto;scrollbar-width:none;margin:0 -3px}
+  #dials::-webkit-scrollbar{display:none}
+  #dialrow{display:flex;gap:5px;width:max-content;margin:0 auto;padding:0 3px}
+  .dial{flex:0 0 auto;width:40px;text-align:center;cursor:pointer;transition:opacity .2s,transform .2s}
+  .dial canvas{width:40px;height:40px}
+  .dial .w{font-size:7px;color:var(--mute)}
+  .dial.solo{transform:translateY(-3px)} .dial.solo .w{color:var(--brass)}
+  .dimmed .dial:not(.solo){opacity:.24}
+
+  button{font-family:inherit;font-size:9px;letter-spacing:.07em;text-transform:uppercase;
+    padding:6px 11px;border-radius:2px;cursor:pointer;background:var(--brass);
+    color:var(--ink);border:none;font-weight:500}
+  button.ghost{background:transparent;color:var(--water);border:1px solid rgba(47,184,179,.45)}
+  button:disabled{opacity:.45}
+  .seg{display:flex;border:1px solid rgba(47,184,179,.35);border-radius:2px;overflow:hidden}
+  .seg div{padding:6px 9px;font-size:8.5px;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--mute);cursor:pointer}
+  .seg div.on{background:rgba(47,184,179,.18);color:var(--water)}
+  .stat{font-size:8.8px;color:var(--mute)} .stat b{color:var(--foam)} .good{color:var(--water)}
+  #pred{font-size:10px;color:var(--mute);margin-top:5px}
+  #pred .t{font-size:14px;vertical-align:-1px}
+  #pred .hit{color:var(--water)} #pred .miss{color:var(--rose)}
+
+  #bar{display:flex;align-items:center;gap:10px;padding:5px 11px 9px;
+    border-top:1px solid rgba(47,184,179,.12)}
+  .ctl{display:flex;flex-direction:column;gap:2px}
+  .ctl label{color:var(--mute);letter-spacing:.06em;text-transform:uppercase;
+    font-size:7.5px;white-space:nowrap}
+  input[type=range]{-webkit-appearance:none;appearance:none;width:82px;height:16px;background:transparent}
+  input[type=range]::-webkit-slider-runnable-track{height:2px;background:var(--deep)}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;
+    border-radius:50%;background:var(--brass);margin-top:-5px;border:2px solid var(--ink)}
+  input[type=range]::-moz-range-track{height:2px;background:var(--deep)}
+  input[type=range]::-moz-range-thumb{width:11px;height:11px;border-radius:50%;
+    background:var(--brass);border:2px solid var(--ink)}
+  #gstat{margin-left:auto;text-align:right;font-size:8px;color:var(--mute);line-height:1.4;white-space:nowrap}
+  #gstat b{color:var(--foam);font-weight:500}
+  @media(max-width:420px){input[type=range]{width:64px}#gstat{font-size:7.5px}}
+
+  #guide{position:fixed;inset:0;z-index:20;background:rgba(6,16,19,.97);overflow-y:auto;
+    -webkit-overflow-scrolling:touch;padding:18px 18px 40px;display:none}
+  #guide.on{display:block}
+  #guide h2{font-family:'Fraunces',serif;font-weight:560;font-size:20px;line-height:1.15}
+  #guide h2 em{font-style:italic;color:var(--water)}
+  #guide .lead{font-size:10px;color:var(--mute);line-height:1.6;margin:4px 0 14px}
+  #guide h3{font-size:9px;letter-spacing:.13em;text-transform:uppercase;color:var(--brass);
+    margin:15px 0 5px;padding-top:11px;border-top:1px solid rgba(47,184,179,.16)}
+  #guide p{font-size:10.5px;line-height:1.65;margin-bottom:7px}
+  #guide p.q{color:var(--water);font-family:'Fraunces',serif;font-style:italic;
+    font-size:12px;margin:8px 0 3px}
+  #guide ol{margin:0 0 4px 15px;font-size:10.5px;line-height:1.65}
+  #guide li{margin-bottom:5px}
+  #guide code{color:var(--brass);font-size:10px}
+  #guide .warn{border-left:2px solid var(--rose);padding-left:9px;font-size:10px;
+    color:var(--mute);line-height:1.6;margin-top:9px}
+  #guide .warn b{color:var(--foam)}
+  #srcbtn{display:block;width:100%;margin:16px 0 0;background:transparent;
+    border:1px solid rgba(47,184,179,.4);color:var(--water);padding:9px;
+    font-size:9px;letter-spacing:.12em;text-align:center}
+  #sources{display:none;margin-top:10px;padding-top:10px;
+    border-top:1px solid rgba(47,184,179,.16)}
+  #sources.on{display:block}
+  #sources h4{font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--brass);margin:12px 0 5px}
+  #sources p{font-size:9.5px;line-height:1.6;color:var(--mute);margin-bottom:6px}
+  #sources p b{color:var(--foam);font-weight:500}
+  #sources a{color:var(--water);text-decoration:none;border-bottom:1px dotted rgba(47,184,179,.4)}
+  #sources .mine{border-left:2px solid var(--brass);padding-left:9px;margin-top:12px;
+    font-size:9.5px;line-height:1.6;color:var(--mute)}
+  #sources .mine b{color:var(--foam)}
+  #closeg{position:sticky;top:0;float:right;margin:-4px -2px 0 0;background:transparent;
+    border:1px solid rgba(47,184,179,.4);color:var(--water);width:27px;height:27px;
+    border-radius:50%;font-size:13px;padding:0;line-height:1}
+</style>
+</head>
+<body>
+<div id="stage"></div>
+<header>
+  <h1>The Pond — <em>a continuous system, sampled once per token</em></h1>
+  <div class="sub">dh/dt = (a&#11388; + i&omega;&#11388;)h + Bu &nbsp;&rarr;&nbsp; &lambda;&#11388; = e<sup>&Delta;(a&#11388;+i&omega;&#11388;)</sup> &nbsp;&rarr;&nbsp; h&#8348; = &Lambda;h&#8348;&#8331;&#8321; + Be&#8348;</div>
+</header>
+<div id="tick">step<br><b id="tcount">0</b></div>
+<div id="empty">the state is empty &mdash; tap a token below to make a wave</div>
+<div id="helpbtn">?</div>
+
+<div id="guide">
+  <button id="closeg">&times;</button>
+  <h2>What this is, in <em>plain words</em></h2>
+  <div class="lead">This is a small memory machine. You feed it symbols one at a time. It remembers them for a while, then forgets. The water shows you what it is remembering right now.</div>
+
+  <h3>The pond is a squeezed-down memory</h3>
+  <p>Every time you tap a symbol, it is like dropping a stone in water. Ripples spread out. They fade. If you drop another stone before the first ripples die, the two patterns mix together.</p>
+  <p>Here is the important part, and it is a trade-off, not a superpower. The past symbols are not filed away one by one. Their <em>effects</em> are stirred into one shared pattern. So the pond remembers <b>the effect of the stones, not the stones themselves</b>.</p>
+  <p>Some things survive that stirring well: roughly what has been happening lately, repeated patterns, timing, overall direction, and anything the machine was trained to hold on to. Other things get blurred away: an exact symbol far back, which detail belonged to which item, or several similar facts that smear into each other.</p>
+  <p>And the space never grows. Whether you feed it ten symbols or ten thousand, it is the same small pile of numbers. That fixed size is exactly why it is cheap &mdash; and exactly why it must throw things away.</p>
+  <p>A flat pond does not mean "it forgot everything at some moment." It means the earlier taps no longer leave a detectable trace in the state.</p>
+
+  <h3>What it is bad at &mdash; on purpose</h3>
+  <p>A chatbot that must quote your sentence from an hour ago needs a different kind of memory. Attention keeps a separate record for every past position and can go back and look one up, like flipping through a notebook. This machine cannot do that. It writes one running summary and has to decide what matters <em>before</em> it knows what you will ask later.</p>
+  <p>So it is weak at: copying things exactly, quoting, keeping many separate facts straight, and matching "which name went with which number." It is strong at: long or never-ending streams, sensors, audio, video, general drift and trend, and running cheaply forever.</p>
+  <p>This is why the serious designs mix the two &mdash; mostly this, plus a little attention for the moments when you need an exact lookup.</p>
+
+  <h3>The dials are the water, counted up</h3>
+  <p>Any wave can be split into simple ripples of different sizes &mdash; big slow ones and small fast ones. Each dial at the bottom is one of those sizes.</p>
+  <p>The needle shows where that ripple is in its cycle. The ring shows how strong it still is. Add all the dials together and you get the water you see.</p>
+  <p><b>Try it:</b> tap one dial. The busy water becomes one clean ring. Tap it again to bring the rest back. That is the whole idea of this design: the parts do not talk to each other, so you can look at them one at a time.</p>
+
+  <h3>Why it only moves when you feed it</h3>
+  <p>The water sits still between taps. That is on purpose, not a bug.</p>
+  <p>This machine reads a sequence &mdash; one symbol, then the next. It takes one step forward each time a symbol arrives. It does not run on a clock. Screen time and machine time are different things, and mixing them up is the most common way these diagrams lie.</p>
+  <p>Underneath, the ripples really are always flowing. You just only get to look at them at symbol times. The <b>&Delta;</b> slider sets how much flowing happens between looks. Bigger &Delta; means bigger jumps, so things spin and fade faster. Smaller &Delta; means finer looks, so the past sticks around longer.</p>
+
+  <h3>How to use it</h3>
+  <ol>
+    <li><b>Tap a shape</b> (&#9650; &#9679; &#9670; &#9632;). One tap = one step. Watch the water change.</li>
+    <li><b>Press Stream</b> to feed shapes automatically.</li>
+    <li><b>Drag</b> to spin the view. <b>Pinch</b> or scroll to zoom.</li>
+    <li><b>Pull the bar down</b> (the little handle above the tabs) to hide the controls and see the whole pond.</li>
+  </ol>
+
+  <h3>Try this: can it remember?</h3>
+  <p>Go to the <b>Learn</b> tab. Set <b>K</b> to 12. That asks: <em>which shape did I feed 12 steps ago?</em></p>
+  <p>Press <b>Fit</b> with <b>C only</b> selected. This teaches the machine to read the water, but does not let it change how the water moves. You will get maybe 60&ndash;70% right. Guessing would be 25%.</p>
+  <p>Now switch to <b>A, B, C, &Delta;</b> and press Fit again. Now it can also change how fast each ripple spins and fades &mdash; it can design the water to suit the question. Accuracy usually jumps to the 90s.</p>
+  <p>That gap is the point. Learning <em>how to remember</em> beats learning only <em>how to read</em> what you happened to remember.</p>
+  <p><b>But do not read too much into the score.</b> This test has only four possible answers, one fixed delay, and one question. Guessing gets 25%. Getting 90% here does <em>not</em> mean the design could hold a long conversation. A fair test would use many different keys and values, delays that change, questions the machine could not have prepared for, and exact reproduction. That is where a fixed-size memory starts to hurt &mdash; and this small demo deliberately does not go there.</p>
+
+  <h3>Watch the learning happen</h3>
+  <p>Open the <b>Spectrum</b> tab while it is fitting. Each dot is one ripple. How far it sits from the middle is how much of it survives each step. How far around is how fast it spins.</p>
+  <p>The hollow rings show where each dot started. Watch them move. That movement is the machine redesigning its own memory.</p>
+  <p>Notice no dot ever crosses the outer circle. Outside that circle, ripples would grow instead of fade, and everything would blow up. The maths here makes crossing impossible, so it simply cannot happen.</p>
+
+  <h3>Fast and slow, same answer</h3>
+  <p>The <b>Scan</b> tab shows two ways to work out the same thing.</p>
+  <p>The top row is one-at-a-time: sixteen symbols, sixteen steps, each waiting for the one before. That is how it runs when you use it live.</p>
+  <p>The bottom shape does it in four rounds instead of sixteen, by combining pairs, then pairs of pairs. That works because the steps can be grouped in any order without changing the result &mdash; like adding numbers. It only works because each step is simple; make it fancier and you lose it.</p>
+  <p>Both give the exact same answer, and the panel prints the difference so you can check. This is the trick that matters: <b>learn quickly in big parallel batches, then run cheaply one step at a time.</b></p>
+
+  <h3>Why anyone cares (the Cost tab)</h3>
+  <p>The usual approach &mdash; attention, the thing in most chatbots &mdash; keeps a record of every symbol it has seen. Twice as much text, twice as much stored. Ten times as much, ten times as much stored. It never stops growing.</p>
+  <p>This machine keeps the same small amount forever &mdash; because it keeps a squeezed summary rather than a record of every symbol. That is the whole bargain: constant cost in exchange for accepting that some detail is unrecoverable.</p>
+  <p>But be fair about it: the fixed amount starts out <em>bigger</em>. For very short inputs the growing one is actually smaller. It only wins after about 16 symbols. Drag the slider and watch them cross. The honest claim is not "smaller" &mdash; it is <b>stops growing</b>.</p>
+
+  <h3>The wider landscape</h3>
+  <p>Everything so far happens <em>inside</em> one layer. But the reason the rest of an AI system exists is the limit you just saw: this memory is small and lossy, so anything it cannot hold has to live somewhere else. Here is that whole world as one piece of ground.</p>
+
+  <p><b>The land is the base model.</b> The frozen weights &mdash; the shape of the ground before anyone digs. Everything else sits in it or flows across it.</p>
+
+  <p><b>Ponds are adapters.</b> Dig a different hollow in the same land and you get a different pond: same ground, different shape, different behaviour. That is what a small fine-tune is &mdash; the base is untouched, only the shape on top changes. This is why you can keep a library of adapters and swap between them without re-downloading anything.</p>
+
+  <p><b>The grass at the edge is the protocol</b> (MCP and its kin). It is the margin you cross to reach the water &mdash; the same approach whatever lies beyond it. Grass stores nothing; it is a way in. That matters: a protocol is not a kind of memory, it is the standard doorway that outside things arrive through.</p>
+
+  <p><b>An inlet from a distant lake is retrieval</b> (RAG). The library of documents is a lake somewhere else entirely, far bigger than any pond. Retrieval opens a channel and lets some of it flow in. This also names the weakness honestly: you only get what you channel, and you have to know which lake to open. Nothing arrives that you did not ask for.</p>
+
+  <p><b>The watershed is the graph.</b> Water does not arrive from nowhere &mdash; it comes down connected paths. Structuring your sources as a graph keeps those connections, so what flows in arrives <em>related</em> rather than as a pile of disconnected buckets. That relatedness is the thing plain retrieval loses.</p>
+
+  <p><b>The region is a council.</b> Several ponds, compared. Different bases and different adapters answering the same question, so you can see where they agree and where they part. Note this is a different question from all the others: everything above asks <em>what does the model know</em>; a council asks <em>whose answer do we trust</em>. It is worth keeping those apart in your head, because mixing them is how architecture diagrams turn into soup.</p>
+
+  <p>One useful way to read the whole map: these are layers of memory sorted by how permanent they are and what they cost. Baked into the weights is permanent and free to use but slow to change. The pond state is this moment, cheap and fading. The notebook of attention is this conversation, exact but growing. The lake is everything else, unlimited but only reachable on request.</p>
+
+  <h3>Making this into a real model</h3>
+  <p>What you have here is one layer. A real model stacks many, with a couple of standard parts between them:</p>
+  <p>&bull; A <b>normalise</b> step and a <b>shortcut</b> that adds the input back &mdash; both just keep deep stacks trainable.<br>
+     &bull; A <b>feed-forward block</b> (widen, bend, narrow again). Unchanged from a normal Transformer &mdash; this part is not replaced.<br>
+     &bull; A short <b>local filter</b> before the memory, for immediate neighbours, which smooth ripples handle badly.</p>
+  <p>One thing you can <em>delete</em>: position markers. Transformers need to be told which symbol came first, because attention sees an unordered pile. This machine gets order for free &mdash; symbol five arrives after symbol four, and that is what order means here.</p>
+  <p>One thing worth <em>keeping</em>: a little attention. Memory like this smooths things together, so it is poor at quoting an earlier symbol exactly. The best current designs use mostly memory layers with one attention layer every six to eight.</p>
+
+  <h3>Honest limits</h3>
+  <div class="warn">
+    <b>This is one layer, four symbols.</b> The mechanism is real and the training is real &mdash; it genuinely learns by working backwards through the sequence. But a real model has many layers, bending steps between them, and vocabularies of tens of thousands. Right idea, tiny scale.<br><br>
+    <b>More dials is not "more intelligence."</b> It is just more room to tell things apart in this one small test.<br><br>
+    <b>Where a ripple is in the pond is not where a symbol is in the sequence.</b> Distance across the water shows waves spreading. Sequence order is the order of taps &mdash; that is what the t=&hellip; strip shows.<br><br>
+    <b>The little slide after each tap is decoration.</b> The machine jumps straight from one state to the next. The smooth bit is only so your eye can follow.
+  </div>
+
+  <button id="srcbtn">Show sources &amp; further reading</button>
+  <div id="sources">
+    <h4>The two core papers</h4>
+    <p><b>S4</b> &mdash; Gu, Goel &amp; R&eacute;, "Efficiently Modeling Long Sequences with Structured State Spaces," ICLR 2022. <a href="https://arxiv.org/abs/2111.00396">arXiv:2111.00396</a>. Source of the continuous system, the discretization step, and the diagonal-plus-low-rank fix for the cost problem.</p>
+    <p><b>Mamba</b> &mdash; Gu &amp; Dao, "Mamba: Linear-Time Sequence Modeling with Selective State Spaces," COLM 2024. <a href="https://arxiv.org/abs/2312.00752">arXiv:2312.00752</a>. Makes &Delta;, B and C depend on the input, so the model chooses what to remember.</p>
+
+    <h4>Why the poles stay inside the circle</h4>
+    <p><b>S4D</b> &mdash; Gu, Goel, Gupta &amp; R&eacute;, "On the Parameterization and Initialization of Diagonal State Space Models," NeurIPS 2022. <a href="https://arxiv.org/abs/2206.11893">arXiv:2206.11893</a>. The <code>a = &minus;e<sup>p</sup></code> trick used here.</p>
+    <p><b>DSS</b> &mdash; Gupta, Gu &amp; Berant, "Diagonal State Spaces are as Effective as Structured State Spaces," NeurIPS 2022. <a href="https://arxiv.org/abs/2203.14343">arXiv:2203.14343</a>. The result that a plain diagonal was enough after all.</p>
+
+    <h4>Why the memory is lossy (the limitation above)</h4>
+    <p><b>Jelassi, Brandfonbrener, Kakade &amp; Malach</b>, "Repeat After Me: Transformers are Better than State Space Models at Copying," ICML 2024. <a href="https://arxiv.org/abs/2402.01032">arXiv:2402.01032</a>. Proves a fixed-size state is fundamentally limited at copying and retrieval, while a two-layer transformer is not. This is the paper behind the "what it is bad at" section.</p>
+
+    <h4>Mixing the two (hybrids)</h4>
+    <p><b>Griffin</b> &mdash; De et al., 2024. <a href="https://arxiv.org/abs/2402.19427">arXiv:2402.19427</a>. Gated recurrence plus local attention.</p>
+    <p><b>Jamba</b> &mdash; Lieber et al., 2024. <a href="https://arxiv.org/abs/2403.19887">arXiv:2403.19887</a>. Interleaved Transformer and Mamba layers.</p>
+    <p><b>RWKV</b> &mdash; Peng et al., EMNLP 2023. <a href="https://arxiv.org/abs/2305.13048">arXiv:2305.13048</a>. Trains in parallel, runs as an RNN.</p>
+
+    <h4>The older ideas the dials come from</h4>
+    <p><b>Unitary RNNs</b> &mdash; Arjovsky, Shah &amp; Bengio, ICML 2016. <a href="https://arxiv.org/abs/1511.06464">arXiv:1511.06464</a>. Rotation with magnitude 1, to stop gradients dying or exploding.</p>
+    <p><b>Vanishing/exploding gradients</b> &mdash; Pascanu, Mikolov &amp; Bengio, ICML 2013. <a href="https://arxiv.org/abs/1211.5063">arXiv:1211.5063</a>.</p>
+    <p><b>LSTM gating</b> &mdash; Hochreiter &amp; Schmidhuber, <em>Neural Computation</em> 9(8), 1997.</p>
+    <p><b>LRU</b> &mdash; Orvieto et al., ICML 2023. <a href="https://arxiv.org/abs/2303.06349">arXiv:2303.06349</a> &middot; <b>RoPE</b> &mdash; Su et al., 2021. <a href="https://arxiv.org/abs/2104.09864">arXiv:2104.09864</a> &middot; <b>coRNN</b> &mdash; Rusch &amp; Mishra, ICLR 2021. <a href="https://arxiv.org/abs/2010.00951">arXiv:2010.00951</a>.</p>
+
+    <h4>Vision and time series</h4>
+    <p><b>Vision Mamba</b> &mdash; Zhu et al., 2024. <a href="https://arxiv.org/abs/2401.09417">arXiv:2401.09417</a> &middot; <b>VMamba</b> &mdash; Liu et al., 2024. <a href="https://arxiv.org/abs/2401.10166">arXiv:2401.10166</a>.</p>
+    <p><b>DLinear</b> &mdash; Zeng et al., "Are Transformers Effective for Time Series Forecasting?" AAAI 2023. <a href="https://arxiv.org/abs/2205.13504">arXiv:2205.13504</a>. The baseline any forecasting claim has to beat.</p>
+
+    <h4>The wider landscape</h4>
+    <p><b>Retrieval (RAG)</b> &mdash; Lewis et al., "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks," NeurIPS 2020. <a href="https://arxiv.org/abs/2005.11401">arXiv:2005.11401</a>.</p>
+    <p><b>Graph-structured retrieval</b> &mdash; Edge et al., "From Local to Global: A Graph RAG Approach to Query-Focused Summarization," 2024. <a href="https://arxiv.org/abs/2404.16130">arXiv:2404.16130</a>.</p>
+    <p><b>Adapters on a frozen base</b> &mdash; Houlsby et al., "Parameter-Efficient Transfer Learning for NLP," ICML 2019, <a href="https://arxiv.org/abs/1902.00751">arXiv:1902.00751</a>; Hu et al., "LoRA," ICLR 2022, <a href="https://arxiv.org/abs/2106.09685">arXiv:2106.09685</a>.</p>
+    <p><b>Model Context Protocol</b> &mdash; open standard for connecting models to external tools and data. <a href="https://modelcontextprotocol.io">modelcontextprotocol.io</a>.</p>
+    <p><b>Councils / multi-model debate</b> &mdash; Du et al., "Improving Factuality and Reasoning in Language Models through Multiagent Debate," 2023. <a href="https://arxiv.org/abs/2305.14325">arXiv:2305.14325</a>.</p>
+
+    <h4>The best existing walkthrough</h4>
+    <p><b>The Annotated S4</b> &mdash; Sasha Rush &amp; Sidd Karamcheti. <a href="https://srush.github.io/annotated-s4/">srush.github.io/annotated-s4</a>. Code-level, where this page is picture-level.</p>
+
+    <div class="mine">
+      <b>Not from the literature.</b> Two things here are exposition, not results.
+      The pond metaphor is a way of showing the standard modal view &mdash; the view
+      is standard, the water picture is a choice. And the accuracy numbers this
+      page produces come from its own code on its own easy task; they illustrate
+      a real effect but are not a published benchmark and should not be quoted
+      as one. 
+
+      By Daniella M. LaGuerre, August 2026.
+    </div>
+  </div>
+</div>
+
+<div id="panel">
+  <div id="grip"><span class="gl" id="griplabel">hide</span><span class="gr" id="gripstep">step 0</span></div>
+  <div id="tabs">
+    <div class="tab on" data-p="pipe">Pipeline</div>
+    <div class="tab" data-p="learn">Learn</div>
+    <div class="tab" data-p="spec">Spectrum</div>
+    <div class="tab" data-p="scan">Scan</div>
+    <div class="tab" data-p="cost">Cost</div>
+  </div>
+
+  <div class="pane on" id="pane-pipe">
+    <div id="chips"></div>
+    <div class="lbl">sequence — position is <em>order</em>, not place in the pond</div>
+    <div id="seqstrip"></div>
+    <div class="lbl">e&#8348; — embedding of the token just fed</div>
+    <canvas id="embcv"></canvas>
+    <div class="lbl">Be&#8348; — how that embedding excites each dial (re / im)</div>
+    <canvas id="injcv"></canvas>
+    <div class="lbl">h&#8348; — the one shared state (every past token, compressed together)</div>
+    <div id="dials"><div id="dialrow"></div></div>
+    <div class="cap">Each tap advances the continuous system by <b>&Delta;</b> and adds this token's kick. <em>Nothing moves between tokens</em> — the model is sampled at token times, not animation frames. (The brief morph is cosmetic easing so the change is legible.)</div>
+  </div>
+
+  <div class="pane" id="pane-learn">
+    <div class="row">
+      <div class="seg" id="modeseg">
+        <div data-m="readout" class="on">C only</div>
+        <div data-m="full">A, B, C, &Delta;</div>
+      </div>
+      <div class="ctl"><label for="kdelay">recall K = <span id="kv">12</span></label>
+        <input id="kdelay" type="range" min="2" max="28" step="1" value="12"></div>
+      <button id="trainbtn">Fit</button>
+    </div>
+    <div class="lbl">training loss (cross-entropy, live)</div>
+    <canvas id="losscv"></canvas>
+    <div class="row" style="margin-top:4px">
+      <div class="stat" id="trainstat">unfitted</div>
+    </div>
+    <div class="lbl">|C| per dial — which wavelengths the readout listens to</div>
+    <canvas id="wcv"></canvas>
+    <div id="pred">fit, then stream to see live predictions</div>
+    <div class="cap"><b>C only</b> freezes the dynamics and trains a readout on top — a reservoir. <b>A, B, C, &Delta;</b> backpropagates through time into the poles themselves. Watch the Spectrum tab while it runs. <em>Note the task is easy</em>: 4 classes, one fixed delay, chance 25%. A high score says the state carries <b>some</b> recoverable trace of one past symbol — not that a fixed-size state could hold a long context.</div>
+  </div>
+
+  <div class="pane" id="pane-spec">
+    <canvas id="diskcv"></canvas>
+    <div class="lbl">continuous poles — decay rate a&#11388; (bar) and frequency &omega;&#11388; (dot height)</div>
+    <canvas id="contcv"></canvas>
+    <div class="cap" id="speccap">Each dot is one discrete eigenvalue <b>&lambda;&#11388; = e<sup>&Delta;(a&#11388;+i&omega;&#11388;)</sup></b> plotted in the complex plane. Distance from the origin is how much of that mode survives one token; angle is how far it turns. <em>Ghost rings mark where each pole started</em> — after a full fit they move. Because a&#11388; = &minus;e<sup>p&#11388;</sup>, no pole can escape the unit circle.</div>
+  </div>
+
+  <div class="pane" id="pane-scan">
+    <canvas id="scancv"></canvas>
+    <div class="row" style="margin-top:4px">
+      <button class="ghost" id="scanbtn">Re-run both</button>
+      <div class="stat" id="scanstat"></div>
+    </div>
+    <div class="cap">The same recurrence, evaluated two ways. <b>Sequential</b> is what inference does: T steps, each waiting on the last, but only <em>2N numbers</em> of memory. <b>Parallel scan</b> is what training does: because <code>h&#8348; = &lambda;h&#8348;&#8331;&#8321; + u&#8348;</code> is <em>associative</em>, partial results compose — <code>(a&#8322;,b&#8322;)&#8728;(a&#8321;,b&#8321;) = (a&#8321;a&#8322;, a&#8322;b&#8321;+b&#8322;)</code> — so the whole sequence resolves in <b>log&#8322;T</b> dependent rounds on parallel hardware. Both produce identical states; the max difference is printed above. <em>This duality is the trick: train like a transformer, infer like an RNN.</em> Break associativity — make the update polynomial in h — and only the slow column survives.</div>
+  </div>
+
+  <div class="pane" id="pane-cost">
+    <canvas id="costcv"></canvas>
+    <div class="row" style="margin-top:4px">
+      <div class="ctl"><label for="ctxT">context T = <span id="ctxv">2048</span></label>
+        <input id="ctxT" type="range" min="1" max="8192" step="1" value="2048"></div>
+      <div class="stat" id="coststat"></div>
+    </div>
+    <div class="cap">Reference decoder: <b>L=32, d_model=4096, MHA</b>. Every token contributes key and value vectors at <em>every</em> layer, so the cache holds ~<b>2&middot;L&middot;T&middot;d_model</b> scalars and grows. A stacked SSM holds <b>L&middot;d_inner&middot;d_state</b> — larger at first, <em>flat forever</em>, crossing at T&asymp;16.</div>
+  </div>
+
+  <div id="bar">
+    <div class="ctl"><label for="dstep">step &Delta; = <span id="dv">1.00</span></label>
+      <input id="dstep" type="range" min="0.15" max="3" step="0.01" value="1"></div>
+    <div class="ctl"><label for="ndials">dials N</label>
+      <input id="ndials" type="range" min="8" max="36" step="1" value="24"></div>
+    <button class="ghost" id="streambtn">Stream</button>
+    <div id="gstat">
+      <div>N=<b id="nv">24</b> state=<b id="sv">48</b> reals</div>
+      <div>params: A <b id="pa">48</b> B <b id="pb">192</b> C <b id="pc">192</b></div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+"use strict";
+/* ==================================================================
+   CONTINUOUS-TIME DIAGONAL SSM
+     dh/dt = (a_j + i w_j) h + B u,     a_j = -exp(p_j) < 0  (stable)
+     discretize with step D = exp(q):   lam_j = exp(D (a_j + i w_j))
+     recurrence (ONE step per token):   h <- lam h + B e_token
+     readout:                           y = C [Re h | Im h]
+   Trainable by BPTT: p (=> a), w, q (=> D), B, C.
+   ================================================================== */
+var V=4, DE=4, MAXN=36;
+var GLYPH=['\u25B2','\u25CF','\u25C6','\u25A0'];
+var TCOL=['#2FB8B3','#E0A94E','#D2685E','#9B7BD4'];
+
+var S={ N:24, K:12, q:0,
+        p:null,w:null,Bre:null,Bim:null,Cre:null,Cim:null,E:null,
+        lr:null,li:null,k:null,
+        lr0:null,li0:null,                 // ghosts: poles before fitting
+        hr:new Float64Array(MAXN), hi:new Float64Array(MAXN),
+        pr:new Float64Array(MAXN), pi:new Float64Array(MAXN),
+        morph:1, seq:[], steps:0, solo:-1, fitted:false, mode:'readout',
+        lastTok:-1, injR:null, injI:null, hist:[] };
+
+function LCG(s){s=s>>>0;return function(){s=(s*1664525+1013904223)>>>0;return s/4294967296;};}
+function buildModel(){
+  var N=S.N,R=LCG(20260802);
+  S.p=new Float64Array(N);S.w=new Float64Array(N);
+  S.Bre=new Float64Array(N*DE);S.Bim=new Float64Array(N*DE);
+  S.Cre=new Float64Array(N*V);S.Cim=new Float64Array(N*V);
+  S.E=new Float64Array(V*DE);
+  for(var j=0;j<N;j++){
+    S.p[j]=Math.log(0.004*Math.pow(10,1.3*j/Math.max(1,N-1)));
+    S.w[j]=0.9*Math.PI*Math.pow(10,-1.15+1.15*j/Math.max(1,N-1));
+  }
+  for(var i=0;i<N*DE;i++){S.Bre[i]=(R()*2-1)*0.7;S.Bim[i]=(R()*2-1)*0.7;}
+  for(var i2=0;i2<N*V;i2++){S.Cre[i2]=(R()*2-1)*0.1;S.Cim[i2]=(R()*2-1)*0.1;}
+  for(var v=0;v<V;v++)for(var d=0;d<DE;d++)S.E[v*DE+d]=(d===v?1.6:(R()*2-1)*0.25);
+  refreshLam(true);
+}
+function refreshLam(snapshot){
+  var N=S.N,D=Math.exp(S.q);
+  S.lr=new Float64Array(N);S.li=new Float64Array(N);S.k=new Float64Array(N);
+  for(var j=0;j<N;j++){
+    var a=-Math.exp(S.p[j]),mag=Math.exp(D*a),th=D*S.w[j];
+    S.lr[j]=mag*Math.cos(th);S.li[j]=mag*Math.sin(th);
+    S.k[j]=2.2*Math.abs(th);                       // spatial wavenumber for the pond
+  }
+  if(snapshot){S.lr0=S.lr.slice();S.li0=S.li.slice();}
+}
+function injectionFor(v){
+  var N=S.N,re=new Float64Array(N),im=new Float64Array(N);
+  for(var j=0;j<N;j++){var a=0,b=0;
+    for(var d=0;d<DE;d++){a+=S.Bre[j*DE+d]*S.E[v*DE+d];b+=S.Bim[j*DE+d]*S.E[v*DE+d];}
+    re[j]=a;im[j]=b;}
+  return [re,im];
+}
+/* ---- ONE recurrence step: only ever called by a token ---- */
+function step(v){
+  for(var j=0;j<S.N;j++){S.pr[j]=S.hr[j];S.pi[j]=S.hi[j];}
+  var I=injectionFor(v);
+  for(var j2=0;j2<S.N;j2++){
+    var a=S.hr[j2],b=S.hi[j2];
+    S.hr[j2]=S.lr[j2]*a-S.li[j2]*b+I[0][j2];
+    S.hi[j2]=S.lr[j2]*b+S.li[j2]*a+I[1][j2];
+  }
+  S.lastTok=v;S.injR=I[0];S.injI=I[1];
+  S.seq.push(v);if(S.seq.length>48)S.seq.shift();
+  S.steps++;S.morph=0;
+  document.getElementById('tcount').textContent=S.steps;
+  document.getElementById('gripstep').textContent='step '+S.steps+'  '+GLYPH[v];
+  drawSeq();drawEmb();drawInj();livePredict();
+}
+function resetState(){
+  S.hr=new Float64Array(MAXN);S.hi=new Float64Array(MAXN);
+  S.pr=new Float64Array(MAXN);S.pi=new Float64Array(MAXN);
+  S.seq=[];S.steps=0;S.lastTok=-1;S.injR=null;S.morph=1;
+  document.getElementById('tcount').textContent='0';
+  document.getElementById('gripstep').textContent='step 0';
+}
+
+/* ================= BPTT trainer ================= */
+function fwdbwd(seqs,K,wantGrad){
+  var N=S.N,D=Math.exp(S.q),lr=S.lr,li=S.li;
+  var inj=[];for(var v=0;v<V;v++)inj.push(injectionFor(v));
+  var g=wantGrad?{p:new Float64Array(N),w:new Float64Array(N),q:0,
+    Bre:new Float64Array(N*DE),Bim:new Float64Array(N*DE),
+    Cre:new Float64Array(N*V),Cim:new Float64Array(N*V)}:null;
+  var loss=0,ok=0,cnt=0;
+  for(var s=0;s<seqs.length;s++){
+    var seq=seqs[s],T=seq.length;
+    var Hr=new Float64Array((T+1)*N),Hi=new Float64Array((T+1)*N);
+    for(var t=0;t<T;t++){
+      var v2=seq[t],o=t*N,o1=(t+1)*N,IR=inj[v2][0],II=inj[v2][1];
+      for(var j=0;j<N;j++){
+        var a=Hr[o+j],b=Hi[o+j];
+        Hr[o1+j]=lr[j]*a-li[j]*b+IR[j];
+        Hi[o1+j]=lr[j]*b+li[j]*a+II[j];
+      }
+    }
+    var dHr=new Float64Array((T+1)*N),dHi=new Float64Array((T+1)*N);
+    for(var t2=K;t2<T;t2++){
+      var ob=(t2+1)*N,tgt=seq[t2-K],lg=new Float64Array(V),mx=-1e18;
+      for(var v3=0;v3<V;v3++){
+        var z=0;
+        for(var j2=0;j2<N;j2++)z+=Hr[ob+j2]*S.Cre[j2*V+v3]+Hi[ob+j2]*S.Cim[j2*V+v3];
+        lg[v3]=z;if(z>mx)mx=z;
+      }
+      var sm=0;for(var v4=0;v4<V;v4++){lg[v4]=Math.exp(lg[v4]-mx);sm+=lg[v4];}
+      var best=0,bv=-1;
+      for(var v5=0;v5<V;v5++){lg[v5]/=sm;if(lg[v5]>bv){bv=lg[v5];best=v5;}}
+      loss+=-Math.log(Math.max(lg[tgt],1e-12));cnt++;if(best===tgt)ok++;
+      if(wantGrad)for(var v6=0;v6<V;v6++){
+        var dz=lg[v6]-(v6===tgt?1:0);
+        for(var j3=0;j3<N;j3++){
+          g.Cre[j3*V+v6]+=dz*Hr[ob+j3];g.Cim[j3*V+v6]+=dz*Hi[ob+j3];
+          dHr[ob+j3]+=dz*S.Cre[j3*V+v6];dHi[ob+j3]+=dz*S.Cim[j3*V+v6];
+        }
+      }
+    }
+    if(!wantGrad)continue;
+    var dlr=new Float64Array(N),dli=new Float64Array(N),
+        dir=new Float64Array(V*N),dii=new Float64Array(V*N);
+    for(var t3=T-1;t3>=0;t3--){
+      var v7=seq[t3],o2=t3*N,o3=(t3+1)*N;
+      for(var j4=0;j4<N;j4++){
+        var dr=dHr[o3+j4],di=dHi[o3+j4];
+        if(dr===0&&di===0)continue;
+        var a2=Hr[o2+j4],b2=Hi[o2+j4];
+        dlr[j4]+=dr*a2+di*b2; dli[j4]+=-dr*b2+di*a2;
+        dir[v7*N+j4]+=dr; dii[v7*N+j4]+=di;
+        dHr[o2+j4]+=dr*lr[j4]+di*li[j4];
+        dHi[o2+j4]+=-dr*li[j4]+di*lr[j4];
+      }
+    }
+    for(var j5=0;j5<N;j5++){
+      var av=-Math.exp(S.p[j5]),mag=Math.exp(D*av),th=D*S.w[j5],
+          cs=Math.cos(th),sn=Math.sin(th);
+      var d_a=dlr[j5]*(D*mag*cs)+dli[j5]*(D*mag*sn);
+      var d_w=dlr[j5]*(-D*mag*sn)+dli[j5]*(D*mag*cs);
+      var d_D=dlr[j5]*(av*mag*cs-S.w[j5]*mag*sn)+dli[j5]*(av*mag*sn+S.w[j5]*mag*cs);
+      g.p[j5]+=d_a*av; g.w[j5]+=d_w; g.q+=d_D*D;
+    }
+    for(var v8=0;v8<V;v8++)for(var j6=0;j6<N;j6++){
+      var dr3=dir[v8*N+j6],di3=dii[v8*N+j6];
+      if(dr3===0&&di3===0)continue;
+      for(var d4=0;d4<DE;d4++){
+        g.Bre[j6*DE+d4]+=dr3*S.E[v8*DE+d4];
+        g.Bim[j6*DE+d4]+=di3*S.E[v8*DE+d4];
+      }
+    }
+  }
+  return {loss:loss/Math.max(1,cnt),acc:ok/Math.max(1,cnt),g:g};
+}
+var TR=null;
+function startTraining(){
+  var keys=(S.mode==='full')?['p','w','Bre','Bim','Cre','Cim']:['Cre','Cim'];
+  var st={};keys.forEach(function(k){st[k]={m:new Float64Array(S[k].length),v:new Float64Array(S[k].length)};});
+  var seqs=[];for(var s=0;s<6;s++){var q=[];for(var t=0;t<300;t++)q.push((Math.random()*V)|0);seqs.push(q);}
+  if(S.mode==='full'&&!S.lr0){S.lr0=S.lr.slice();S.li0=S.li.slice();}
+  TR={keys:keys,st:st,stq:{m:0,v:0},it:0,iters:130,seqs:seqs,lr0:0.05};
+  S.hist=[];
+}
+function trainChunk(){
+  if(!TR)return false;
+  var t0=(typeof performance!=='undefined'&&performance.now)?performance.now():Date.now();
+  var BUDGET_MS=7;                       // keep the render loop under frame time
+  var did=0;
+  while(TR.it<TR.iters){
+    TR.it++;did++;
+    var r=fwdbwd(TR.seqs,S.K,true);
+    S.hist.push(r.loss);
+    var lr=TR.lr0*(1-TR.it/(TR.iters*1.3)),b1=.9,b2=.999;
+    TR.keys.forEach(function(k){
+      var arr=S[k],gr=r.g[k],A=TR.st[k];
+      for(var i=0;i<arr.length;i++){
+        var gv=gr[i]/TR.seqs.length;
+        A.m[i]=b1*A.m[i]+(1-b1)*gv;A.v[i]=b2*A.v[i]+(1-b2)*gv*gv;
+        arr[i]-=lr*(A.m[i]/(1-Math.pow(b1,TR.it)))/(Math.sqrt(A.v[i]/(1-Math.pow(b2,TR.it)))+1e-8);
+      }
+    });
+    if(S.mode==='full'){
+      var gq=r.g.q/TR.seqs.length;
+      TR.stq.m=b1*TR.stq.m+(1-b1)*gq;TR.stq.v=b2*TR.stq.v+(1-b2)*gq*gq;
+      S.q-=lr*(TR.stq.m/(1-Math.pow(b1,TR.it)))/(Math.sqrt(TR.stq.v/(1-Math.pow(b2,TR.it)))+1e-8);
+      refreshLam(false);
+      document.getElementById('dstep').value=Math.exp(S.q).toFixed(2);
+      document.getElementById('dv').textContent=Math.exp(S.q).toFixed(2);
+    }
+    var tn=(typeof performance!=='undefined'&&performance.now)?performance.now():Date.now();
+    if(tn-t0>BUDGET_MS) break;
+  }
+  if(did===0&&TR.it<TR.iters) return true;
+  safe(drawLoss);safe(drawDisk);safe(drawCont);safe(drawW);
+  if(TR.it>=TR.iters){
+    var ts=[];for(var s=0;s<4;s++){var q2=[];for(var t=0;t<300;t++)q2.push((Math.random()*V)|0);ts.push(q2);}
+    var ev=fwdbwd(ts,S.K,false);
+    S.fitted=true;hits=0;tries=0;
+    document.getElementById('trainstat').innerHTML='held-out recall <b>'+(ev.acc*100).toFixed(0)+
+      '%</b> <span class="good">(chance '+(100/V).toFixed(0)+'%)</span>'+
+      (S.mode==='full'?' &nbsp;&Delta;=<b>'+Math.exp(S.q).toFixed(2)+'</b>':' &nbsp;<span style="color:#5E7C7F">dynamics frozen</span>');
+    var b=document.getElementById('trainbtn');b.disabled=false;b.textContent='Refit';
+    TR=null;livePredict();
+    return false;
+  }
+  return true;
+}
+function predictNow(){
+  if(!S.fitted)return -1;
+  var best=0,bv=-1e18;
+  for(var v=0;v<V;v++){
+    var sm=0;
+    for(var j=0;j<S.N;j++)sm+=S.hr[j]*S.Cre[j*V+v]+S.hi[j]*S.Cim[j*V+v];
+    if(sm>bv){bv=sm;best=v;}
+  }
+  return best;
+}
+var hits=0,tries=0;
+function livePredict(){
+  var el=document.getElementById('pred');
+  if(!S.fitted){el.innerHTML='fit, then stream to see live predictions';return;}
+  if(S.seq.length<=S.K){el.innerHTML='need '+(S.K+1-S.seq.length)+' more tokens…';return;}
+  var p=predictNow(),truth=S.seq[S.seq.length-1-S.K];
+  tries++;if(p===truth)hits++;
+  el.innerHTML='K back &rarr; predicted <span class="t" style="color:'+TCOL[p]+'">'+GLYPH[p]+
+    '</span> actual <span class="t" style="color:'+TCOL[truth]+'">'+GLYPH[truth]+'</span> '+
+    (p===truth?'<span class="hit">hit</span>':'<span class="miss">miss</span>')+
+    ' <span style="color:#5E7C7F">live '+hits+'/'+tries+'</span>';
+}
+
+/* ================= 3D pond ================= */
+var W=innerWidth,H=innerHeight;
+var renderer=null;
+try{
+  if(typeof THREE==='undefined') throw new Error('3D library did not load');
+  renderer=new THREE.WebGLRenderer({antialias:true});
+}catch(err){
+  var warn=document.createElement('div');
+  warn.style.cssText='position:fixed;left:0;right:0;top:30%;z-index:8;text-align:center;'+
+    'font-family:IBM Plex Mono,monospace;font-size:12px;color:#E0A94E;padding:0 24px;line-height:1.6';
+  warn.textContent='The 3D water needs WebGL, which this browser blocked. '+
+    'Everything else on the panels below still works.';
+  document.body.appendChild(warn);
+}
+if(renderer){
+  renderer.setSize(W,H);renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+  renderer.setClearColor(0x081418);
+  document.getElementById('stage').appendChild(renderer.domElement);
+}
+var scene=null,camera=null,geo=null,pos=null,colors=null;
+var GRID=76,SIZE=40;
+if(renderer){
+  scene=new THREE.Scene();scene.fog=new THREE.Fog(0x081418,32,60);
+  camera=new THREE.PerspectiveCamera(46,W/H,0.1,200);
+  geo=new THREE.PlaneGeometry(SIZE,SIZE,GRID,GRID);geo.rotateX(-Math.PI/2);
+  pos=geo.attributes.position;colors=new Float32Array(pos.count*3);
+  geo.setAttribute('color',new THREE.BufferAttribute(colors,3));
+  scene.add(new THREE.Mesh(geo,new THREE.MeshBasicMaterial({wireframe:true,vertexColors:true,transparent:true,opacity:.95})));
+  var fl=new THREE.Mesh(new THREE.PlaneGeometry(SIZE,SIZE).rotateX(-Math.PI/2),
+    new THREE.MeshBasicMaterial({color:0x0B1E24}));fl.position.y=-.06;scene.add(fl);
+}
+var PROF=190,PMAX=30,prof=new Float64Array(PROF);
+var C0={r:.07,g:.23,b:.25},C1={r:.184,g:.72,b:.70},C2={r:.878,g:.663,b:.306};
+function deform(){
+  if(!renderer||!pos) return;
+  var e=S.morph<1?(1-Math.cos(Math.PI*S.morph))/2:1;
+  var j0=0,j1=S.N;if(S.solo>=0){j0=S.solo;j1=S.solo+1;}
+  for(var i=0;i<PROF;i++){
+    var d=i/(PROF-1)*PMAX,v=0;
+    for(var j=j0;j<j1;j++){
+      var re=S.pr[j]+(S.hr[j]-S.pr[j])*e,im=S.pi[j]+(S.hi[j]-S.pi[j])*e;
+      var kd=S.k[j]*d;v+=re*Math.cos(kd)+im*Math.sin(kd);
+    }
+    prof[i]=v/(1+0.28*d);
+  }
+  var arr=pos.array,sc=0.9/Math.sqrt(S.N);
+  for(var vv=0;vv<pos.count;vv++){
+    var x=arr[3*vv],z=arr[3*vv+2],dd=Math.sqrt(x*x+z*z);
+    var fi=dd/PMAX*(PROF-1),y=0;
+    if(fi<PROF-1){var i0=fi|0,fr=fi-i0;y=prof[i0]*(1-fr)+prof[i0+1]*fr;}
+    y*=sc;arr[3*vv+1]=y;
+    var t=Math.max(-1,Math.min(1,y*2.0)),a=Math.abs(t),o=3*vv;
+    if(t<=.55){colors[o]=C0.r+(C1.r-C0.r)*a;colors[o+1]=C0.g+(C1.g-C0.g)*a;colors[o+2]=C0.b+(C1.b-C0.b)*a;}
+    else{var m=(a-.55)/.45;colors[o]=C1.r+(C2.r-C1.r)*m;colors[o+1]=C1.g+(C2.g-C1.g)*m;colors[o+2]=C1.b+(C2.b-C1.b)*m;}
+  }
+  pos.needsUpdate=true;geo.attributes.color.needsUpdate=true;
+}
+/* size the pond to the space ABOVE the panel so it is never hidden behind it */
+function layout(){
+  if(!renderer) return;
+  var pe=document.getElementById('panel');
+  var ph=(pe&&pe.offsetHeight)?pe.offsetHeight:0;
+  if(pe&&pe.classList&&pe.classList.contains&&pe.classList.contains('min')) ph=24;
+  W=innerWidth;
+  H=Math.max(200,innerHeight-ph);
+  camera.aspect=W/H;camera.updateProjectionMatrix();
+  renderer.setSize(W,H);
+}
+function stateEnergy(){
+  var e=0;for(var j=0;j<S.N;j++)e+=Math.hypot(S.hr[j],S.hi[j]);
+  return e;
+}
+function updateEmpty(){
+  var el=document.getElementById('empty');
+  if(!el)return;
+  el.style.opacity=(stateEnergy()<1e-6)?'1':'0';
+}
+var az=0,pol=1.0,dist=33;
+function placeCam(){
+  if(!camera) return;camera.position.set(dist*Math.sin(pol)*Math.sin(az),dist*Math.cos(pol),dist*Math.sin(pol)*Math.cos(az));camera.lookAt(0,0,0);}
+placeCam();
+var drag=false,lx=0,ly=0,pinch0=0,el3=renderer?renderer.domElement:document.createElement('div');
+function pXY(e){var t=e.touches?e.touches[0]:e;return[t.clientX,t.clientY];}
+el3.addEventListener('mousedown',function(e){drag=true;var p=pXY(e);lx=p[0];ly=p[1];});
+el3.addEventListener('mousemove',mv);addEventListener('mouseup',function(){drag=false;});
+el3.addEventListener('touchstart',function(e){
+  if(e.touches.length===2){pinch0=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);return;}
+  drag=true;var p=pXY(e);lx=p[0];ly=p[1];},{passive:true});
+el3.addEventListener('touchmove',mv,{passive:false});
+el3.addEventListener('touchend',function(){drag=false;});
+el3.addEventListener('wheel',function(e){dist=Math.max(16,Math.min(50,dist+e.deltaY*.02));placeCam();},{passive:true});
+function mv(e){
+  if(e.touches&&e.touches.length===2){
+    var d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);
+    dist=Math.max(16,Math.min(50,dist*pinch0/Math.max(1,d)));pinch0=d;placeCam();e.preventDefault();return;}
+  if(!drag)return;var p=pXY(e);
+  az-=(p[0]-lx)*.005;pol=Math.max(.35,Math.min(1.35,pol-(p[1]-ly)*.004));
+  lx=p[0];ly=p[1];placeCam();if(e.touches)e.preventDefault();
+}
+
+/* ================= panels ================= */
+function fit(id){
+  var cv=document.getElementById(id); if(!cv) return null;
+  var w=cv.clientWidth,h=cv.clientHeight;
+  if(!(w>0&&h>0)) return null;            // hidden pane: nothing to draw
+  var r=Math.min(devicePixelRatio||1,2);
+  cv.width=Math.max(1,Math.round(w*r));cv.height=Math.max(1,Math.round(h*r));
+  var c=cv.getContext('2d'); if(!c) return null;
+  c.setTransform(r,0,0,r,0,0);
+  return [c,w,h];}
+
+var chips=document.getElementById('chips');
+for(var v0=0;v0<V;v0++)(function(v){
+  var c=document.createElement('div');c.className='chip';c.style.color=TCOL[v];
+  c.innerHTML=GLYPH[v]+'<span class="id">id '+v+'</span>';
+  c.addEventListener('click',function(){step(v);});chips.appendChild(c);
+})(v0);
+
+function drawSeq(){
+  var st=document.getElementById('seqstrip');st.innerHTML='';
+  var start=Math.max(0,S.steps-S.seq.length);
+  for(var i=0;i<S.seq.length;i++){
+    var d=document.createElement('div');d.className='sq'+(i===S.seq.length-1?' newest':'');
+    d.style.color=TCOL[S.seq[i]];d.innerHTML=GLYPH[S.seq[i]]+'<span>t='+(start+i+1)+'</span>';
+    st.appendChild(d);
+  }
+  st.scrollLeft=st.scrollWidth;
+}
+function drawEmb(){
+  var F=fit('embcv'); if(!F) return; var ctx=F[0],w=F[1],h=F[2];ctx.clearRect(0,0,w,h);
+  if(S.lastTok<0){ctx.fillStyle='#5E7C7F';ctx.font='9px IBM Plex Mono';ctx.fillText('— no token yet —',3,h/2+3);return;}
+  var e=S.E,bw=w/DE;
+  for(var d=0;d<DE;d++){
+    var m=Math.max(-1,Math.min(1,e[S.lastTok*DE+d]/1.8)),bh=Math.abs(m)*(h/2-3);
+    ctx.fillStyle=TCOL[S.lastTok];ctx.fillRect(d*bw+2,h/2-(m>0?bh:0),bw-4,bh);
+  }
+  ctx.strokeStyle='rgba(47,184,179,.18)';ctx.beginPath();ctx.moveTo(0,h/2);ctx.lineTo(w,h/2);ctx.stroke();
+}
+function drawInj(){
+  var F=fit('injcv'); if(!F) return; var ctx=F[0],w=F[1],h=F[2];ctx.clearRect(0,0,w,h);
+  if(!S.injR){ctx.fillStyle='#5E7C7F';ctx.font='9px IBM Plex Mono';ctx.fillText('— no injection yet —',3,h/2+3);return;}
+  var bw=w/S.N,mx=1e-9;
+  for(var j=0;j<S.N;j++)mx=Math.max(mx,Math.abs(S.injR[j]),Math.abs(S.injI[j]));
+  for(var j2=0;j2<S.N;j2++){
+    var a=S.injR[j2]/mx*(h/2-3),b=S.injI[j2]/mx*(h/2-3);
+    ctx.fillStyle=TCOL[S.lastTok];ctx.fillRect(j2*bw+1,h/2-(a>0?a:0),bw/2-1.5,Math.abs(a));
+    ctx.fillStyle='rgba(217,232,228,.45)';ctx.fillRect(j2*bw+bw/2+.5,h/2-(b>0?b:0),bw/2-1.5,Math.abs(b));
+  }
+  ctx.strokeStyle='rgba(47,184,179,.18)';ctx.beginPath();ctx.moveTo(0,h/2);ctx.lineTo(w,h/2);ctx.stroke();
+}
+var dialrow=document.getElementById('dialrow'),dialsBox=document.getElementById('dials'),dialCv=[];
+function buildDials(){
+  dialrow.innerHTML='';dialCv=[];
+  for(var j=0;j<S.N;j++)(function(j){
+    var b=document.createElement('div');b.className='dial';
+    var c=document.createElement('canvas');c.width=80;c.height=80;
+    var l=document.createElement('div');l.className='w';l.textContent=S.w[j].toFixed(2);
+    b.appendChild(c);b.appendChild(l);
+    b.addEventListener('click',function(){S.solo=(S.solo===j)?-1:j;syncSolo();});
+    dialrow.appendChild(b);dialCv.push({ctx:c.getContext('2d'),box:b,lab:l});
+  })(j);
+  syncSolo();
+}
+function syncSolo(){
+  dialsBox.classList.toggle('dimmed',S.solo>=0);
+  for(var j=0;j<dialCv.length;j++)dialCv[j].box.classList.toggle('solo',j===S.solo);
+}
+function drawDials(){
+  var mx=1e-9;
+  for(var j=0;j<S.N;j++)mx=Math.max(mx,Math.hypot(S.hr[j],S.hi[j]));
+  for(var j2=0;j2<S.N;j2++){
+    var mag=Math.hypot(S.hr[j2],S.hi[j2]),ang=Math.atan2(S.hi[j2],S.hr[j2]),ctx=dialCv[j2].ctx;
+    ctx.clearRect(0,0,80,80);
+    ctx.beginPath();ctx.arc(40,40,31,0,6.2832);
+    ctx.strokeStyle='rgba(47,184,179,0.3)';ctx.lineWidth=2;ctx.stroke();
+    var amp=Math.min(1,mag/mx);
+    if(amp>.01){ctx.beginPath();ctx.arc(40,40,31*amp,0,6.2832);
+      ctx.strokeStyle='rgba(47,184,179,0.75)';ctx.lineWidth=2.1;ctx.stroke();}
+    if(mag>1e-5){ctx.beginPath();ctx.moveTo(40,40);
+      ctx.lineTo(40+29*amp*Math.cos(-ang),40+29*amp*Math.sin(-ang));
+      ctx.strokeStyle='#E0A94E';ctx.lineWidth=2.8;ctx.lineCap='round';ctx.stroke();}
+    ctx.beginPath();ctx.arc(40,40,2.2,0,6.2832);ctx.fillStyle='#E0A94E';ctx.fill();
+  }
+}
+function drawLoss(){
+  var F=fit('losscv'); if(!F) return; var ctx=F[0],w=F[1],h=F[2];ctx.clearRect(0,0,w,h);
+  if(!S.hist.length){ctx.fillStyle='#5E7C7F';ctx.font='9px IBM Plex Mono';
+    ctx.fillText('— press Fit —',3,h/2+3);return;}
+  var mx=-1e9,mn=1e9;
+  for(var i=0;i<S.hist.length;i++){mx=Math.max(mx,S.hist[i]);mn=Math.min(mn,S.hist[i]);}
+  var span=Math.max(1e-6,mx-mn);
+  ctx.strokeStyle='rgba(47,184,179,.15)';ctx.beginPath();
+  var chance=Math.log(V);
+  var cy=h-4-(chance-mn)/span*(h-10);
+  if(cy>0&&cy<h){ctx.setLineDash([3,3]);ctx.moveTo(0,cy);ctx.lineTo(w,cy);ctx.stroke();ctx.setLineDash([]);
+    ctx.fillStyle='#5E7C7F';ctx.font='7.5px IBM Plex Mono';ctx.fillText('chance',w-38,cy-3);}
+  ctx.beginPath();ctx.strokeStyle=S.mode==='full'?'#E0A94E':'#2FB8B3';ctx.lineWidth=1.6;
+  if(S.mode!=='full')ctx.setLineDash([4,3]);
+  for(var i2=0;i2<S.hist.length;i2++){
+    var px=i2/Math.max(1,S.hist.length-1)*w,py=h-4-(S.hist[i2]-mn)/span*(h-10);
+    i2?ctx.lineTo(px,py):ctx.moveTo(px,py);
+  }
+  ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle='#D9E8E4';ctx.font='8px IBM Plex Mono';
+  ctx.fillText('loss '+S.hist[S.hist.length-1].toFixed(3)+
+    (S.mode==='full'?'   [solid: A,B,C,\u0394]':'   [dashed: C only]'),3,10);
+}
+function drawW(){
+  var F=fit('wcv'); if(!F) return; var ctx=F[0],w=F[1],h=F[2];ctx.clearRect(0,0,w,h);
+  var mag=[],mx=1e-9;
+  for(var j=0;j<S.N;j++){
+    var m=0;for(var v=0;v<V;v++)m+=Math.abs(S.Cre[j*V+v])+Math.abs(S.Cim[j*V+v]);
+    mag.push(m);mx=Math.max(mx,m);
+  }
+  var bw=w/S.N;
+  for(var j2=0;j2<S.N;j2++){
+    var bh=Math.max(1,mag[j2]/mx*(h-12));
+    ctx.fillStyle=S.fitted?'#E0A94E':'rgba(94,124,127,.55)';
+    ctx.fillRect(j2*bw+1.2,h-10-bh,bw-2.4,bh);
+  }
+  ctx.fillStyle='#5E7C7F';ctx.font='7.5px IBM Plex Mono';ctx.fillText('slow \u03C9 \u2192 fast \u03C9',3,h-2);
+}
+function drawDisk(){
+  var F=fit('diskcv'); if(!F) return; var ctx=F[0],w=F[1],h=F[2];ctx.clearRect(0,0,w,h);
+  var cx=w/2,cy=h/2,R=Math.max(8,Math.min(w,h)/2-13);
+  ctx.strokeStyle='rgba(47,184,179,.3)';ctx.lineWidth=1.2;
+  ctx.beginPath();ctx.arc(cx,cy,R,0,6.2832);ctx.stroke();
+  ctx.strokeStyle='rgba(47,184,179,.12)';ctx.beginPath();
+  ctx.moveTo(cx-R,cy);ctx.lineTo(cx+R,cy);ctx.moveTo(cx,cy-R);ctx.lineTo(cx,cy+R);ctx.stroke();
+  ctx.fillStyle='#5E7C7F';ctx.font='7.5px IBM Plex Mono';
+  ctx.fillText('|\u03BB|=1  (stability edge)',cx-R+2,cy-R-4);
+  ctx.fillText('Re',cx+R-14,cy-4);ctx.fillText('Im',cx+4,cy-R+9);
+  if(S.lr0)for(var j=0;j<S.N&&j<S.lr0.length;j++){
+    ctx.beginPath();ctx.arc(cx+S.lr0[j]*R,cy-S.li0[j]*R,3.2,0,6.2832);
+    ctx.strokeStyle='rgba(94,124,127,.55)';ctx.lineWidth=1;ctx.stroke();
+  }
+  for(var j2=0;j2<S.N;j2++){
+    ctx.beginPath();ctx.arc(cx+S.lr[j2]*R,cy-S.li[j2]*R,3.1,0,6.2832);
+    ctx.fillStyle=(j2===S.solo)?'#E0A94E':'#2FB8B3';ctx.fill();
+  }
+  ctx.fillStyle='#5E7C7F';ctx.font='7.5px IBM Plex Mono';
+  ctx.fillText('\u25CB start   \u25CF now',cx-R+2,cy+R+10);
+}
+function drawCont(){
+  var F=fit('contcv'); if(!F) return; var ctx=F[0],w=F[1],h=F[2];ctx.clearRect(0,0,w,h);
+  var bw=w/S.N,maxA=1e-9,maxW=1e-9;
+  for(var j=0;j<S.N;j++){maxA=Math.max(maxA,Math.exp(S.p[j]));maxW=Math.max(maxW,Math.abs(S.w[j]));}
+  for(var j2=0;j2<S.N;j2++){
+    var ab=Math.exp(S.p[j2])/maxA*(h-14);
+    ctx.fillStyle='rgba(210,104,94,.65)';ctx.fillRect(j2*bw+1,h-10-ab,bw-2,ab);
+    var wy=h-10-Math.abs(S.w[j2])/maxW*(h-14);
+    ctx.beginPath();ctx.arc(j2*bw+bw/2,wy,2.1,0,6.2832);ctx.fillStyle='#2FB8B3';ctx.fill();
+  }
+  ctx.fillStyle='#5E7C7F';ctx.font='7.5px IBM Plex Mono';
+  ctx.fillText('bar = |a| decay   dot = \u03C9 freq   \u0394 = '+Math.exp(S.q).toFixed(2),3,h-1);
+}
+/* ================= sequential vs parallel scan =================
+   h_t = lam*h_{t-1} + u_t is ASSOCIATIVE under
+     (a2,b2) o (a1,b1) = (a1*a2, a2*b1 + b2)
+   so the same recurrence resolves in log2(T) dependent rounds.
+   Complex arithmetic throughout; we verify both paths agree.        */
+var SCAN={T:16,err:0,seqDepth:0,parDepth:0,ops:0};
+function cmul(ar,ai,br,bi){return [ar*br-ai*bi, ar*bi+ai*br];}
+function runScanDemo(){
+  var T=SCAN.T, j=Math.max(0,Math.min(S.N-1,S.solo>=0?S.solo:(S.N>>1)));
+  var lr=S.lr[j], li=S.li[j];
+  var ur=new Float64Array(T), ui=new Float64Array(T);
+  for(var t=0;t<T;t++){
+    var v=(Math.random()*V)|0, I=injectionFor(v);
+    ur[t]=I[0][j]; ui[t]=I[1][j];
+  }
+  // --- sequential: T dependent steps ---
+  var sr=new Float64Array(T), si=new Float64Array(T), hr=0, hi=0;
+  for(var t2=0;t2<T;t2++){
+    var m=cmul(lr,li,hr,hi);
+    hr=m[0]+ur[t2]; hi=m[1]+ui[t2];
+    sr[t2]=hr; si[t2]=hi;
+  }
+  // --- Hillis-Steele inclusive scan: log2(T) rounds ---
+  var ar=new Float64Array(T), ai=new Float64Array(T),
+      br=new Float64Array(T), bi=new Float64Array(T);
+  for(var t3=0;t3<T;t3++){ar[t3]=lr;ai[t3]=li;br[t3]=ur[t3];bi[t3]=ui[t3];}
+  var rounds=0, ops=0;
+  for(var d=1;d<T;d<<=1){
+    var nar=ar.slice(),nai=ai.slice(),nbr=br.slice(),nbi=bi.slice();
+    for(var t4=d;t4<T;t4++){
+      // compose element (t4-d) THEN element t4
+      var A1r=ar[t4-d],A1i=ai[t4-d],B1r=br[t4-d],B1i=bi[t4-d];
+      var A2r=ar[t4],A2i=ai[t4],B2r=br[t4],B2i=bi[t4];
+      var na=cmul(A1r,A1i,A2r,A2i);
+      var ab=cmul(A2r,A2i,B1r,B1i);
+      nar[t4]=na[0];nai[t4]=na[1];
+      nbr[t4]=ab[0]+B2r;nbi[t4]=ab[1]+B2i;
+      ops++;
+    }
+    ar=nar;ai=nai;br=nbr;bi=nbi;rounds++;
+  }
+  var err=0;
+  for(var t5=0;t5<T;t5++) err=Math.max(err,Math.hypot(br[t5]-sr[t5],bi[t5]-si[t5]));
+  SCAN.err=err;SCAN.seqDepth=T;SCAN.parDepth=rounds;SCAN.ops=ops;
+}
+function drawScan(){
+  var F=fit('scancv'); if(!F) return; var ctx=F[0],w=F[1],h=F[2];ctx.clearRect(0,0,w,h);
+  var T=SCAN.T, pad=8, cw=(w-2*pad)/T, r=Math.min(5,cw/2.6);
+  // ---- sequential chain ----
+  ctx.fillStyle='#5E7C7F';ctx.font='8px IBM Plex Mono';ctx.textAlign='left';
+  ctx.fillText('SEQUENTIAL — inference path',pad,11);
+  var yS=26;
+  for(var t=0;t<T;t++){
+    var x=pad+cw*(t+.5);
+    if(t){ctx.strokeStyle='rgba(210,104,94,.85)';ctx.lineWidth=1.2;
+      ctx.beginPath();ctx.moveTo(pad+cw*(t-.5)+r,yS);ctx.lineTo(x-r,yS);ctx.stroke();}
+    ctx.beginPath();ctx.arc(x,yS,r,0,6.2832);ctx.fillStyle='#D2685E';ctx.fill();
+  }
+  ctx.fillStyle='#D2685E';ctx.font='8px IBM Plex Mono';
+  ctx.fillText('depth = T = '+SCAN.seqDepth+' dependent steps   ·   memory 2N',pad,yS+16);
+  // ---- parallel scan tree ----
+  ctx.fillStyle='#5E7C7F';ctx.fillText('PARALLEL SCAN — training path',pad,yS+34);
+  var y0=yS+48, levels=SCAN.parDepth, dy=Math.min(22,(h-y0-20)/Math.max(1,levels));
+  for(var lv=0;lv<levels;lv++){
+    var d=1<<lv, y=y0+lv*dy;
+    for(var t2=0;t2<T;t2++){
+      var x=pad+cw*(t2+.5);
+      if(t2>=d){
+        ctx.strokeStyle='rgba(47,184,179,.5)';ctx.lineWidth=1;
+        ctx.beginPath();ctx.moveTo(pad+cw*(t2-d+.5),y-dy*0.62);
+        ctx.lineTo(x,y-2.5);ctx.stroke();
+      }
+      ctx.beginPath();ctx.arc(x,y,r*0.72,0,6.2832);
+      ctx.fillStyle=(t2>=d)?'#2FB8B3':'rgba(47,184,179,.32)';ctx.fill();
+    }
+    ctx.fillStyle='#5E7C7F';ctx.font='7px IBM Plex Mono';ctx.textAlign='right';
+    ctx.fillText('stride '+d,w-2,y+2.5);ctx.textAlign='left';
+  }
+  ctx.fillStyle='#2FB8B3';ctx.font='8px IBM Plex Mono';
+  ctx.fillText('depth = log\u2082T = '+SCAN.parDepth+' rounds   ·   '+SCAN.ops+' compositions',
+    pad,y0+levels*dy+11);
+}
+
+var L_REF=32,DMODEL=4096,DINNER=8192,DSTATE=16;
+function drawCost(){
+  var F=fit('costcv'); if(!F) return; var ctx=F[0],w=F[1],h=F[2];
+  var T=parseInt(document.getElementById('ctxT').value,10);
+  ctx.clearRect(0,0,w,h);
+  var kvPer=2*L_REF*DMODEL,kv=kvPer*T,ssm=L_REF*DINNER*DSTATE,TMAX=8192,maxv=kvPer*TMAX;
+  var pad=54,bw=w-pad-6;
+  function fmt(n){return n>=1e9?(n/1e9).toFixed(2)+'B':n>=1e6?(n/1e6).toFixed(1)+'M':n>=1e3?(n/1e3).toFixed(0)+'K':''+n;}
+  ctx.font='8.5px IBM Plex Mono';ctx.textAlign='right';ctx.fillStyle='#5E7C7F';
+  ctx.fillText('KV cache',pad-6,23);ctx.fillText('SSM state',pad-6,63);
+  ctx.fillStyle='rgba(210,104,94,.2)';ctx.fillRect(pad,12,bw,15);
+  ctx.fillStyle='#D2685E';ctx.fillRect(pad,12,Math.max(2,bw*kv/maxv),15);
+  // texture, not just hue: diagonal hatch marks the growing series
+  ctx.save();ctx.beginPath();ctx.rect(pad,12,Math.max(2,bw*kv/maxv),15);ctx.clip();
+  ctx.strokeStyle='rgba(8,20,24,.45)';ctx.lineWidth=1;
+  for(var hx=pad-15;hx<pad+bw;hx+=6){ctx.beginPath();ctx.moveTo(hx,27);ctx.lineTo(hx+15,12);ctx.stroke();}
+  ctx.restore();
+  ctx.fillStyle='rgba(47,184,179,.2)';ctx.fillRect(pad,52,bw,15);
+  ctx.fillStyle='#2FB8B3';ctx.fillRect(pad,52,Math.max(2,bw*ssm/maxv),15);
+  var xT=ssm/kvPer,cxp=pad+bw*(ssm/maxv);
+  ctx.strokeStyle='rgba(224,169,78,.6)';ctx.setLineDash([3,3]);
+  ctx.beginPath();ctx.moveTo(cxp,8);ctx.lineTo(cxp,72);ctx.stroke();ctx.setLineDash([]);
+  ctx.textAlign='left';ctx.fillStyle='#E0A94E';ctx.font='7.5px IBM Plex Mono';
+  ctx.fillText('cross @ T\u2248'+Math.round(xT),cxp+3,82);
+  ctx.fillStyle='#D9E8E4';ctx.font='8.5px IBM Plex Mono';
+  ctx.fillText(fmt(kv)+'  = 2\u00B7L\u00B7T\u00B7d_model',pad+3,39);
+  ctx.fillText(fmt(ssm)+'  = L\u00B7d_inner\u00B7d_state (no T)',pad+3,79);
+  ctx.fillStyle='#5E7C7F';ctx.font='8px IBM Plex Mono';
+  ctx.fillText('this toy: 1 layer \u2192 '+(2*S.N)+' reals after '+S.steps+' tokens',3,h-3);
+  document.getElementById('coststat').innerHTML='ratio <b>'+(kv/ssm).toFixed(kv/ssm<10?1:0)+'\u00D7</b>';
+}
+
+/* ================= controls ================= */
+var tabs=document.querySelectorAll('.tab');
+for(var ti=0;ti<tabs.length;ti++)tabs[ti].addEventListener('click',function(){
+  for(var k=0;k<tabs.length;k++){
+    tabs[k].classList.toggle('on',tabs[k]===this);
+    document.getElementById('pane-'+tabs[k].dataset.p).classList.toggle('on',tabs[k]===this);
+  }
+  var p=this.dataset.p;
+  layout();
+  requestAnimationFrame(function(){       // wait for the pane to have a size
+    if(p==='learn'){safe(drawLoss);safe(drawW);}
+    if(p==='spec'){safe(drawDisk);safe(drawCont);}
+    if(p==='scan'){runScanDemo();safe(drawScan);updateScanStat();}
+    if(p==='cost')safe(drawCost);
+    if(p==='pipe'){safe(drawEmb);safe(drawInj);safe(drawSeq);}
+  });
+});
+var segs=document.querySelectorAll('#modeseg div');
+for(var si=0;si<segs.length;si++)segs[si].addEventListener('click',function(){
+  if(TR)return;
+  for(var k=0;k<segs.length;k++)segs[k].classList.toggle('on',segs[k]===this);
+  S.mode=this.dataset.m;
+});
+document.getElementById('kdelay').addEventListener('input',function(e){
+  if(TR)return;
+  S.K=parseInt(e.target.value,10);document.getElementById('kv').textContent=S.K;
+  S.fitted=false;hits=0;tries=0;S.hist=[];
+  document.getElementById('trainstat').textContent='unfitted';drawLoss();drawW();livePredict();
+});
+document.getElementById('trainbtn').addEventListener('click',function(){
+  if(TR)return;
+  this.disabled=true;this.textContent='fitting…';
+  startTraining();
+});
+document.getElementById('dstep').addEventListener('input',function(e){
+  if(TR)return;
+  S.q=Math.log(parseFloat(e.target.value));
+  document.getElementById('dv').textContent=parseFloat(e.target.value).toFixed(2);
+  refreshLam(!S.fitted);
+  S.fitted=false;hits=0;tries=0;
+  document.getElementById('trainstat').textContent='\u0394 changed — refit';
+  drawDisk();drawCont();
+});
+document.getElementById('ctxT').addEventListener('input',function(e){
+  document.getElementById('ctxv').textContent=e.target.value;drawCost();
+});
+document.getElementById('ndials').addEventListener('input',function(e){
+  if(TR)return;
+  S.N=parseInt(e.target.value,10);S.solo=-1;
+  document.getElementById('nv').textContent=S.N;
+  document.getElementById('sv').textContent=2*S.N;
+  document.getElementById('pa').textContent=2*S.N;
+  document.getElementById('pb').textContent=S.N*DE*2;
+  document.getElementById('pc').textContent=S.N*V*2;
+  buildModel();resetState();buildDials();step(0);
+  S.fitted=false;hits=0;tries=0;S.hist=[];
+  document.getElementById('trainstat').textContent='model rebuilt — refit';
+  drawLoss();drawW();drawEmb();drawInj();drawSeq();drawDisk();drawCont();drawCost();
+});
+var streaming=false,lastFeed=0;
+document.getElementById('streambtn').addEventListener('click',function(){
+  streaming=!streaming;this.textContent=streaming?'Pause':'Stream';
+});
+var panelEl=document.getElementById('panel'),gl=document.getElementById('griplabel');
+document.getElementById('grip').addEventListener('click',function(){
+  gl.textContent=panelEl.classList.toggle('min')?'show controls':'hide';
+  setTimeout(layout,360);
+});
+document.getElementById('helpbtn').addEventListener('click',function(){
+  document.getElementById('guide').classList.add('on');});
+document.getElementById('closeg').addEventListener('click',function(){
+  document.getElementById('guide').classList.remove('on');});
+document.getElementById('srcbtn').addEventListener('click',function(){
+  var sd=document.getElementById('sources');
+  var on=sd.classList.toggle('on');
+  this.innerHTML=on?'Hide sources':'Show sources &amp; further reading';
+});
+function updateScanStat(){
+  document.getElementById('scanstat').innerHTML=
+    'max |sequential &minus; scan| = <b>'+SCAN.err.toExponential(1)+'</b> '+
+    (SCAN.err<1e-9?'<span class="good">identical</span>':'<span style="color:#D2685E">MISMATCH</span>');
+}
+document.getElementById('scanbtn').addEventListener('click',function(){
+  runScanDemo();drawScan();updateScanStat();
+});
+var rzTimer=null;
+addEventListener('resize',function(){
+  clearTimeout(rzTimer);
+  rzTimer=setTimeout(function(){
+    layout();redrawAll();
+  },140);
+});
+
+/* ================= loop (render only) ================= */
+function safe(f){try{f();}catch(e){if(window.console)console.warn('draw failed:',e&&e.message);}}
+function redrawAll(){
+  safe(drawSeq);safe(drawEmb);safe(drawInj);safe(drawW);safe(drawLoss);
+  safe(drawDisk);safe(drawCont);safe(drawScan);safe(drawCost);
+}
+buildModel();buildDials();redrawAll();
+var STEP_MS=380;
+function loop(ts){
+  requestAnimationFrame(loop);
+  if(TR)trainChunk();
+  if(streaming&&ts-lastFeed>STEP_MS){lastFeed=ts;step((Math.random()*V)|0);}
+  if(S.morph<1)S.morph=Math.min(1,S.morph+0.055);
+  if(renderer){deform();renderer.render(scene,camera);}
+  drawDials();updateEmpty();
+}
+layout();
+requestAnimationFrame(loop);
+step(0);
+setTimeout(layout,60);
+})();
+</script>
+</body>
+</html>
