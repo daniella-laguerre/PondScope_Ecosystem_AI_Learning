@@ -21,7 +21,7 @@ Landing page: [index.html](index.html) — **interactive lessons** are primary; 
 
 Glossary: [glossary.html](glossary.html) — AI / ML terms, plus an **Issues & failure modes** section with **Try it** links into the lab (`#tokens`, `#latency`, `#grounding`).
 
-Comments / feedback / questions: [feedback.html](feedback.html) — three separate forms; labs are listed so notes can point at 01–04, the glossary, or the whole site (opens a GitHub issue draft).
+Comments / feedback / questions: [feedback.html](feedback.html) — labs listed; **comments** are live on the page (Giscus / GitHub Discussions); **feedback** and **questions** open GitHub Issues.
 
 ---
 

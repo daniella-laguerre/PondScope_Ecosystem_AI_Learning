@@ -87,6 +87,12 @@
   .hint a{color:var(--water);text-decoration:none;border-bottom:1px dotted rgba(47,184,179,.4)}
   .status{margin-top:8px;font-size:10px;color:var(--water);min-height:1.2em}
 
+  .livebox{margin-top:10px;padding:4px 0 0;min-height:120px}
+  .livebox .note{font-size:10px;line-height:1.5;color:var(--mute);margin-bottom:10px}
+  .livebox .note a{color:var(--water);text-decoration:none;border-bottom:1px dotted rgba(47,184,179,.4)}
+  .livebox .labhint{font-size:10px;color:var(--mute);margin:0 0 8px;line-height:1.5}
+  .livebox .labhint b{color:var(--foam);font-weight:500}
+
   footer{margin-top:36px;padding-top:16px;border-top:1px solid rgba(47,184,179,.14);
     font-size:10px;line-height:1.6;color:var(--mute)}
   footer a{color:var(--water);text-decoration:none;border-bottom:1px dotted rgba(47,184,179,.4)}
@@ -98,8 +104,8 @@
   <p class="tag">PondScope Ecosystem · Contact</p>
   <h1>Comments, feedback<br>&amp; <em>questions</em></h1>
   <p class="lead">
-    Three separate channels — pick the one that fits. Name which <b>lab</b> your note is about
-    (or the whole site). Sending opens a GitHub issue so Daniella can read and reply in public.
+    Three separate channels. <b>Comments</b> are open and live on this page.
+    <b>Feedback</b> and <b>questions</b> go to GitHub Issues (pick which lab they are about).
   </p>
 
   <nav class="jump" aria-label="Jump to channel">
@@ -140,38 +146,42 @@
     </div>
   </section>
 
-  <!-- COMMENTS -->
+  <!-- COMMENTS — live on site (GitHub Discussions via Giscus) -->
   <section class="panel comments" id="comments">
-    <h2>Comments — <em>reactions &amp; thoughts</em></h2>
+    <h2>Comments — <em>open &amp; live on this page</em></h2>
     <p class="blurb">
-      General impressions, what clicked, what felt unclear — not a bug report and not a
-      specific question. Pick the lab if it applies.
+      Public thread for reactions and thoughts. Sign in with GitHub to post; comments stay visible here
+      for everyone. For bugs or “please explain X,” use Feedback or Questions below instead.
     </p>
-    <form id="form-comments" data-kind="Comment">
-      <div class="row">
-        <label>About which lab
-          <select name="lab" required>
-            <option value="">Select…</option>
-            <option value="01 The Pond">01 · The Pond</option>
-            <option value="02 Pond vs Notebook">02 · Pond vs Notebook</option>
-            <option value="03 Many Heads">03 · Many Heads</option>
-            <option value="04 Issues Lab">04 · Issues Lab</option>
-            <option value="Glossary">Glossary</option>
-            <option value="Home / whole site">Home / whole site</option>
-          </select>
-        </label>
-        <label>Your name (optional)
-          <input type="text" name="name" maxlength="80" placeholder="Optional">
-        </label>
-      </div>
-      <label>Comment
-        <textarea name="body" required maxlength="4000" placeholder="What stayed with you, or what you would tell the next learner…"></textarea>
-      </label>
-      <button class="send" type="submit">Send comment via GitHub</button>
-      <p class="hint">Opens a new issue titled <b>[Comment]</b> on the
-        <a href="https://github.com/daniella-laguerre/PondScope_Ecosystem_AI_Learning/issues" target="_blank" rel="noopener">learning-tool repo</a>.</p>
-      <p class="status" id="status-comments" aria-live="polite"></p>
-    </form>
+    <div class="livebox">
+      <p class="labhint">
+        <b>Mention the lab</b> in your comment when it helps:
+        01 Pond · 02 Notebook · 03 Heads · 04 Issues Lab · Glossary · whole site.
+      </p>
+      <p class="note">
+        Powered by <a href="https://giscus.app" target="_blank" rel="noopener">Giscus</a>
+        (GitHub Discussions). First-time setup: install the
+        <a href="https://github.com/apps/giscus" target="_blank" rel="noopener">Giscus app</a>
+        on the learning-tool repo if the widget asks for it.
+      </p>
+      <script src="https://giscus.app/client.js"
+        data-repo="daniella-laguerre/PondScope_Ecosystem_AI_Learning"
+        data-repo-id="R_kgDOTr8Jug"
+        data-category="General"
+        data-category-id="DIC_kwDOTr8Jus4DClxy"
+        data-mapping="specific"
+        data-term="PondScope learning tool — site comments"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="top"
+        data-theme="transparent_dark"
+        data-lang="en"
+        data-loading="lazy"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </div>
   </section>
 
   <!-- FEEDBACK -->
@@ -201,8 +211,8 @@
       <label>Feedback
         <textarea name="body" required maxlength="4000" placeholder="What should change, and why…"></textarea>
       </label>
-      <button class="send" type="submit">Send feedback via GitHub</button>
-      <p class="hint">Opens a new issue titled <b>[Feedback]</b>. Include steps to reproduce if something failed.</p>
+      <button class="send" type="submit">Send feedback to GitHub</button>
+      <p class="hint">Goes to GitHub Issues as <b>[Feedback]</b> — not shown in the live comments thread. Include steps if something failed.</p>
       <p class="status" id="status-feedback" aria-live="polite"></p>
     </form>
   </section>
@@ -234,8 +244,8 @@
       <label>Question
         <textarea name="body" required maxlength="4000" placeholder="What are you stuck on or curious about…"></textarea>
       </label>
-      <button class="send" type="submit">Send question via GitHub</button>
-      <p class="hint">Opens a new issue titled <b>[Question]</b>. You will need a GitHub account to post.</p>
+      <button class="send" type="submit">Send question to GitHub</button>
+      <p class="hint">Goes to GitHub Issues as <b>[Question]</b> — private to the issues list, not the live comments board. GitHub account required to post.</p>
       <p class="status" id="status-questions" aria-live="polite"></p>
     </form>
   </section>
@@ -291,7 +301,6 @@
     });
   }
 
-  wire("form-comments", "status-comments");
   wire("form-feedback", "status-feedback");
   wire("form-questions", "status-questions");
 
