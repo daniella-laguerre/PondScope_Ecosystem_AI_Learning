@@ -4,8 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Issues Lab — PondScope Ecosystem</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,340;9..144,560&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root{
     --ink:#081418;--deep:#0E2A31;--water:#2FB8B3;--foam:#D9E8E4;
@@ -13,25 +11,34 @@
   }
   *{margin:0;padding:0;box-sizing:border-box}
   html,body{min-height:100%;background:var(--ink);color:var(--foam);
-    font-family:'IBM Plex Mono',monospace}
+    font-family:Arial,Helvetica,sans-serif}
   body{
     background:
       radial-gradient(ellipse 80% 45% at 12% 0%, rgba(210,104,94,.14), transparent 50%),
       radial-gradient(ellipse 70% 40% at 90% 10%, rgba(47,184,179,.12), transparent 45%),
       var(--ink);
   }
-  main{max-width:780px;margin:0 auto;padding:clamp(22px,5vw,48px) 16px 56px}
+  main{max-width:820px;margin:0 auto;padding:clamp(22px,5vw,48px) 16px 56px}
   a.back{display:inline-block;font-size:10px;letter-spacing:.1em;text-transform:uppercase;
     color:var(--water);text-decoration:none;border-bottom:1px dotted rgba(47,184,179,.4);
     margin-bottom:16px}
   .tag{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--brass)}
-  h1{font-family:'Fraunces',serif;font-weight:560;font-size:clamp(26px,6vw,38px);
+  h1{font-family:Arial,Helvetica,sans-serif;font-weight:560;font-size:clamp(26px,6vw,38px);
     line-height:1.08;margin-top:8px}
   h1 em{font-style:italic;color:var(--rose)}
-  .lead{margin:12px 0 20px;max-width:42em;font-size:12px;line-height:1.65;color:var(--mute)}
+  .lead{margin:12px 0 14px;max-width:44em;font-size:12px;line-height:1.65;color:var(--mute)}
   .lead b{color:var(--foam);font-weight:500}
   .warn{font-size:10px;line-height:1.55;color:var(--mute);border-left:2px solid var(--brass);
-    padding-left:10px;margin-bottom:22px}
+    padding-left:10px;margin-bottom:14px}
+
+  .prereq{border:1px solid rgba(47,184,179,.22);border-radius:3px;padding:12px 13px;
+    margin-bottom:16px;background:rgba(14,42,49,.45);font-size:11px;line-height:1.55;color:var(--mute)}
+  .prereq b{color:var(--foam)}
+  .prereq a{color:var(--water);text-decoration:none;border-bottom:1px dotted rgba(47,184,179,.4)}
+  .pill{display:inline-block;font-size:8px;letter-spacing:.06em;padding:2px 6px;margin:2px 3px 2px 0;
+    border-radius:2px;border:1px solid rgba(47,184,179,.3);color:var(--mute)}
+  .pill.on{border-color:rgba(47,184,179,.65);color:var(--water)}
+  .pill.off{border-color:rgba(210,104,94,.4);color:var(--rose)}
 
   .toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:14px}
   .tabs{display:flex;flex-wrap:wrap;gap:6px;flex:1}
@@ -52,16 +59,31 @@
 
   .panel{border:1px solid rgba(47,184,179,.2);border-radius:3px;padding:14px 14px 12px;
     background:rgba(14,42,49,.4);margin-bottom:12px}
-  .panel h2{font-family:'Fraunces',serif;font-size:18px;font-weight:560;margin-bottom:6px}
+  .panel h2{font-family:Arial,Helvetica,sans-serif;font-size:18px;font-weight:560;margin-bottom:6px}
   .panel h2 span{color:var(--water);font-style:italic;font-weight:340}
+  .from{font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--brass);margin-bottom:8px}
   .panel .blurb{font-size:11px;line-height:1.6;color:var(--mute);margin-bottom:12px}
   .panel .blurb b{color:var(--foam);font-weight:500}
 
-  .meters{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;
+  .viz{
+    display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0 12px;
+  }
+  @media(max-width:560px){.viz{grid-template-columns:1fr}}
+  .viz-card{border:1px solid rgba(47,184,179,.18);border-radius:2px;padding:10px;
+    background:rgba(8,20,24,.45)}
+  .viz-card .lab{font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--mute);margin-bottom:6px}
+  .viz-card .lab em{color:var(--water);font-style:normal}
+  .viz-card.nb .lab em{color:var(--rose)}
+  .viz-card.mh .lab em{color:var(--violet)}
+  canvas.vizc{width:100%;height:64px;display:block;border-radius:2px;background:rgba(8,20,24,.6)}
+  .viz-note{font-size:10px;line-height:1.45;color:var(--mute);margin-top:6px}
+  .viz-note b{color:var(--foam)}
+
+  .meters{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;
     margin:10px 0 12px}
   .meter{border:1px solid rgba(47,184,179,.16);padding:8px 9px;border-radius:2px}
   .meter .k{font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
-  .meter .v{font-family:'Fraunces',serif;font-size:20px;margin-top:2px;color:var(--foam)}
+  .meter .v{font-family:Arial,Helvetica,sans-serif;font-size:20px;margin-top:2px;color:var(--foam)}
   .meter .v.bad{color:var(--rose)} .meter .v.ok{color:var(--ok)} .meter .v.warn{color:var(--brass)}
   .bar{height:4px;background:var(--deep);margin-top:6px;border-radius:2px;overflow:hidden}
   .bar>i{display:block;height:100%;width:0;background:var(--water);transition:width .25s}
@@ -74,6 +96,8 @@
   input[type=range]::-webkit-slider-runnable-track{height:2px;background:var(--deep)}
   input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;
     border-radius:50%;background:var(--brass);margin-top:-5px;border:2px solid var(--ink)}
+  select{font:inherit;background:var(--deep);color:var(--foam);border:1px solid rgba(47,184,179,.35);
+    padding:6px 8px;margin-top:4px;max-width:280px}
   .row{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;margin:8px 0}
   .toggle{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--mute);cursor:pointer}
   .toggle input{accent-color:var(--water)}
@@ -94,107 +118,152 @@
 <main>
   <a class="back" href="index.html">← Home</a>
   <p class="tag">PondScope Ecosystem · Issues Lab</p>
-  <h1>Break the demo — <em>simulate AI issues</em></h1>
+  <h1>Break what you learned — <em>visualized</em></h1>
   <p class="lead">
-    Interactive failure dramas with knobs. Each scenario has a <b>cause</b>, a <b>meter</b>,
-    a <b>run</b>, and a <b>fix</b>. Use <b>Reset</b> to restore defaults for the current
-    scenario, or <b>Reset all</b> for the whole lab.
+    These failures are staged on the <b>same three systems</b> as the interactive lessons:
+    the <b>pond</b> (fixed state), the <b>notebook</b> (growing attention memory), and
+    <b>multi-head</b> lookup. Open lessons 01→03 first so the visualizations have context.
   </p>
   <p class="warn">
     Illustrative simulation for teaching — not a security audit, load test, or production benchmark.
   </p>
 
+  <div class="prereq" id="prereq">
+    <b>Depends on interactive lessons</b>
+    <div style="margin-top:6px">
+      <a href="pond-continuous.html"><span class="pill" data-pill="pond">01 Pond</span></a>
+      <a href="pond-vs-attention.html"><span class="pill" data-pill="notebook">02 Pond vs Notebook</span></a>
+      <a href="multi-head.html"><span class="pill" data-pill="heads">03 Many Heads</span></a>
+    </div>
+    <div id="prereq-msg" style="margin-top:8px"></div>
+  </div>
+
   <div class="toolbar">
     <div class="tabs" role="tablist" aria-label="Scenarios">
-      <button class="tab on" data-sc="tokens" type="button">Token overconsumption</button>
-      <button class="tab" data-sc="latency" type="button">Latency / TTFT</button>
-      <button class="tab" data-sc="grounding" type="button">Grounding failure</button>
+      <button class="tab on" data-sc="tokens" type="button">Tokens · notebook bloat</button>
+      <button class="tab" data-sc="latency" type="button">Latency · pond steps</button>
+      <button class="tab" data-sc="grounding" type="button">Grounding · heads vs pond</button>
     </div>
     <button class="danger" id="reset" type="button">Reset</button>
     <button class="ghost" id="resetall" type="button">Reset all</button>
   </div>
 
-  <!-- ========== TOKENS ========== -->
+  <!-- TOKENS: lesson 02 notebook grows -->
   <section class="scenario on" id="sc-tokens">
     <div class="panel">
-      <h2>Token <span>overconsumption</span></h2>
+      <div class="from">Builds on lesson 02 · Pond vs Notebook</div>
+      <h2>Token overconsumption as <span>notebook growth</span></h2>
       <p class="blurb">
-        Same question, three reply styles. Watch <b>prompt + completion tokens</b> and a toy cost meter.
-        Verbose mode burns budget; concise + trim-history fixes it. Past the context cap, output is truncated.
+        The <b>pond</b> keeps a fixed state (cheap, constant). The <b>notebook</b> stores an entry
+        per token — long history is context bloat. Verbose replies burn completion tokens.
+        Compare the two memory drawings when you run.
       </p>
+      <div class="viz">
+        <div class="viz-card">
+          <div class="lab">From lesson 01 · <em>Pond</em></div>
+          <canvas class="vizc" id="cv-pond-tok" width="360" height="64"></canvas>
+          <div class="viz-note">Fixed <b id="pond-n">24</b> modes — does not grow with history.</div>
+        </div>
+        <div class="viz-card nb">
+          <div class="lab">From lesson 02 · <em>Notebook</em></div>
+          <canvas class="vizc" id="cv-note-tok" width="360" height="64"></canvas>
+          <div class="viz-note">Entries: <b id="note-n">0</b> — grows with prompt tokens (KV-style).</div>
+        </div>
+      </div>
       <div class="meters">
         <div class="meter"><div class="k">Prompt tokens</div><div class="v" id="t-prompt">0</div></div>
-        <div class="meter"><div class="k">Completion tokens</div><div class="v" id="t-comp">0</div></div>
+        <div class="meter"><div class="k">Completion</div><div class="v" id="t-comp">0</div></div>
         <div class="meter"><div class="k">Total / budget</div><div class="v" id="t-total">0 / 120</div>
           <div class="bar"><i id="t-bar"></i></div></div>
         <div class="meter"><div class="k">Est. cost</div><div class="v" id="t-cost">$0.000</div></div>
       </div>
       <div class="row">
         <label class="ctl">Reply style
-          <select id="t-style" style="font:inherit;background:var(--deep);color:var(--foam);border:1px solid rgba(47,184,179,.35);padding:6px 8px;margin-top:4px">
+          <select id="t-style">
             <option value="verbose">Verbose (wasteful)</option>
             <option value="normal">Normal</option>
             <option value="concise">Concise (fix)</option>
           </select>
         </label>
-        <label class="toggle"><input type="checkbox" id="t-history"> Keep long chat history (bloat)</label>
-        <label class="toggle"><input type="checkbox" id="t-trim"> Trim history (fix)</label>
+        <label class="toggle"><input type="checkbox" id="t-history"> Long notebook history (bloat)</label>
+        <label class="toggle"><input type="checkbox" id="t-trim"> Trim notebook (fix)</label>
       </div>
-      <div class="row">
-        <button class="primary" id="t-run" type="button">Run reply</button>
-      </div>
-      <div class="stage" id="t-stage">Press Run reply.</div>
+      <div class="row"><button class="primary" id="t-run" type="button">Run reply</button></div>
+      <div class="stage" id="t-stage">Press Run reply — watch pond stay flat while the notebook fills.</div>
       <div class="log" id="t-log"></div>
     </div>
   </section>
 
-  <!-- ========== LATENCY ========== -->
+  <!-- LATENCY: lesson 01 pond steps -->
   <section class="scenario" id="sc-latency">
     <div class="panel">
-      <h2>Latency &amp; <span>time to first token</span></h2>
+      <div class="from">Builds on lesson 01 · The Pond</div>
+      <h2>Latency as <span>slow pond steps</span></h2>
       <p class="blurb">
-        Fake server delay before the first token, then stream the rest.
-        <b>Cold start</b> adds a one-time load penalty. Warm runs feel snappier.
+        In the pond lesson, time advances <b>once per token</b>. Here, TTFT is the wait before the
+        first step writes into the state; streaming is later steps. Cold start = loading the poles
+        before any ripple can move.
       </p>
+      <div class="viz">
+        <div class="viz-card" style="grid-column:1/-1">
+          <div class="lab">From lesson 01 · <em>Pond dials / steps</em></div>
+          <canvas class="vizc" id="cv-pond-lat" width="720" height="64"></canvas>
+          <div class="viz-note">Step <b id="l-step">0</b> · state energy after each token sample</div>
+        </div>
+      </div>
       <div class="meters">
         <div class="meter"><div class="k">TTFT</div><div class="v" id="l-ttft">—</div></div>
         <div class="meter"><div class="k">Full response</div><div class="v" id="l-full">—</div></div>
-        <div class="meter"><div class="k">Server state</div><div class="v" id="l-state">cold</div></div>
-        <div class="meter"><div class="k">Tokens streamed</div><div class="v" id="l-tok">0</div></div>
+        <div class="meter"><div class="k">Pond load</div><div class="v" id="l-state">cold</div></div>
+        <div class="meter"><div class="k">Tokens / steps</div><div class="v" id="l-tok">0</div></div>
       </div>
-      <label class="ctl" for="l-delay">Base delay before first token: <span id="l-delayv">400</span> ms
+      <label class="ctl" for="l-delay">Delay before first pond step: <span id="l-delayv">400</span> ms
         <input id="l-delay" type="range" min="50" max="1200" step="50" value="400">
       </label>
-      <label class="toggle"><input type="checkbox" id="l-cold" checked> Simulate cold start (+800 ms on first run)</label>
+      <label class="toggle"><input type="checkbox" id="l-cold" checked> Cold start — load poles first (+800 ms)</label>
       <div class="row">
-        <button class="primary" id="l-run" type="button">Generate</button>
-        <button class="ghost" id="l-warm" type="button">Mark server warm</button>
+        <button class="primary" id="l-run" type="button">Generate (step the pond)</button>
+        <button class="ghost" id="l-warm" type="button">Mark pond warm</button>
       </div>
       <div class="stage" id="l-stage">Press Generate.</div>
       <div class="log" id="l-log"></div>
     </div>
   </section>
 
-  <!-- ========== GROUNDING ========== -->
+  <!-- GROUNDING: lesson 02+03 notebook heads vs pond -->
   <section class="scenario" id="sc-grounding">
     <div class="panel">
-      <h2>Grounding <span>failure</span></h2>
+      <div class="from">Builds on lessons 02 + 03 · Notebook &amp; Many Heads</div>
+      <h2>Grounding as <span>heads on the page</span></h2>
       <p class="blurb">
-        A document states a fact. With retrieval <b>off</b>, the model confabulates from “memory.”
-        With retrieval <b>on</b>, it cites the doc. That is the grounding fix.
+        With retrieval <b>off</b>, only the <b>pond</b> compressed “memory” answers — it confabulates.
+        With retrieval <b>on</b>, <b>multi-head</b> attention looks up the notebook document
+        (as in lessons 02–03) and cites it.
       </p>
+      <div class="viz">
+        <div class="viz-card">
+          <div class="lab">From lesson 01 · <em>Pond-only</em></div>
+          <canvas class="vizc" id="cv-pond-g" width="360" height="64"></canvas>
+          <div class="viz-note" id="g-pond-note">No lookup — blended state only.</div>
+        </div>
+        <div class="viz-card mh">
+          <div class="lab">From lesson 03 · <em>Head focus on doc</em></div>
+          <canvas class="vizc" id="cv-heads-g" width="360" height="64"></canvas>
+          <div class="viz-note" id="g-head-note">Heads idle until retrieval is on.</div>
+        </div>
+      </div>
       <div class="meters">
         <div class="meter"><div class="k">Retrieval</div><div class="v" id="g-ret">OFF</div></div>
         <div class="meter"><div class="k">Grounded?</div><div class="v" id="g-ok">—</div></div>
-        <div class="meter"><div class="k">Doc used</div><div class="v" id="g-doc">no</div></div>
+        <div class="meter"><div class="k">Notebook hit</div><div class="v" id="g-doc">no</div></div>
       </div>
       <div class="panel" style="margin:0 0 10px;background:rgba(8,20,24,.5)">
-        <div class="k" style="font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--mute);margin-bottom:6px">Document in the notebook</div>
+        <div style="font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--mute);margin-bottom:6px">Notebook document (lesson 02 memory)</div>
         <div style="font-size:11px;line-height:1.55;color:var(--foam)" id="g-source">
           PondScope release note (2026-08-02): The hybrid drawer demo reports held-out exact-sequence accuracy of <b>79%</b> after training.
         </div>
       </div>
-      <label class="toggle"><input type="checkbox" id="g-use"> Use retrieval / ground on the document (fix)</label>
+      <label class="toggle"><input type="checkbox" id="g-use"> Attend to notebook with multi-head retrieval (fix)</label>
       <div class="row">
         <button class="primary" id="g-run" type="button">Ask: “What accuracy did the demo hit?”</button>
       </div>
@@ -206,16 +275,22 @@
   <footer>
     <b>Daniella M. LaGuerre</b> · PondScope Ecosystem<br>
     <a href="index.html">Home</a> ·
-    <a href="glossary.html#issues">Glossary · Issues</a> ·
-    <a href="pond-vs-attention.html">Pond vs notebook</a>
+    <a href="pond-continuous.html">01 Pond</a> ·
+    <a href="pond-vs-attention.html">02 Notebook</a> ·
+    <a href="multi-head.html">03 Heads</a> ·
+    <a href="glossary.html#issues">Glossary · Issues</a>
   </footer>
 </main>
 <script>
 (function () {
   "use strict";
 
-  var BUDGET = 120;
-  var RATE = 0.00002; // toy $/token
+  var BUDGET = 120, RATE = 0.00002, POND_N = 24;
+  var KEYS = {
+    pond: "pondscope_visited_pond",
+    notebook: "pondscope_visited_notebook",
+    heads: "pondscope_visited_heads"
+  };
   var defaults = {
     tokens: { style: "verbose", history: false, trim: false },
     latency: { delay: 400, coldChecked: true, cold: true },
@@ -226,7 +301,6 @@
     latency: Object.assign({}, defaults.latency),
     grounding: Object.assign({}, defaults.grounding)
   };
-
   var HISTORY_BLOATED = [
     "user: tell me a story", "assistant: once upon a time " + "word ".repeat(40),
     "user: again", "assistant: " + "detail ".repeat(50),
@@ -238,19 +312,114 @@
     normal: "A pond is a fixed-size state-space / recurrent hidden state: past tokens are compressed into one evolving summary that does not grow with sequence length.",
     concise: "Pond = fixed-size SSM/RNN state (compressed past)."
   };
+  var DOC_WORDS = ["PondScope", "release", "note", "hybrid", "drawer", "held-out", "exact", "accuracy", "79%", "training"];
 
   function $(id) { return document.getElementById(id); }
-  function estTokens(text) {
-    // rough ~4 chars/token teaching estimate
-    return Math.max(1, Math.round(String(text).length / 4));
+  function visited(k) {
+    try { return localStorage.getItem(KEYS[k]) === "1"; } catch (e) { return false; }
   }
+  function estTokens(text) { return Math.max(1, Math.round(String(text).length / 4)); }
   function setBar(el, frac) {
     var f = Math.max(0, Math.min(1, frac));
     el.style.width = (f * 100) + "%";
     el.className = f > 0.9 ? "hot" : (f > 0.7 ? "warm" : "");
   }
+  function fitCanvas(cv) {
+    var r = Math.min(window.devicePixelRatio || 1, 2);
+    var w = cv.clientWidth || cv.width, h = cv.clientHeight || cv.height;
+    cv.width = Math.max(1, Math.round(w * r));
+    cv.height = Math.max(1, Math.round(h * r));
+    var ctx = cv.getContext("2d");
+    ctx.setTransform(r, 0, 0, r, 0, 0);
+    return [ctx, w, h];
+  }
 
-  /* ----- tabs / deep links ----- */
+  /* ----- prerequisite UI (soft — no hard lock / no regression) ----- */
+  function refreshPrereq() {
+    var all = true;
+    ["pond", "notebook", "heads"].forEach(function (k) {
+      var on = visited(k);
+      if (!on) all = false;
+      document.querySelectorAll('[data-pill="' + k + '"]').forEach(function (el) {
+        el.classList.toggle("on", on);
+        el.classList.toggle("off", !on);
+      });
+    });
+    $("prereq-msg").innerHTML = all
+      ? '<span class="ok" style="color:var(--ok)">Prerequisites met — visualizations match systems you already ran.</span>'
+      : 'Open <a href="pond-continuous.html">01</a> → <a href="pond-vs-attention.html">02</a> → <a href="multi-head.html">03</a> first for full context. Deep links from the glossary still work.';
+  }
+
+  /* ----- drawing helpers from the three labs ----- */
+  function drawPondFixed(cv, pulse) {
+    var F = fitCanvas(cv), ctx = F[0], w = F[1], h = F[2];
+    ctx.clearRect(0, 0, w, h);
+    var n = POND_N, gap = w / n;
+    for (var i = 0; i < n; i++) {
+      var mag = 0.35 + 0.2 * Math.sin(i * 0.7 + (pulse || 0));
+      var x = gap * i + gap * 0.2, bw = gap * 0.6, bh = (h - 12) * mag;
+      ctx.fillStyle = "rgba(47,184,179," + (0.35 + mag * 0.5) + ")";
+      ctx.fillRect(x, h - 8 - bh, bw, bh);
+    }
+    ctx.fillStyle = "#5E7C7F";
+    ctx.font = "8px Arial";
+    ctx.fillText("fixed " + n, 4, 10);
+  }
+  function drawNotebook(cv, entries, cap) {
+    var F = fitCanvas(cv), ctx = F[0], w = F[1], h = F[2];
+    ctx.clearRect(0, 0, w, h);
+    var maxShow = Math.min(entries, 48);
+    var gap = w / Math.max(cap / 3, 16);
+    for (var i = 0; i < maxShow; i++) {
+      var x = (i * gap) % (w - 4);
+      var row = Math.floor((i * gap) / (w - 4));
+      var y = 14 + row * 10;
+      if (y > h - 6) break;
+      ctx.fillStyle = i > cap * 0.7 ? "#D2685E" : "#D2685E";
+      ctx.globalAlpha = 0.35 + 0.5 * (i / Math.max(1, maxShow));
+      ctx.fillRect(x, y, Math.max(2, gap * 0.7), 6);
+    }
+    ctx.globalAlpha = 1;
+    ctx.fillStyle = "#5E7C7F";
+    ctx.font = "8px Arial";
+    ctx.fillText(entries + " entries", 4, 10);
+  }
+  function drawPondSteps(cv, energies, active) {
+    var F = fitCanvas(cv), ctx = F[0], w = F[1], h = F[2];
+    ctx.clearRect(0, 0, w, h);
+    var n = Math.max(energies.length, 1);
+    var gap = w / Math.max(n, 8);
+    for (var i = 0; i < energies.length; i++) {
+      var e = energies[i], bh = (h - 16) * Math.min(1, e);
+      var x = gap * i + 2;
+      ctx.fillStyle = i === active ? "#E0A94E" : "rgba(47,184,179,.55)";
+      ctx.fillRect(x, h - 8 - bh, Math.max(3, gap - 4), bh);
+    }
+    if (!energies.length) {
+      ctx.fillStyle = "#5E7C7F";
+      ctx.font = "9px Arial";
+      ctx.fillText("waiting for first token step…", 8, h / 2 + 3);
+    }
+  }
+  function drawHeads(cv, weights, active) {
+    var F = fitCanvas(cv), ctx = F[0], w = F[1], h = F[2];
+    ctx.clearRect(0, 0, w, h);
+    var H = 3, L = weights.length || DOC_WORDS.length;
+    var rowH = (h - 8) / H;
+    for (var hh = 0; hh < H; hh++) {
+      for (var i = 0; i < L; i++) {
+        var wt = active ? (weights[i] || 0) * (hh === 0 ? 1 : hh === 1 ? 0.7 : 0.45) : 0.05;
+        var x = 4 + i * ((w - 8) / L), bw = (w - 8) / L - 2;
+        ctx.fillStyle = "rgba(155,123,212," + (0.15 + wt * 0.85) + ")";
+        ctx.fillRect(x, 6 + hh * rowH, bw, rowH - 3);
+      }
+    }
+    ctx.fillStyle = "#5E7C7F";
+    ctx.font = "8px Arial";
+    ctx.fillText(active ? "heads attending" : "heads idle", 4, 10);
+  }
+
+  /* ----- tabs ----- */
   function showScenario(name) {
     document.querySelectorAll(".tab").forEach(function (t) {
       t.classList.toggle("on", t.getAttribute("data-sc") === name);
@@ -258,8 +427,16 @@
     document.querySelectorAll(".scenario").forEach(function (s) {
       s.classList.toggle("on", s.id === "sc-" + name);
     });
-    if (location.hash.replace(/^#/, "") !== name) {
-      history.replaceState(null, "", "#" + name);
+    if (location.hash.replace(/^#/, "") !== name) history.replaceState(null, "", "#" + name);
+    // redraw visible canvases
+    if (name === "tokens") {
+      drawPondFixed($("cv-pond-tok"), 0);
+      drawNotebook($("cv-note-tok"), parseInt($("note-n").textContent, 10) || 0, BUDGET);
+    } else if (name === "latency") {
+      drawPondSteps($("cv-pond-lat"), window.__latE || [], -1);
+    } else {
+      drawPondFixed($("cv-pond-g"), state.grounding.use ? 0 : 1.2);
+      drawHeads($("cv-heads-g"), window.__gW || DOC_WORDS.map(function () { return 0; }), false);
     }
   }
   document.querySelectorAll(".tab").forEach(function (t) {
@@ -276,61 +453,56 @@
     state.tokens.style = $("t-style").value;
     state.tokens.history = $("t-history").checked;
     state.tokens.trim = $("t-trim").checked;
-
     var hist = [];
     if (state.tokens.history && !state.tokens.trim) hist = HISTORY_BLOATED.slice();
     if (state.tokens.history && state.tokens.trim) hist = HISTORY_BLOATED.slice(-2);
-
     var prompt = (hist.length ? hist.join("\n") + "\n" : "") + "user: " + QUESTION;
     var reply = REPLIES[state.tokens.style];
-    var pTok = estTokens(prompt);
-    var cTok = estTokens(reply);
-    var total = pTok + cTok;
-    var truncated = false;
+    var pTok = estTokens(prompt), cTok = estTokens(reply), total = pTok + cTok, truncated = false;
     if (total > BUDGET) {
       var keep = Math.max(0, BUDGET - pTok);
-      var cutAt = keep * 4;
-      reply = reply.slice(0, cutAt) + " …";
-      cTok = estTokens(reply);
-      total = pTok + cTok;
-      truncated = true;
+      reply = reply.slice(0, keep * 4) + " …";
+      cTok = estTokens(reply); total = pTok + cTok; truncated = true;
     }
-    var cost = total * RATE;
-
     $("t-prompt").textContent = pTok;
     $("t-comp").textContent = cTok;
     $("t-total").textContent = total + " / " + BUDGET;
     $("t-total").className = "v" + (total > BUDGET * 0.9 ? " bad" : (total > BUDGET * 0.7 ? " warn" : " ok"));
     setBar($("t-bar"), total / BUDGET);
-    $("t-cost").textContent = "$" + cost.toFixed(4);
-
+    $("t-cost").textContent = "$" + (total * RATE).toFixed(4);
+    $("note-n").textContent = pTok;
+    $("pond-n").textContent = POND_N;
+    drawPondFixed($("cv-pond-tok"), total * 0.05);
+    drawNotebook($("cv-note-tok"), pTok, BUDGET);
     $("t-stage").innerHTML = "<b>Q:</b> " + QUESTION + "\n\n<b>A:</b> " +
       reply.replace(/ …$/, ' <span class="cut">[truncated]</span>');
-
     var tips = [];
-    if (state.tokens.style === "verbose") tips.push('<span class="bad">Verbose reply inflated completion tokens.</span>');
-    if (state.tokens.history && !state.tokens.trim) tips.push('<span class="bad">Long history bloated the prompt.</span>');
-    if (state.tokens.trim && state.tokens.history) tips.push('<span class="ok">Trim history reduced prompt size.</span>');
-    if (state.tokens.style === "concise") tips.push('<span class="ok">Concise style cut completion tokens.</span>');
-    if (truncated) tips.push('<span class="warn">Hit budget — output truncated.</span>');
-    if (!tips.length) tips.push('<span class="ok">Within budget.</span>');
+    tips.push('<span class="ok">Pond memory stayed at ' + POND_N + ' modes (lesson 01).</span>');
+    if (state.tokens.history && !state.tokens.trim)
+      tips.push('<span class="bad">Notebook grew with history — classic context bloat (lesson 02).</span>');
+    if (state.tokens.trim && state.tokens.history)
+      tips.push('<span class="ok">Trimmed notebook — fewer KV-style entries.</span>');
+    if (state.tokens.style === "verbose") tips.push('<span class="bad">Verbose completion tokens.</span>');
+    if (state.tokens.style === "concise") tips.push('<span class="ok">Concise completion.</span>');
+    if (truncated) tips.push('<span class="warn">Budget hit — truncated.</span>');
     $("t-log").innerHTML = tips.join("<br>");
   }
   function resetTokens() {
     state.tokens = Object.assign({}, defaults.tokens);
     syncTokenControls();
-    $("t-prompt").textContent = "0";
-    $("t-comp").textContent = "0";
-    $("t-total").textContent = "0 / " + BUDGET;
-    $("t-total").className = "v";
-    setBar($("t-bar"), 0);
-    $("t-cost").textContent = "$0.000";
-    $("t-stage").textContent = "Press Run reply.";
+    ["t-prompt", "t-comp"].forEach(function (id) { $(id).textContent = "0"; });
+    $("t-total").textContent = "0 / " + BUDGET; $("t-total").className = "v";
+    setBar($("t-bar"), 0); $("t-cost").textContent = "$0.000";
+    $("note-n").textContent = "0"; $("pond-n").textContent = POND_N;
+    $("t-stage").textContent = "Press Run reply — watch pond stay flat while the notebook fills.";
     $("t-log").textContent = "";
+    drawPondFixed($("cv-pond-tok"), 0);
+    drawNotebook($("cv-note-tok"), 0, BUDGET);
   }
 
   /* ----- LATENCY ----- */
   var latencyBusy = false;
+  window.__latE = [];
   function syncLatencyControls() {
     $("l-delay").value = state.latency.delay;
     $("l-delayv").textContent = state.latency.delay;
@@ -340,66 +512,60 @@
   }
   function runLatency() {
     if (latencyBusy) return;
-    latencyBusy = true;
-    $("l-run").disabled = true;
+    latencyBusy = true; $("l-run").disabled = true;
     state.latency.delay = parseInt($("l-delay").value, 10);
     state.latency.coldChecked = $("l-cold").checked;
-
-    var words = ("A warm pond answers quickly once loaded. ").repeat(3).trim().split(/\s+/);
+    var words = ("A warm pond answers once each token step. ").repeat(2).trim().split(/\s+/);
     var coldPenalty = (state.latency.coldChecked && state.latency.cold) ? 800 : 0;
     var wait = state.latency.delay + coldPenalty;
     var t0 = performance.now();
-    $("l-stage").textContent = "waiting for first token…";
-    $("l-ttft").textContent = "…";
-    $("l-full").textContent = "…";
-    $("l-tok").textContent = "0";
+    window.__latE = [];
+    $("l-step").textContent = "0";
+    $("l-stage").textContent = coldPenalty ? "loading pond poles (cold start)…" : "waiting for first token step…";
+    $("l-ttft").textContent = "…"; $("l-full").textContent = "…"; $("l-tok").textContent = "0";
+    drawPondSteps($("cv-pond-lat"), [], -1);
     $("l-log").innerHTML = coldPenalty
-      ? '<span class="warn">Cold start penalty applied (+800 ms).</span>'
-      : '<span class="ok">Warm path — no load penalty.</span>';
+      ? '<span class="warn">Cold start: poles loading before any lesson-01 step.</span>'
+      : '<span class="ok">Warm pond — first step delay only.</span>';
 
     setTimeout(function () {
       var ttft = Math.round(performance.now() - t0);
       $("l-ttft").textContent = ttft + " ms";
       $("l-ttft").className = "v" + (ttft > 700 ? " bad" : (ttft > 350 ? " warn" : " ok"));
-      if (state.latency.cold) {
-        state.latency.cold = false;
-        $("l-state").textContent = "warm";
-        $("l-state").className = "v ok";
-      }
-      var i = 0;
-      $("l-stage").textContent = "";
+      if (state.latency.cold) { state.latency.cold = false; syncLatencyControls(); }
+      var i = 0; $("l-stage").textContent = "";
       var iv = setInterval(function () {
         if (i >= words.length) {
           clearInterval(iv);
           var full = Math.round(performance.now() - t0);
           $("l-full").textContent = full + " ms";
           $("l-full").className = "v" + (full > 1500 ? " bad" : " ok");
-          $("l-log").innerHTML += "<br><span class=\"ok\">Stream complete. Run again to feel warm TTFT.</span>";
-          latencyBusy = false;
-          $("l-run").disabled = false;
+          $("l-log").innerHTML += "<br><span class=\"ok\">Each word ≈ one pond step (lesson 01 sampling).</span>";
+          latencyBusy = false; $("l-run").disabled = false;
           return;
         }
+        window.__latE.push(0.35 + 0.55 * Math.random());
+        $("l-step").textContent = String(i + 1);
+        drawPondSteps($("cv-pond-lat"), window.__latE, i);
         $("l-stage").textContent += (i ? " " : "") + words[i];
-        i++;
-        $("l-tok").textContent = String(i);
-      }, 45);
+        i++; $("l-tok").textContent = String(i);
+      }, 50);
     }, wait);
   }
   function resetLatency() {
-    latencyBusy = false;
-    $("l-run").disabled = false;
+    latencyBusy = false; $("l-run").disabled = false;
     state.latency = Object.assign({}, defaults.latency);
     syncLatencyControls();
-    $("l-ttft").textContent = "—";
-    $("l-ttft").className = "v";
-    $("l-full").textContent = "—";
-    $("l-full").className = "v";
-    $("l-tok").textContent = "0";
-    $("l-stage").textContent = "Press Generate.";
-    $("l-log").textContent = "";
+    window.__latE = [];
+    $("l-ttft").textContent = "—"; $("l-ttft").className = "v";
+    $("l-full").textContent = "—"; $("l-full").className = "v";
+    $("l-tok").textContent = "0"; $("l-step").textContent = "0";
+    $("l-stage").textContent = "Press Generate."; $("l-log").textContent = "";
+    drawPondSteps($("cv-pond-lat"), [], -1);
   }
 
   /* ----- GROUNDING ----- */
+  window.__gW = DOC_WORDS.map(function () { return 0; });
   function syncGroundingControls() {
     $("g-use").checked = state.grounding.use;
     $("g-ret").textContent = state.grounding.use ? "ON" : "OFF";
@@ -409,36 +575,48 @@
     state.grounding.use = $("g-use").checked;
     syncGroundingControls();
     if (state.grounding.use) {
-      $("g-ok").textContent = "yes";
-      $("g-ok").className = "v ok";
-      $("g-doc").textContent = "yes";
-      $("g-doc").className = "v ok";
+      // peak on "79%" and "accuracy"
+      window.__gW = DOC_WORDS.map(function (w) {
+        if (w === "79%" || w === "accuracy" || w === "held-out") return 1;
+        if (w === "exact" || w === "hybrid") return 0.45;
+        return 0.12;
+      });
+      drawPondFixed($("cv-pond-g"), 0.2);
+      drawHeads($("cv-heads-g"), window.__gW, true);
+      $("g-pond-note").innerHTML = "Pond still runs, but <b>answer comes from notebook lookup</b>.";
+      $("g-head-note").innerHTML = "Heads parked on <b>79%</b> / accuracy (lesson 03 specialization).";
+      $("g-ok").textContent = "yes"; $("g-ok").className = "v ok";
+      $("g-doc").textContent = "yes"; $("g-doc").className = "v ok";
       $("g-stage").innerHTML =
-        "<b>A (grounded):</b> According to the release note, held-out exact-sequence accuracy was <span class=\"cite\">79%</span>.\n\n" +
-        "<span class=\"cite\">Source: PondScope release note (2026-08-02)</span>";
-      $("g-log").innerHTML = '<span class="ok">Retrieval on — answer cites the document.</span>';
+        "<b>A (grounded via notebook heads):</b> According to the release note, held-out exact-sequence accuracy was <span class=\"cite\">79%</span>.\n\n" +
+        "<span class=\"cite\">Retrieved from notebook document</span>";
+      $("g-log").innerHTML = '<span class="ok">Multi-head attention read the doc (lessons 02–03). Pond alone was not trusted for the number.</span>';
     } else {
-      $("g-ok").textContent = "no";
-      $("g-ok").className = "v bad";
-      $("g-doc").textContent = "no";
-      $("g-doc").className = "v bad";
+      window.__gW = DOC_WORDS.map(function () { return 0; });
+      drawPondFixed($("cv-pond-g"), 1.4);
+      drawHeads($("cv-heads-g"), window.__gW, false);
+      $("g-pond-note").innerHTML = "Pond-only — compressed state <b>without</b> notebook lookup.";
+      $("g-head-note").innerHTML = "Heads idle — no retrieval (turn retrieval on).";
+      $("g-ok").textContent = "no"; $("g-ok").className = "v bad";
+      $("g-doc").textContent = "no"; $("g-doc").className = "v bad";
       $("g-stage").innerHTML =
-        "<b>A (ungrounded):</b> I believe the demo usually reaches about <span class=\"cut\">95–99%</span> exact-sequence accuracy after a short train — typical for this architecture.";
-      $("g-log").innerHTML = '<span class="bad">Retrieval off — fluent but wrong (confabulated from “memory”).</span><br><span class="warn">Fix: enable Use retrieval.</span>';
+        "<b>A (pond confabulation):</b> From the blended state alone I would guess about <span class=\"cut\">95–99%</span> — the pond mixed the trace and lost the exact figure.";
+      $("g-log").innerHTML = '<span class="bad">No notebook lookup — exact fact faded in the pond (lesson 01 limit + lesson 02 contrast).</span><br><span class="warn">Fix: attend to the notebook.</span>';
     }
   }
   function resetGrounding() {
     state.grounding = Object.assign({}, defaults.grounding);
     syncGroundingControls();
-    $("g-ok").textContent = "—";
-    $("g-ok").className = "v";
-    $("g-doc").textContent = "no";
-    $("g-doc").className = "v";
-    $("g-stage").textContent = "Press Ask.";
-    $("g-log").textContent = "";
+    window.__gW = DOC_WORDS.map(function () { return 0; });
+    $("g-ok").textContent = "—"; $("g-ok").className = "v";
+    $("g-doc").textContent = "no"; $("g-doc").className = "v";
+    $("g-stage").textContent = "Press Ask."; $("g-log").textContent = "";
+    $("g-pond-note").textContent = "No lookup — blended state only.";
+    $("g-head-note").textContent = "Heads idle until retrieval is on.";
+    drawPondFixed($("cv-pond-g"), 0);
+    drawHeads($("cv-heads-g"), window.__gW, false);
   }
 
-  /* ----- RESET ----- */
   function currentScenario() {
     var on = document.querySelector(".tab.on");
     return on ? on.getAttribute("data-sc") : "tokens";
@@ -449,18 +627,13 @@
     else if (sc === "latency") resetLatency();
     else resetGrounding();
   }
-  function resetAll() {
-    resetTokens();
-    resetLatency();
-    resetGrounding();
-  }
+  function resetAll() { resetTokens(); resetLatency(); resetGrounding(); }
 
   $("t-run").addEventListener("click", runTokens);
   $("l-run").addEventListener("click", runLatency);
   $("l-warm").addEventListener("click", function () {
-    state.latency.cold = false;
-    syncLatencyControls();
-    $("l-log").innerHTML = '<span class="ok">Server marked warm — next Generate skips cold penalty.</span>';
+    state.latency.cold = false; syncLatencyControls();
+    $("l-log").innerHTML = '<span class="ok">Pond marked warm — skips pole-load penalty.</span>';
   });
   $("l-delay").addEventListener("input", function () {
     state.latency.delay = parseInt(this.value, 10);
@@ -470,8 +643,9 @@
   $("g-use").addEventListener("change", syncGroundingControls);
   $("reset").addEventListener("click", resetCurrent);
   $("resetall").addEventListener("click", resetAll);
+  window.addEventListener("resize", function () { showScenario(currentScenario()); });
 
-  // boot
+  refreshPrereq();
   resetAll();
   var hash = (location.hash || "").replace(/^#/, "");
   if (hash === "ttft") hash = "latency";

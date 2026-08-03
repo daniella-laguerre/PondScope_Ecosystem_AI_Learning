@@ -4,19 +4,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
 <title>The Pond — a continuous system, sampled once per token</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,340;9..144,560&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root{--ink:#081418;--deep:#0E2A31;--water:#2FB8B3;--foam:#D9E8E4;
         --brass:#E0A94E;--mute:#5E7C7F;--rose:#D2685E;--violet:#9B7BD4;}
   *{margin:0;padding:0;box-sizing:border-box}
   html,body{height:100%;overflow:hidden;background:var(--ink);color:var(--foam);
-    font-family:'IBM Plex Mono',monospace;-webkit-tap-highlight-color:transparent}
+    font-family:Arial,Helvetica,sans-serif;-webkit-tap-highlight-color:transparent}
   #stage{position:fixed;top:0;left:0;right:0}
   canvas{display:block}
   header{position:fixed;top:0;left:0;right:0;padding:10px 46px 6px 14px;pointer-events:none;
     z-index:5;background:linear-gradient(180deg,rgba(8,20,24,.95),rgba(8,20,24,0))}
-  h1{font-family:'Fraunces',serif;font-weight:560;font-size:clamp(16px,4vw,23px);line-height:1.06}
+  h1{font-family:Arial,Helvetica,sans-serif;font-weight:560;font-size:clamp(16px,4vw,23px);line-height:1.06}
   h1 em{font-style:italic;color:var(--water)}
   .sub{font-size:9px;color:var(--mute);margin-top:3px;letter-spacing:.03em;line-height:1.5}
   #tick{position:fixed;left:14px;top:70px;z-index:5;font-size:9px;color:var(--mute);
@@ -24,13 +22,13 @@
   #tick b{color:var(--brass);font-weight:500;font-size:15px}
 
   #empty{position:fixed;left:0;right:0;top:34%;z-index:4;text-align:center;
-    font-family:'Fraunces',serif;font-style:italic;font-size:14px;color:var(--foam);
+    font-family:Arial,Helvetica,sans-serif;font-style:italic;font-size:14px;color:var(--foam);
     opacity:0;transition:opacity .5s;pointer-events:none;
     text-shadow:0 2px 14px rgba(8,20,24,.95)}
   #helpbtn{position:fixed;right:12px;top:11px;z-index:9;width:26px;height:26px;
     border-radius:50%;border:1px solid rgba(47,184,179,.5);background:rgba(8,20,24,.7);
     color:var(--water);font-size:12px;line-height:24px;text-align:center;cursor:pointer;
-    font-family:'Fraunces',serif}
+    font-family:Arial,Helvetica,sans-serif}
 
   #panel{position:fixed;left:0;right:0;bottom:0;z-index:7;
     transition:transform .34s cubic-bezier(.4,0,.2,1);
@@ -116,13 +114,13 @@
   #guide{position:fixed;inset:0;z-index:20;background:rgba(6,16,19,.97);overflow-y:auto;
     -webkit-overflow-scrolling:touch;padding:18px 18px 40px;display:none}
   #guide.on{display:block}
-  #guide h2{font-family:'Fraunces',serif;font-weight:560;font-size:20px;line-height:1.15}
+  #guide h2{font-family:Arial,Helvetica,sans-serif;font-weight:560;font-size:20px;line-height:1.15}
   #guide h2 em{font-style:italic;color:var(--water)}
   #guide .lead{font-size:10px;color:var(--mute);line-height:1.6;margin:4px 0 14px}
   #guide h3{font-size:9px;letter-spacing:.13em;text-transform:uppercase;color:var(--brass);
     margin:15px 0 5px;padding-top:11px;border-top:1px solid rgba(47,184,179,.16)}
   #guide p{font-size:10.5px;line-height:1.65;margin-bottom:7px}
-  #guide p.q{color:var(--water);font-family:'Fraunces',serif;font-style:italic;
+  #guide p.q{color:var(--water);font-family:Arial,Helvetica,sans-serif;font-style:italic;
     font-size:12px;margin:8px 0 3px}
   #guide ol{margin:0 0 4px 15px;font-size:10.5px;line-height:1.65}
   #guide li{margin-bottom:5px}
@@ -624,7 +622,7 @@ try{
 }catch(err){
   var warn=document.createElement('div');
   warn.style.cssText='position:fixed;left:0;right:0;top:30%;z-index:8;text-align:center;'+
-    'font-family:IBM Plex Mono,monospace;font-size:12px;color:#E0A94E;padding:0 24px;line-height:1.6';
+    'font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#E0A94E;padding:0 24px;line-height:1.6';
   warn.textContent='The 3D water needs WebGL, which this browser blocked. '+
     'Everything else on the panels below still works.';
   document.body.appendChild(warn);
@@ -745,7 +743,7 @@ function drawSeq(){
 }
 function drawEmb(){
   var F=fit('embcv'); if(!F) return; var ctx=F[0],w=F[1],h=F[2];ctx.clearRect(0,0,w,h);
-  if(S.lastTok<0){ctx.fillStyle='#5E7C7F';ctx.font='9px IBM Plex Mono';ctx.fillText('— no token yet —',3,h/2+3);return;}
+  if(S.lastTok<0){ctx.fillStyle='#5E7C7F';ctx.font='9px Arial';ctx.fillText('— no token yet —',3,h/2+3);return;}
   var e=S.E,bw=w/DE;
   for(var d=0;d<DE;d++){
     var m=Math.max(-1,Math.min(1,e[S.lastTok*DE+d]/1.8)),bh=Math.abs(m)*(h/2-3);
@@ -755,7 +753,7 @@ function drawEmb(){
 }
 function drawInj(){
   var F=fit('injcv'); if(!F) return; var ctx=F[0],w=F[1],h=F[2];ctx.clearRect(0,0,w,h);
-  if(!S.injR){ctx.fillStyle='#5E7C7F';ctx.font='9px IBM Plex Mono';ctx.fillText('— no injection yet —',3,h/2+3);return;}
+  if(!S.injR){ctx.fillStyle='#5E7C7F';ctx.font='9px Arial';ctx.fillText('— no injection yet —',3,h/2+3);return;}
   var bw=w/S.N,mx=1e-9;
   for(var j=0;j<S.N;j++)mx=Math.max(mx,Math.abs(S.injR[j]),Math.abs(S.injI[j]));
   for(var j2=0;j2<S.N;j2++){
@@ -801,7 +799,7 @@ function drawDials(){
 }
 function drawLoss(){
   var F=fit('losscv'); if(!F) return; var ctx=F[0],w=F[1],h=F[2];ctx.clearRect(0,0,w,h);
-  if(!S.hist.length){ctx.fillStyle='#5E7C7F';ctx.font='9px IBM Plex Mono';
+  if(!S.hist.length){ctx.fillStyle='#5E7C7F';ctx.font='9px Arial';
     ctx.fillText('— press Fit —',3,h/2+3);return;}
   var mx=-1e9,mn=1e9;
   for(var i=0;i<S.hist.length;i++){mx=Math.max(mx,S.hist[i]);mn=Math.min(mn,S.hist[i]);}
@@ -810,7 +808,7 @@ function drawLoss(){
   var chance=Math.log(V);
   var cy=h-4-(chance-mn)/span*(h-10);
   if(cy>0&&cy<h){ctx.setLineDash([3,3]);ctx.moveTo(0,cy);ctx.lineTo(w,cy);ctx.stroke();ctx.setLineDash([]);
-    ctx.fillStyle='#5E7C7F';ctx.font='7.5px IBM Plex Mono';ctx.fillText('chance',w-38,cy-3);}
+    ctx.fillStyle='#5E7C7F';ctx.font='7.5px Arial';ctx.fillText('chance',w-38,cy-3);}
   ctx.beginPath();ctx.strokeStyle=S.mode==='full'?'#E0A94E':'#2FB8B3';ctx.lineWidth=1.6;
   if(S.mode!=='full')ctx.setLineDash([4,3]);
   for(var i2=0;i2<S.hist.length;i2++){
@@ -818,7 +816,7 @@ function drawLoss(){
     i2?ctx.lineTo(px,py):ctx.moveTo(px,py);
   }
   ctx.stroke();ctx.setLineDash([]);
-  ctx.fillStyle='#D9E8E4';ctx.font='8px IBM Plex Mono';
+  ctx.fillStyle='#D9E8E4';ctx.font='8px Arial';
   ctx.fillText('loss '+S.hist[S.hist.length-1].toFixed(3)+
     (S.mode==='full'?'   [solid: A,B,C,\u0394]':'   [dashed: C only]'),3,10);
 }
@@ -835,7 +833,7 @@ function drawW(){
     ctx.fillStyle=S.fitted?'#E0A94E':'rgba(94,124,127,.55)';
     ctx.fillRect(j2*bw+1.2,h-10-bh,bw-2.4,bh);
   }
-  ctx.fillStyle='#5E7C7F';ctx.font='7.5px IBM Plex Mono';ctx.fillText('slow \u03C9 \u2192 fast \u03C9',3,h-2);
+  ctx.fillStyle='#5E7C7F';ctx.font='7.5px Arial';ctx.fillText('slow \u03C9 \u2192 fast \u03C9',3,h-2);
 }
 function drawDisk(){
   var F=fit('diskcv'); if(!F) return; var ctx=F[0],w=F[1],h=F[2];ctx.clearRect(0,0,w,h);
@@ -844,7 +842,7 @@ function drawDisk(){
   ctx.beginPath();ctx.arc(cx,cy,R,0,6.2832);ctx.stroke();
   ctx.strokeStyle='rgba(47,184,179,.12)';ctx.beginPath();
   ctx.moveTo(cx-R,cy);ctx.lineTo(cx+R,cy);ctx.moveTo(cx,cy-R);ctx.lineTo(cx,cy+R);ctx.stroke();
-  ctx.fillStyle='#5E7C7F';ctx.font='7.5px IBM Plex Mono';
+  ctx.fillStyle='#5E7C7F';ctx.font='7.5px Arial';
   ctx.fillText('|\u03BB|=1  (stability edge)',cx-R+2,cy-R-4);
   ctx.fillText('Re',cx+R-14,cy-4);ctx.fillText('Im',cx+4,cy-R+9);
   if(S.lr0)for(var j=0;j<S.N&&j<S.lr0.length;j++){
@@ -855,7 +853,7 @@ function drawDisk(){
     ctx.beginPath();ctx.arc(cx+S.lr[j2]*R,cy-S.li[j2]*R,3.1,0,6.2832);
     ctx.fillStyle=(j2===S.solo)?'#E0A94E':'#2FB8B3';ctx.fill();
   }
-  ctx.fillStyle='#5E7C7F';ctx.font='7.5px IBM Plex Mono';
+  ctx.fillStyle='#5E7C7F';ctx.font='7.5px Arial';
   ctx.fillText('\u25CB start   \u25CF now',cx-R+2,cy+R+10);
 }
 function drawCont(){
@@ -868,7 +866,7 @@ function drawCont(){
     var wy=h-10-Math.abs(S.w[j2])/maxW*(h-14);
     ctx.beginPath();ctx.arc(j2*bw+bw/2,wy,2.1,0,6.2832);ctx.fillStyle='#2FB8B3';ctx.fill();
   }
-  ctx.fillStyle='#5E7C7F';ctx.font='7.5px IBM Plex Mono';
+  ctx.fillStyle='#5E7C7F';ctx.font='7.5px Arial';
   ctx.fillText('bar = |a| decay   dot = \u03C9 freq   \u0394 = '+Math.exp(S.q).toFixed(2),3,h-1);
 }
 /* ================= sequential vs parallel scan =================
@@ -920,7 +918,7 @@ function drawScan(){
   var F=fit('scancv'); if(!F) return; var ctx=F[0],w=F[1],h=F[2];ctx.clearRect(0,0,w,h);
   var T=SCAN.T, pad=8, cw=(w-2*pad)/T, r=Math.min(5,cw/2.6);
   // ---- sequential chain ----
-  ctx.fillStyle='#5E7C7F';ctx.font='8px IBM Plex Mono';ctx.textAlign='left';
+  ctx.fillStyle='#5E7C7F';ctx.font='8px Arial';ctx.textAlign='left';
   ctx.fillText('SEQUENTIAL — inference path',pad,11);
   var yS=26;
   for(var t=0;t<T;t++){
@@ -929,7 +927,7 @@ function drawScan(){
       ctx.beginPath();ctx.moveTo(pad+cw*(t-.5)+r,yS);ctx.lineTo(x-r,yS);ctx.stroke();}
     ctx.beginPath();ctx.arc(x,yS,r,0,6.2832);ctx.fillStyle='#D2685E';ctx.fill();
   }
-  ctx.fillStyle='#D2685E';ctx.font='8px IBM Plex Mono';
+  ctx.fillStyle='#D2685E';ctx.font='8px Arial';
   ctx.fillText('depth = T = '+SCAN.seqDepth+' dependent steps   ·   memory 2N',pad,yS+16);
   // ---- parallel scan tree ----
   ctx.fillStyle='#5E7C7F';ctx.fillText('PARALLEL SCAN — training path',pad,yS+34);
@@ -946,10 +944,10 @@ function drawScan(){
       ctx.beginPath();ctx.arc(x,y,r*0.72,0,6.2832);
       ctx.fillStyle=(t2>=d)?'#2FB8B3':'rgba(47,184,179,.32)';ctx.fill();
     }
-    ctx.fillStyle='#5E7C7F';ctx.font='7px IBM Plex Mono';ctx.textAlign='right';
+    ctx.fillStyle='#5E7C7F';ctx.font='7px Arial';ctx.textAlign='right';
     ctx.fillText('stride '+d,w-2,y+2.5);ctx.textAlign='left';
   }
-  ctx.fillStyle='#2FB8B3';ctx.font='8px IBM Plex Mono';
+  ctx.fillStyle='#2FB8B3';ctx.font='8px Arial';
   ctx.fillText('depth = log\u2082T = '+SCAN.parDepth+' rounds   ·   '+SCAN.ops+' compositions',
     pad,y0+levels*dy+11);
 }
@@ -962,7 +960,7 @@ function drawCost(){
   var kvPer=2*L_REF*DMODEL,kv=kvPer*T,ssm=L_REF*DINNER*DSTATE,TMAX=8192,maxv=kvPer*TMAX;
   var pad=54,bw=w-pad-6;
   function fmt(n){return n>=1e9?(n/1e9).toFixed(2)+'B':n>=1e6?(n/1e6).toFixed(1)+'M':n>=1e3?(n/1e3).toFixed(0)+'K':''+n;}
-  ctx.font='8.5px IBM Plex Mono';ctx.textAlign='right';ctx.fillStyle='#5E7C7F';
+  ctx.font='8.5px Arial';ctx.textAlign='right';ctx.fillStyle='#5E7C7F';
   ctx.fillText('KV cache',pad-6,23);ctx.fillText('SSM state',pad-6,63);
   ctx.fillStyle='rgba(210,104,94,.2)';ctx.fillRect(pad,12,bw,15);
   ctx.fillStyle='#D2685E';ctx.fillRect(pad,12,Math.max(2,bw*kv/maxv),15);
@@ -976,12 +974,12 @@ function drawCost(){
   var xT=ssm/kvPer,cxp=pad+bw*(ssm/maxv);
   ctx.strokeStyle='rgba(224,169,78,.6)';ctx.setLineDash([3,3]);
   ctx.beginPath();ctx.moveTo(cxp,8);ctx.lineTo(cxp,72);ctx.stroke();ctx.setLineDash([]);
-  ctx.textAlign='left';ctx.fillStyle='#E0A94E';ctx.font='7.5px IBM Plex Mono';
+  ctx.textAlign='left';ctx.fillStyle='#E0A94E';ctx.font='7.5px Arial';
   ctx.fillText('cross @ T\u2248'+Math.round(xT),cxp+3,82);
-  ctx.fillStyle='#D9E8E4';ctx.font='8.5px IBM Plex Mono';
+  ctx.fillStyle='#D9E8E4';ctx.font='8.5px Arial';
   ctx.fillText(fmt(kv)+'  = 2\u00B7L\u00B7T\u00B7d_model',pad+3,39);
   ctx.fillText(fmt(ssm)+'  = L\u00B7d_inner\u00B7d_state (no T)',pad+3,79);
-  ctx.fillStyle='#5E7C7F';ctx.font='8px IBM Plex Mono';
+  ctx.fillStyle='#5E7C7F';ctx.font='8px Arial';
   ctx.fillText('this toy: 1 layer \u2192 '+(2*S.N)+' reals after '+S.steps+' tokens',3,h-3);
   document.getElementById('coststat').innerHTML='ratio <b>'+(kv/ssm).toFixed(kv/ssm<10?1:0)+'\u00D7</b>';
 }
@@ -1100,6 +1098,9 @@ requestAnimationFrame(loop);
 step(0);
 setTimeout(layout,60);
 })();
+</script>
+<script>
+try { localStorage.setItem("pondscope_visited_pond", "1"); } catch (e) {}
 </script>
 </body>
 </html>

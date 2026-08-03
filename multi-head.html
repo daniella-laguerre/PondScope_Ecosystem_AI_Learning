@@ -4,19 +4,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
 <title>Many Heads — why attention looks in several places at once</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,340;9..144,560&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root{--ink:#081418;--deep:#0E2A31;--water:#2FB8B3;--foam:#D9E8E4;
         --brass:#E0A94E;--mute:#5E7C7F;--rose:#D2685E;--violet:#9B7BD4;}
   *{margin:0;padding:0;box-sizing:border-box}
-  html,body{background:var(--ink);color:var(--foam);font-family:'IBM Plex Mono',monospace;
+  html,body{background:var(--ink);color:var(--foam);font-family:Arial,Helvetica,sans-serif;
     -webkit-tap-highlight-color:transparent;overflow-x:hidden}
   body{padding:14px 13px 34px;max-width:760px;margin:0 auto}
-  h1{font-family:'Fraunces',serif;font-weight:560;font-size:clamp(19px,5vw,28px);line-height:1.08}
+  h1{font-family:Arial,Helvetica,sans-serif;font-weight:560;font-size:clamp(19px,5vw,28px);line-height:1.08}
   h1 em{font-style:italic;color:var(--water)}
   .sub{font-size:9.5px;color:var(--mute);margin:5px 0 14px;line-height:1.6}
-  h2{font-family:'Fraunces',serif;font-size:16px;margin:20px 0 6px}
+  h2{font-family:Arial,Helvetica,sans-serif;font-size:16px;margin:20px 0 6px}
   h2 em{font-style:italic;color:var(--water)}
   .lbl{font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);margin:0 0 4px}
   .card{border:1px solid rgba(47,184,179,.18);border-radius:3px;padding:9px 10px 10px;margin-bottom:10px}
@@ -401,7 +399,7 @@ function drawHeads(){
   var pk=peaks();
   for(var hi=0;hi<Hh;hi++){
     var y0=hi*rowH+2,bh=rowH-11;
-    ctx.fillStyle=HCOL[hi%HCOL.length];ctx.font='8px IBM Plex Mono';
+    ctx.fillStyle=HCOL[hi%HCOL.length];ctx.font='8px Arial';
     ctx.fillText('head '+(hi+1),2,y0+bh/2);
     var wts=live?live.W[hi]:null;
     var n=wts?wts.length:0,plotW=w-pad-4;
@@ -425,18 +423,18 @@ function drawHeads(){
         ctx.beginPath();ctx.moveTo(x,y0);ctx.lineTo(x,y0+bh);ctx.stroke();ctx.setLineDash([]);
       }
     } else {
-      ctx.fillStyle='#5E7C7F';ctx.font='8px IBM Plex Mono';
+      ctx.fillStyle='#5E7C7F';ctx.font='8px Arial';
       ctx.fillText('feed symbols to see attention',pad+4,y0+bh/2);
     }
     if(fitted){
-      ctx.fillStyle='#5E7C7F';ctx.font='7.5px IBM Plex Mono';
+      ctx.fillStyle='#5E7C7F';ctx.font='7.5px Arial';
       var lab='prefers '+pk[hi]+' back';
       var qm=-1;for(var q2=0;q2<QK.length;q2++)if(QK[q2]===pk[hi])qm=q2;
       if(qm>=0){ctx.fillStyle=QCOL[qm];lab+='  \u2713 answers "'+QK[qm]+' back"';}
       ctx.fillText(lab,pad+2,y0+bh+8);
     }
   }
-  ctx.fillStyle='#5E7C7F';ctx.font='7px IBM Plex Mono';
+  ctx.fillStyle='#5E7C7F';ctx.font='7px Arial';
   ctx.fillText('older \u2190 positions \u2192 newest',pad,h-2);
 }
 function drawQ(){
@@ -445,25 +443,25 @@ function drawQ(){
   var cw=w/QK.length;
   for(var qi=0;qi<QK.length;qi++){
     var x=qi*cw;
-    ctx.fillStyle=QCOL[qi];ctx.font='8px IBM Plex Mono';
+    ctx.fillStyle=QCOL[qi];ctx.font='8px Arial';
     ctx.fillText(QK[qi]+' steps back',x+4,11);
     var truth=(seq.length>QK[qi])?seq[seq.length-1-QK[qi]]:-1;
     var pred=(fitted&&live)?live.preds[qi]:-1;
-    ctx.font='20px IBM Plex Mono';
+    ctx.font='20px Arial';
     ctx.fillStyle=truth>=0?TCOL[truth]:'#1A2E33';
     ctx.fillText(truth>=0?GLYPH[truth]:'\u2013',x+4,36);
-    ctx.font='9px IBM Plex Mono';ctx.fillStyle='#5E7C7F';
+    ctx.font='9px Arial';ctx.fillStyle='#5E7C7F';
     ctx.fillText('actual',x+30,30);
     if(pred>=0){
-      ctx.font='20px IBM Plex Mono';ctx.fillStyle=TCOL[pred];
+      ctx.font='20px Arial';ctx.fillStyle=TCOL[pred];
       ctx.fillText(GLYPH[pred],x+4,60);
-      ctx.font='9px IBM Plex Mono';
+      ctx.font='9px Arial';
       ctx.fillStyle=(pred===truth)?'#2FB8B3':'#D2685E';
       ctx.fillText((pred===truth)?'said \u2713':'said \u2717',x+30,54);
-      if(tries>0){ctx.fillStyle='#5E7C7F';ctx.font='8px IBM Plex Mono';
+      if(tries>0){ctx.fillStyle='#5E7C7F';ctx.font='8px Arial';
         ctx.fillText(hits[qi]+'/'+tries,x+30,64);}
     } else {
-      ctx.font='9px IBM Plex Mono';ctx.fillStyle='#5E7C7F';
+      ctx.font='9px Arial';ctx.fillStyle='#5E7C7F';
       ctx.fillText('not taught yet',x+4,56);
     }
   }
@@ -498,6 +496,9 @@ window.addEventListener('resize',function(){drawHeads();drawQ();});
 build();
 for(var z=0;z<30;z++)step((Math.random()*V)|0);
 })();
+</script>
+<script>
+try { localStorage.setItem("pondscope_visited_heads", "1"); } catch (e) {}
 </script>
 </body>
 </html>

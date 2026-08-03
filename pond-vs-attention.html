@@ -4,16 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
 <title>Pond vs Notebook — two kinds of memory</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,340;9..144,560&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root{--ink:#081418;--deep:#0E2A31;--water:#2FB8B3;--foam:#D9E8E4;
         --brass:#E0A94E;--mute:#5E7C7F;--rose:#D2685E;--violet:#9B7BD4;}
   *{margin:0;padding:0;box-sizing:border-box}
-  html,body{background:var(--ink);color:var(--foam);font-family:'IBM Plex Mono',monospace;
+  html,body{background:var(--ink);color:var(--foam);font-family:Arial,Helvetica,sans-serif;
     -webkit-tap-highlight-color:transparent;overflow-x:hidden}
   body{padding:14px 13px 30px;max-width:760px;margin:0 auto}
-  h1{font-family:'Fraunces',serif;font-weight:560;font-size:clamp(19px,5vw,28px);line-height:1.08}
+  h1{font-family:Arial,Helvetica,sans-serif;font-weight:560;font-size:clamp(19px,5vw,28px);line-height:1.08}
   h1 em{font-style:italic;color:var(--water)}
   h1 b{font-weight:560;color:var(--brass)}
   .sub{font-size:9.5px;color:var(--mute);margin:5px 0 14px;line-height:1.6}
@@ -21,7 +19,7 @@
   .lbl{font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);margin:0 0 4px}
   .card{border:1px solid rgba(47,184,179,.18);border-radius:3px;padding:9px 10px 10px;margin-bottom:10px}
   .card.att{border-color:rgba(210,104,94,.25)}
-  .title{font-family:'Fraunces',serif;font-size:14px;margin-bottom:2px}
+  .title{font-family:Arial,Helvetica,sans-serif;font-size:14px;margin-bottom:2px}
   .title.p{color:var(--water)} .title.a{color:var(--rose)}
   .tline{font-size:9px;color:var(--mute);margin-bottom:7px;line-height:1.5}
   canvas{width:100%;display:block;border-radius:2px}
@@ -60,7 +58,7 @@
 
   .stat{font-size:9.5px;color:var(--mute);line-height:1.6}
   .stat b{color:var(--foam);font-weight:500}
-  .big{font-family:'Fraunces',serif;font-size:22px;line-height:1}
+  .big{font-family:Arial,Helvetica,sans-serif;font-size:22px;line-height:1}
   .big.p{color:var(--water)} .big.a{color:var(--rose)}
   .pred{font-size:11px;margin-top:6px;color:var(--mute)}
   .pred .g{font-size:15px;vertical-align:-2px}
@@ -71,7 +69,7 @@
   .note{font-size:9.5px;line-height:1.65;color:var(--mute);margin-top:8px}
   .note b{color:var(--foam);font-weight:500}
   .note em{color:var(--brass);font-style:normal}
-  h2{font-family:'Fraunces',serif;font-size:16px;margin:20px 0 6px}
+  h2{font-family:Arial,Helvetica,sans-serif;font-size:16px;margin:20px 0 6px}
   h2 em{font-style:italic;color:var(--water)}
   table{width:100%;border-collapse:collapse;font-size:10px;margin:8px 0}
   th,td{text-align:left;padding:5px 4px;border-bottom:1px solid rgba(47,184,179,.12)}
@@ -559,7 +557,7 @@ function drawPond(){
   ctx.clearRect(0,0,w,h);
   var cx=w/2,cy=h/2,RMAX=Math.min(w,h)/2-2;
   var mx=1e-9;for(var j=0;j<N;j++)mx=Math.max(mx,Math.hypot(P.hr[j],P.hi[j]));
-  if(mx<1e-8){ctx.fillStyle='#5E7C7F';ctx.font='9px IBM Plex Mono';ctx.textAlign='center';
+  if(mx<1e-8){ctx.fillStyle='#5E7C7F';ctx.font='9px Arial';ctx.textAlign='center';
     ctx.fillText('still water — feed a symbol',cx,cy+3);ctx.textAlign='left';return;}
   for(var ri=44;ri>=1;ri--){
     var rr=ri/44,d=rr*26,val=0;
@@ -584,14 +582,14 @@ function drawDials(){
     var m=Math.hypot(P.hr[j2],P.hi[j2])/mx,bh=Math.max(1,m*(h-11));
     ctx.fillStyle='rgba(47,184,179,.75)';ctx.fillRect(j2*bw+1,h-9-bh,bw-2,bh);
   }
-  ctx.fillStyle='#5E7C7F';ctx.font='7px IBM Plex Mono';
+  ctx.fillStyle='#5E7C7F';ctx.font='7px Arial';
   ctx.fillText('the whole memory: '+(2*N)+' numbers, whatever the length',2,h-1);
 }
 function drawAtt(){
   var F=fit2('attcv');if(!F)return;var ctx=F[0],w=F[1],h=F[2];
   ctx.clearRect(0,0,w,h);
   var r=A.lastW;
-  if(!r){ctx.fillStyle='#5E7C7F';ctx.font='9px IBM Plex Mono';ctx.textAlign='center';
+  if(!r){ctx.fillStyle='#5E7C7F';ctx.font='9px Arial';ctx.textAlign='center';
     ctx.fillText('empty notebook — feed a symbol',w/2,h/2+3);ctx.textAlign='left';return;}
   var n=r.w.length,bw=w/Math.max(1,n),mxw=0,arg=0;
   for(var i=0;i<n;i++)if(r.w[i]>mxw){mxw=r.w[i];arg=i;}
@@ -605,10 +603,10 @@ function drawAtt(){
     var x=tgtIdx*bw+bw/2;
     ctx.strokeStyle='rgba(224,169,78,.85)';ctx.setLineDash([2,2]);
     ctx.beginPath();ctx.moveTo(x,2);ctx.lineTo(x,h-13);ctx.stroke();ctx.setLineDash([]);
-    ctx.fillStyle='#E0A94E';ctx.font='7.5px IBM Plex Mono';ctx.textAlign='center';
+    ctx.fillStyle='#E0A94E';ctx.font='7.5px Arial';ctx.textAlign='center';
     ctx.fillText('the answer',x,h-16<10?12:9);ctx.textAlign='left';
   }
-  ctx.fillStyle='#5E7C7F';ctx.font='7px IBM Plex Mono';
+  ctx.fillStyle='#5E7C7F';ctx.font='7px Arial';
   ctx.fillText('older \u2190 entries in the notebook \u2192 newest',2,h-3);
 }
 function drawCache(){
@@ -619,7 +617,7 @@ function drawCache(){
     ctx.fillStyle='rgba(210,104,94,'+(0.35+0.5*i/cap).toFixed(2)+')';
     ctx.fillRect(i*bw+.6,4,Math.max(1,bw-1.2),h-12);
   }
-  ctx.fillStyle='#5E7C7F';ctx.font='7px IBM Plex Mono';
+  ctx.fillStyle='#5E7C7F';ctx.font='7px Arial';
   ctx.fillText(n+' entries and counting',2,h-1);
 }
 function drawBias(){
@@ -634,10 +632,10 @@ function drawBias(){
     ctx.fillStyle=(i3===peak&&A.fitted)?'#E0A94E':'rgba(210,104,94,.45)';
     ctx.fillRect(i3*bw+.5,h-11-bh,Math.max(1,bw-1),bh);
   }
-  ctx.fillStyle='#5E7C7F';ctx.font='7.5px IBM Plex Mono';
+  ctx.fillStyle='#5E7C7F';ctx.font='7.5px Arial';
   ctx.fillText('0',2,h-2);ctx.fillText(MAXREL+' back',w-42,h-2);
   if(A.fitted){
-    ctx.fillStyle='#E0A94E';ctx.font='8px IBM Plex Mono';
+    ctx.fillStyle='#E0A94E';ctx.font='8px Arial';
     ctx.fillText('peak at '+peak+' back  (you asked for '+K+')',Math.min(peak*bw+4,w-140),11);
   }
 }
@@ -701,6 +699,9 @@ drawSeq();drawPond();drawDials();drawAtt();drawCache();drawBias();
 document.getElementById('progress').innerHTML='press <b>Teach both</b> to begin';
 step(0);
 })();
+</script>
+<script>
+try { localStorage.setItem("pondscope_visited_notebook", "1"); } catch (e) {}
 </script>
 </body>
 </html>
