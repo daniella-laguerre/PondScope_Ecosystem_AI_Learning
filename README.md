@@ -15,10 +15,11 @@ No install. Open [`index.html`](index.html) in a browser, or visit the GitHub Pa
 | 1 | [pond-continuous.html](pond-continuous.html) | Continuous SSM pond, sampled once per token |
 | 2 | [pond-vs-attention.html](pond-vs-attention.html) | Pond vs notebook on the same recall task |
 | 3 | [multi-head.html](multi-head.html) | Why attention needs many heads at once |
+| 4 | [issues-lab.html](issues-lab.html) | Simulate AI issues (tokens, latency/TTFT, grounding) — with **Reset** / **Reset all** |
 
 Landing page: [index.html](index.html) — includes industry-standard definitions for pond, notebook, and multi-head.
 
-Glossary: [glossary.html](glossary.html) — AI / ML terms, plus an **Issues & failure modes** section (latency-related costs, safety, agent errors, etc.).
+Glossary: [glossary.html](glossary.html) — AI / ML terms, plus an **Issues & failure modes** section with **Try it** links into the lab.
 
 ---
 

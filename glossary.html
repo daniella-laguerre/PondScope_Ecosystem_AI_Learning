@@ -24,6 +24,9 @@
   a.back{display:inline-block;font-size:10px;letter-spacing:.1em;text-transform:uppercase;
     color:var(--water);text-decoration:none;border-bottom:1px dotted rgba(47,184,179,.4);
     margin-bottom:18px}
+  a.try{display:inline-block;margin-top:5px;font-size:9px;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--brass);text-decoration:none;border-bottom:1px dotted rgba(224,169,78,.5)}
+  a.try:hover{color:var(--water);border-bottom-color:rgba(47,184,179,.5)}
   .tag{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--brass)}
   h1{font-family:'Fraunces',serif;font-weight:560;font-size:clamp(26px,6vw,38px);
     line-height:1.08;margin-top:8px}
@@ -289,10 +292,12 @@
   </p>
   <dl>
     <dt>Time to first token (TTFT)</dt>
-    <dd>How long until the model emits the first output token. Often what users feel as “thinking delay,” even when the rest of the answer streams quickly.</dd>
+    <dd>How long until the model emits the first output token. Often what users feel as “thinking delay,” even when the rest of the answer streams quickly.
+      <br><a class="try" href="issues-lab.html#latency">Try it in Issues Lab →</a></dd>
 
     <dt>Token overconsumption</dt>
-    <dd>Using far more tokens than the task needs—verbose answers, oversized prompts, redundant history, or unnecessary tool loops—raising cost and often latency.</dd>
+    <dd>Using far more tokens than the task needs—verbose answers, oversized prompts, redundant history, or unnecessary tool loops—raising cost and often latency.
+      <br><a class="try" href="issues-lab.html#tokens">Try it in Issues Lab →</a></dd>
 
     <dt>Context bloat</dt>
     <dd>Prompt and conversation history grow so large that cost rises, quality drops, or the context window is exhausted. Related to token overconsumption, but focused on the filled window itself.</dd>
@@ -307,7 +312,8 @@
     <dd>Inventing plausible-sounding details to fill gaps in knowledge or context. In product language often grouped with hallucination; here it stresses gap-filling rather than outright false claims about known facts.</dd>
 
     <dt>Grounding failure</dt>
-    <dd>The model ignores or misuses provided documents, retrieval results, or tool outputs and answers from parametric memory instead—or cites sources incorrectly.</dd>
+    <dd>The model ignores or misuses provided documents, retrieval results, or tool outputs and answers from parametric memory instead—or cites sources incorrectly.
+      <br><a class="try" href="issues-lab.html#grounding">Try it in Issues Lab →</a></dd>
 
     <dt>Instruction following failure</dt>
     <dd>The model misses stated constraints: required format, length, steps, tone, or banned content, even when the request was clear.</dd>
@@ -367,6 +373,7 @@
   <footer>
     <b>Daniella M. LaGuerre</b> · PondScope Ecosystem<br>
     <a href="index.html">Home</a> ·
+    <a href="issues-lab.html">Issues lab</a> ·
     <a href="pond-continuous.html">Pond</a> ·
     <a href="pond-vs-attention.html">Pond vs notebook</a> ·
     <a href="multi-head.html">Multi-head</a><br>

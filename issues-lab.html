@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Issues Lab — PondScope Ecosystem</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,340;9..144,560&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#081418;--deep:#0E2A31;--water:#2FB8B3;--foam:#D9E8E4;
+    --brass:#E0A94E;--mute:#5E7C7F;--rose:#D2685E;--violet:#9B7BD4;--ok:#3dba7a;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{min-height:100%;background:var(--ink);color:var(--foam);
+    font-family:'IBM Plex Mono',monospace}
+  body{
+    background:
+      radial-gradient(ellipse 80% 45% at 12% 0%, rgba(210,104,94,.14), transparent 50%),
+      radial-gradient(ellipse 70% 40% at 90% 10%, rgba(47,184,179,.12), transparent 45%),
+      var(--ink);
+  }
+  main{max-width:780px;margin:0 auto;padding:clamp(22px,5vw,48px) 16px 56px}
+  a.back{display:inline-block;font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--water);text-decoration:none;border-bottom:1px dotted rgba(47,184,179,.4);
+    margin-bottom:16px}
+  .tag{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--brass)}
+  h1{font-family:'Fraunces',serif;font-weight:560;font-size:clamp(26px,6vw,38px);
+    line-height:1.08;margin-top:8px}
+  h1 em{font-style:italic;color:var(--rose)}
+  .lead{margin:12px 0 20px;max-width:42em;font-size:12px;line-height:1.65;color:var(--mute)}
+  .lead b{color:var(--foam);font-weight:500}
+  .warn{font-size:10px;line-height:1.55;color:var(--mute);border-left:2px solid var(--brass);
+    padding-left:10px;margin-bottom:22px}
+
+  .toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:14px}
+  .tabs{display:flex;flex-wrap:wrap;gap:6px;flex:1}
+  .tab{
+    font-size:9px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;
+    padding:7px 10px;border-radius:2px;border:1px solid rgba(47,184,179,.25);
+    color:var(--mute);background:transparent;
+  }
+  .tab.on{color:var(--ink);background:var(--water);border-color:var(--water)}
+  button.ghost, button.primary, button.danger{
+    font-family:inherit;font-size:9px;letter-spacing:.08em;text-transform:uppercase;
+    padding:7px 12px;border-radius:2px;cursor:pointer;border:1px solid transparent;
+  }
+  button.primary{background:var(--brass);color:var(--ink);border:none;font-weight:500}
+  button.ghost{background:transparent;color:var(--water);border-color:rgba(47,184,179,.45)}
+  button.danger{background:transparent;color:var(--rose);border-color:rgba(210,104,94,.5)}
+  button:disabled{opacity:.45;cursor:default}
+
+  .panel{border:1px solid rgba(47,184,179,.2);border-radius:3px;padding:14px 14px 12px;
+    background:rgba(14,42,49,.4);margin-bottom:12px}
+  .panel h2{font-family:'Fraunces',serif;font-size:18px;font-weight:560;margin-bottom:6px}
+  .panel h2 span{color:var(--water);font-style:italic;font-weight:340}
+  .panel .blurb{font-size:11px;line-height:1.6;color:var(--mute);margin-bottom:12px}
+  .panel .blurb b{color:var(--foam);font-weight:500}
+
+  .meters{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;
+    margin:10px 0 12px}
+  .meter{border:1px solid rgba(47,184,179,.16);padding:8px 9px;border-radius:2px}
+  .meter .k{font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
+  .meter .v{font-family:'Fraunces',serif;font-size:20px;margin-top:2px;color:var(--foam)}
+  .meter .v.bad{color:var(--rose)} .meter .v.ok{color:var(--ok)} .meter .v.warn{color:var(--brass)}
+  .bar{height:4px;background:var(--deep);margin-top:6px;border-radius:2px;overflow:hidden}
+  .bar>i{display:block;height:100%;width:0;background:var(--water);transition:width .25s}
+  .bar>i.hot{background:var(--rose)} .bar>i.warm{background:var(--brass)}
+
+  label.ctl{display:flex;flex-direction:column;gap:3px;font-size:8px;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--mute);margin:6px 0}
+  input[type=range]{-webkit-appearance:none;appearance:none;width:100%;max-width:260px;
+    height:18px;background:transparent}
+  input[type=range]::-webkit-slider-runnable-track{height:2px;background:var(--deep)}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;
+    border-radius:50%;background:var(--brass);margin-top:-5px;border:2px solid var(--ink)}
+  .row{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;margin:8px 0}
+  .toggle{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--mute);cursor:pointer}
+  .toggle input{accent-color:var(--water)}
+
+  .stage{margin-top:10px;padding:10px;border:1px dashed rgba(47,184,179,.25);border-radius:2px;
+    font-size:11px;line-height:1.6;color:var(--mute);min-height:4.5em;white-space:pre-wrap}
+  .stage b{color:var(--foam)} .stage .cut{color:var(--rose)} .stage .cite{color:var(--water)}
+  .log{margin-top:8px;font-size:10px;color:var(--mute);line-height:1.55}
+  .log .ok{color:var(--ok)} .log .bad{color:var(--rose)} .log .warn{color:var(--brass)}
+
+  .scenario{display:none} .scenario.on{display:block}
+  footer{margin-top:28px;padding-top:14px;border-top:1px solid rgba(47,184,179,.14);
+    font-size:10px;line-height:1.6;color:var(--mute)}
+  footer a{color:var(--water);text-decoration:none;border-bottom:1px dotted rgba(47,184,179,.4)}
+</style>
+</head>
+<body>
+<main>
+  <a class="back" href="index.html">← Home</a>
+  <p class="tag">PondScope Ecosystem · Issues Lab</p>
+  <h1>Break the demo — <em>simulate AI issues</em></h1>
+  <p class="lead">
+    Interactive failure dramas with knobs. Each scenario has a <b>cause</b>, a <b>meter</b>,
+    a <b>run</b>, and a <b>fix</b>. Use <b>Reset</b> to restore defaults for the current
+    scenario, or <b>Reset all</b> for the whole lab.
+  </p>
+  <p class="warn">
+    Illustrative simulation for teaching — not a security audit, load test, or production benchmark.
+  </p>
+
+  <div class="toolbar">
+    <div class="tabs" role="tablist" aria-label="Scenarios">
+      <button class="tab on" data-sc="tokens" type="button">Token overconsumption</button>
+      <button class="tab" data-sc="latency" type="button">Latency / TTFT</button>
+      <button class="tab" data-sc="grounding" type="button">Grounding failure</button>
+    </div>
+    <button class="danger" id="reset" type="button">Reset</button>
+    <button class="ghost" id="resetall" type="button">Reset all</button>
+  </div>
+
+  <!-- ========== TOKENS ========== -->
+  <section class="scenario on" id="sc-tokens">
+    <div class="panel">
+      <h2>Token <span>overconsumption</span></h2>
+      <p class="blurb">
+        Same question, three reply styles. Watch <b>prompt + completion tokens</b> and a toy cost meter.
+        Verbose mode burns budget; concise + trim-history fixes it. Past the context cap, output is truncated.
+      </p>
+      <div class="meters">
+        <div class="meter"><div class="k">Prompt tokens</div><div class="v" id="t-prompt">0</div></div>
+        <div class="meter"><div class="k">Completion tokens</div><div class="v" id="t-comp">0</div></div>
+        <div class="meter"><div class="k">Total / budget</div><div class="v" id="t-total">0 / 120</div>
+          <div class="bar"><i id="t-bar"></i></div></div>
+        <div class="meter"><div class="k">Est. cost</div><div class="v" id="t-cost">$0.000</div></div>
+      </div>
+      <div class="row">
+        <label class="ctl">Reply style
+          <select id="t-style" style="font:inherit;background:var(--deep);color:var(--foam);border:1px solid rgba(47,184,179,.35);padding:6px 8px;margin-top:4px">
+            <option value="verbose">Verbose (wasteful)</option>
+            <option value="normal">Normal</option>
+            <option value="concise">Concise (fix)</option>
+          </select>
+        </label>
+        <label class="toggle"><input type="checkbox" id="t-history"> Keep long chat history (bloat)</label>
+        <label class="toggle"><input type="checkbox" id="t-trim"> Trim history (fix)</label>
+      </div>
+      <div class="row">
+        <button class="primary" id="t-run" type="button">Run reply</button>
+      </div>
+      <div class="stage" id="t-stage">Press Run reply.</div>
+      <div class="log" id="t-log"></div>
+    </div>
+  </section>
+
+  <!-- ========== LATENCY ========== -->
+  <section class="scenario" id="sc-latency">
+    <div class="panel">
+      <h2>Latency &amp; <span>time to first token</span></h2>
+      <p class="blurb">
+        Fake server delay before the first token, then stream the rest.
+        <b>Cold start</b> adds a one-time load penalty. Warm runs feel snappier.
+      </p>
+      <div class="meters">
+        <div class="meter"><div class="k">TTFT</div><div class="v" id="l-ttft">—</div></div>
+        <div class="meter"><div class="k">Full response</div><div class="v" id="l-full">—</div></div>
+        <div class="meter"><div class="k">Server state</div><div class="v" id="l-state">cold</div></div>
+        <div class="meter"><div class="k">Tokens streamed</div><div class="v" id="l-tok">0</div></div>
+      </div>
+      <label class="ctl" for="l-delay">Base delay before first token: <span id="l-delayv">400</span> ms
+        <input id="l-delay" type="range" min="50" max="1200" step="50" value="400">
+      </label>
+      <label class="toggle"><input type="checkbox" id="l-cold" checked> Simulate cold start (+800 ms on first run)</label>
+      <div class="row">
+        <button class="primary" id="l-run" type="button">Generate</button>
+        <button class="ghost" id="l-warm" type="button">Mark server warm</button>
+      </div>
+      <div class="stage" id="l-stage">Press Generate.</div>
+      <div class="log" id="l-log"></div>
+    </div>
+  </section>
+
+  <!-- ========== GROUNDING ========== -->
+  <section class="scenario" id="sc-grounding">
+    <div class="panel">
+      <h2>Grounding <span>failure</span></h2>
+      <p class="blurb">
+        A document states a fact. With retrieval <b>off</b>, the model confabulates from “memory.”
+        With retrieval <b>on</b>, it cites the doc. That is the grounding fix.
+      </p>
+      <div class="meters">
+        <div class="meter"><div class="k">Retrieval</div><div class="v" id="g-ret">OFF</div></div>
+        <div class="meter"><div class="k">Grounded?</div><div class="v" id="g-ok">—</div></div>
+        <div class="meter"><div class="k">Doc used</div><div class="v" id="g-doc">no</div></div>
+      </div>
+      <div class="panel" style="margin:0 0 10px;background:rgba(8,20,24,.5)">
+        <div class="k" style="font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--mute);margin-bottom:6px">Document in the notebook</div>
+        <div style="font-size:11px;line-height:1.55;color:var(--foam)" id="g-source">
+          PondScope release note (2026-08-02): The hybrid drawer demo reports held-out exact-sequence accuracy of <b>79%</b> after training.
+        </div>
+      </div>
+      <label class="toggle"><input type="checkbox" id="g-use"> Use retrieval / ground on the document (fix)</label>
+      <div class="row">
+        <button class="primary" id="g-run" type="button">Ask: “What accuracy did the demo hit?”</button>
+      </div>
+      <div class="stage" id="g-stage">Press Ask.</div>
+      <div class="log" id="g-log"></div>
+    </div>
+  </section>
+
+  <footer>
+    <b>Daniella M. LaGuerre</b> · PondScope Ecosystem<br>
+    <a href="index.html">Home</a> ·
+    <a href="glossary.html#issues">Glossary · Issues</a> ·
+    <a href="pond-vs-attention.html">Pond vs notebook</a>
+  </footer>
+</main>
+<script>
+(function () {
+  "use strict";
+
+  var BUDGET = 120;
+  var RATE = 0.00002; // toy $/token
+  var defaults = {
+    tokens: { style: "verbose", history: false, trim: false },
+    latency: { delay: 400, coldChecked: true, cold: true },
+    grounding: { use: false }
+  };
+  var state = {
+    tokens: Object.assign({}, defaults.tokens),
+    latency: Object.assign({}, defaults.latency),
+    grounding: Object.assign({}, defaults.grounding)
+  };
+
+  var HISTORY_BLOATED = [
+    "user: tell me a story", "assistant: once upon a time " + "word ".repeat(40),
+    "user: again", "assistant: " + "detail ".repeat(50),
+    "user: more context", "assistant: " + "padding ".repeat(60)
+  ];
+  var QUESTION = "What is a pond in PondScope?";
+  var REPLIES = {
+    verbose: "Certainly! I'd be delighted to elaborate at considerable length. In the richly metaphorical pedagogical framing adopted by this educational ecosystem, a \"pond\" may be understood, in a manner of speaking, as a fixed-size recurrent or state-space hidden state that compresses the effects of past tokens into a bounded dynamical summary, which of course stands in deliberate contrast to attention-based notebooks that retain per-position keys and values, and furthermore—",
+    normal: "A pond is a fixed-size state-space / recurrent hidden state: past tokens are compressed into one evolving summary that does not grow with sequence length.",
+    concise: "Pond = fixed-size SSM/RNN state (compressed past)."
+  };
+
+  function $(id) { return document.getElementById(id); }
+  function estTokens(text) {
+    // rough ~4 chars/token teaching estimate
+    return Math.max(1, Math.round(String(text).length / 4));
+  }
+  function setBar(el, frac) {
+    var f = Math.max(0, Math.min(1, frac));
+    el.style.width = (f * 100) + "%";
+    el.className = f > 0.9 ? "hot" : (f > 0.7 ? "warm" : "");
+  }
+
+  /* ----- tabs / deep links ----- */
+  function showScenario(name) {
+    document.querySelectorAll(".tab").forEach(function (t) {
+      t.classList.toggle("on", t.getAttribute("data-sc") === name);
+    });
+    document.querySelectorAll(".scenario").forEach(function (s) {
+      s.classList.toggle("on", s.id === "sc-" + name);
+    });
+    if (location.hash.replace(/^#/, "") !== name) {
+      history.replaceState(null, "", "#" + name);
+    }
+  }
+  document.querySelectorAll(".tab").forEach(function (t) {
+    t.addEventListener("click", function () { showScenario(t.getAttribute("data-sc")); });
+  });
+
+  /* ----- TOKENS ----- */
+  function syncTokenControls() {
+    $("t-style").value = state.tokens.style;
+    $("t-history").checked = state.tokens.history;
+    $("t-trim").checked = state.tokens.trim;
+  }
+  function runTokens() {
+    state.tokens.style = $("t-style").value;
+    state.tokens.history = $("t-history").checked;
+    state.tokens.trim = $("t-trim").checked;
+
+    var hist = [];
+    if (state.tokens.history && !state.tokens.trim) hist = HISTORY_BLOATED.slice();
+    if (state.tokens.history && state.tokens.trim) hist = HISTORY_BLOATED.slice(-2);
+
+    var prompt = (hist.length ? hist.join("\n") + "\n" : "") + "user: " + QUESTION;
+    var reply = REPLIES[state.tokens.style];
+    var pTok = estTokens(prompt);
+    var cTok = estTokens(reply);
+    var total = pTok + cTok;
+    var truncated = false;
+    if (total > BUDGET) {
+      var keep = Math.max(0, BUDGET - pTok);
+      var cutAt = keep * 4;
+      reply = reply.slice(0, cutAt) + " …";
+      cTok = estTokens(reply);
+      total = pTok + cTok;
+      truncated = true;
+    }
+    var cost = total * RATE;
+
+    $("t-prompt").textContent = pTok;
+    $("t-comp").textContent = cTok;
+    $("t-total").textContent = total + " / " + BUDGET;
+    $("t-total").className = "v" + (total > BUDGET * 0.9 ? " bad" : (total > BUDGET * 0.7 ? " warn" : " ok"));
+    setBar($("t-bar"), total / BUDGET);
+    $("t-cost").textContent = "$" + cost.toFixed(4);
+
+    $("t-stage").innerHTML = "<b>Q:</b> " + QUESTION + "\n\n<b>A:</b> " +
+      reply.replace(/ …$/, ' <span class="cut">[truncated]</span>');
+
+    var tips = [];
+    if (state.tokens.style === "verbose") tips.push('<span class="bad">Verbose reply inflated completion tokens.</span>');
+    if (state.tokens.history && !state.tokens.trim) tips.push('<span class="bad">Long history bloated the prompt.</span>');
+    if (state.tokens.trim && state.tokens.history) tips.push('<span class="ok">Trim history reduced prompt size.</span>');
+    if (state.tokens.style === "concise") tips.push('<span class="ok">Concise style cut completion tokens.</span>');
+    if (truncated) tips.push('<span class="warn">Hit budget — output truncated.</span>');
+    if (!tips.length) tips.push('<span class="ok">Within budget.</span>');
+    $("t-log").innerHTML = tips.join("<br>");
+  }
+  function resetTokens() {
+    state.tokens = Object.assign({}, defaults.tokens);
+    syncTokenControls();
+    $("t-prompt").textContent = "0";
+    $("t-comp").textContent = "0";
+    $("t-total").textContent = "0 / " + BUDGET;
+    $("t-total").className = "v";
+    setBar($("t-bar"), 0);
+    $("t-cost").textContent = "$0.000";
+    $("t-stage").textContent = "Press Run reply.";
+    $("t-log").textContent = "";
+  }
+
+  /* ----- LATENCY ----- */
+  var latencyBusy = false;
+  function syncLatencyControls() {
+    $("l-delay").value = state.latency.delay;
+    $("l-delayv").textContent = state.latency.delay;
+    $("l-cold").checked = state.latency.coldChecked;
+    $("l-state").textContent = state.latency.cold ? "cold" : "warm";
+    $("l-state").className = "v" + (state.latency.cold ? " warn" : " ok");
+  }
+  function runLatency() {
+    if (latencyBusy) return;
+    latencyBusy = true;
+    $("l-run").disabled = true;
+    state.latency.delay = parseInt($("l-delay").value, 10);
+    state.latency.coldChecked = $("l-cold").checked;
+
+    var words = ("A warm pond answers quickly once loaded. ").repeat(3).trim().split(/\s+/);
+    var coldPenalty = (state.latency.coldChecked && state.latency.cold) ? 800 : 0;
+    var wait = state.latency.delay + coldPenalty;
+    var t0 = performance.now();
+    $("l-stage").textContent = "waiting for first token…";
+    $("l-ttft").textContent = "…";
+    $("l-full").textContent = "…";
+    $("l-tok").textContent = "0";
+    $("l-log").innerHTML = coldPenalty
+      ? '<span class="warn">Cold start penalty applied (+800 ms).</span>'
+      : '<span class="ok">Warm path — no load penalty.</span>';
+
+    setTimeout(function () {
+      var ttft = Math.round(performance.now() - t0);
+      $("l-ttft").textContent = ttft + " ms";
+      $("l-ttft").className = "v" + (ttft > 700 ? " bad" : (ttft > 350 ? " warn" : " ok"));
+      if (state.latency.cold) {
+        state.latency.cold = false;
+        $("l-state").textContent = "warm";
+        $("l-state").className = "v ok";
+      }
+      var i = 0;
+      $("l-stage").textContent = "";
+      var iv = setInterval(function () {
+        if (i >= words.length) {
+          clearInterval(iv);
+          var full = Math.round(performance.now() - t0);
+          $("l-full").textContent = full + " ms";
+          $("l-full").className = "v" + (full > 1500 ? " bad" : " ok");
+          $("l-log").innerHTML += "<br><span class=\"ok\">Stream complete. Run again to feel warm TTFT.</span>";
+          latencyBusy = false;
+          $("l-run").disabled = false;
+          return;
+        }
+        $("l-stage").textContent += (i ? " " : "") + words[i];
+        i++;
+        $("l-tok").textContent = String(i);
+      }, 45);
+    }, wait);
+  }
+  function resetLatency() {
+    latencyBusy = false;
+    $("l-run").disabled = false;
+    state.latency = Object.assign({}, defaults.latency);
+    syncLatencyControls();
+    $("l-ttft").textContent = "—";
+    $("l-ttft").className = "v";
+    $("l-full").textContent = "—";
+    $("l-full").className = "v";
+    $("l-tok").textContent = "0";
+    $("l-stage").textContent = "Press Generate.";
+    $("l-log").textContent = "";
+  }
+
+  /* ----- GROUNDING ----- */
+  function syncGroundingControls() {
+    $("g-use").checked = state.grounding.use;
+    $("g-ret").textContent = state.grounding.use ? "ON" : "OFF";
+    $("g-ret").className = "v" + (state.grounding.use ? " ok" : " bad");
+  }
+  function runGrounding() {
+    state.grounding.use = $("g-use").checked;
+    syncGroundingControls();
+    if (state.grounding.use) {
+      $("g-ok").textContent = "yes";
+      $("g-ok").className = "v ok";
+      $("g-doc").textContent = "yes";
+      $("g-doc").className = "v ok";
+      $("g-stage").innerHTML =
+        "<b>A (grounded):</b> According to the release note, held-out exact-sequence accuracy was <span class=\"cite\">79%</span>.\n\n" +
+        "<span class=\"cite\">Source: PondScope release note (2026-08-02)</span>";
+      $("g-log").innerHTML = '<span class="ok">Retrieval on — answer cites the document.</span>';
+    } else {
+      $("g-ok").textContent = "no";
+      $("g-ok").className = "v bad";
+      $("g-doc").textContent = "no";
+      $("g-doc").className = "v bad";
+      $("g-stage").innerHTML =
+        "<b>A (ungrounded):</b> I believe the demo usually reaches about <span class=\"cut\">95–99%</span> exact-sequence accuracy after a short train — typical for this architecture.";
+      $("g-log").innerHTML = '<span class="bad">Retrieval off — fluent but wrong (confabulated from “memory”).</span><br><span class="warn">Fix: enable Use retrieval.</span>';
+    }
+  }
+  function resetGrounding() {
+    state.grounding = Object.assign({}, defaults.grounding);
+    syncGroundingControls();
+    $("g-ok").textContent = "—";
+    $("g-ok").className = "v";
+    $("g-doc").textContent = "no";
+    $("g-doc").className = "v";
+    $("g-stage").textContent = "Press Ask.";
+    $("g-log").textContent = "";
+  }
+
+  /* ----- RESET ----- */
+  function currentScenario() {
+    var on = document.querySelector(".tab.on");
+    return on ? on.getAttribute("data-sc") : "tokens";
+  }
+  function resetCurrent() {
+    var sc = currentScenario();
+    if (sc === "tokens") resetTokens();
+    else if (sc === "latency") resetLatency();
+    else resetGrounding();
+  }
+  function resetAll() {
+    resetTokens();
+    resetLatency();
+    resetGrounding();
+  }
+
+  $("t-run").addEventListener("click", runTokens);
+  $("l-run").addEventListener("click", runLatency);
+  $("l-warm").addEventListener("click", function () {
+    state.latency.cold = false;
+    syncLatencyControls();
+    $("l-log").innerHTML = '<span class="ok">Server marked warm — next Generate skips cold penalty.</span>';
+  });
+  $("l-delay").addEventListener("input", function () {
+    state.latency.delay = parseInt(this.value, 10);
+    $("l-delayv").textContent = state.latency.delay;
+  });
+  $("g-run").addEventListener("click", runGrounding);
+  $("g-use").addEventListener("change", syncGroundingControls);
+  $("reset").addEventListener("click", resetCurrent);
+  $("resetall").addEventListener("click", resetAll);
+
+  // boot
+  resetAll();
+  var hash = (location.hash || "").replace(/^#/, "");
+  if (hash === "ttft") hash = "latency";
+  if (["tokens", "latency", "grounding"].indexOf(hash) >= 0) showScenario(hash);
+  else showScenario("tokens");
+})();
+</script>
+</body>
+</html>

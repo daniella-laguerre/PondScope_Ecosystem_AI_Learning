@@ -1,4 +1,8 @@
+
+*.pyc
 .DS_Store
 .venv/
 __pycache__/
-*.pyc
+node_modules/
+package-lock.json
+results_learning_tests.json
