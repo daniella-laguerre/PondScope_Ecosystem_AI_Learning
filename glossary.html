@@ -71,6 +71,7 @@
     <a href="#generation">Generation</a>
     <a href="#eval">Evaluation</a>
     <a href="#systems">Systems</a>
+    <a href="#issues">Issues &amp; failure modes</a>
   </nav>
 
   <h2 id="foundations">Foundations</h2>
@@ -268,7 +269,7 @@
     <dd>A saved snapshot of model weights (and sometimes optimizer state) at a point in training, used for resume, deploy, or best-model selection.</dd>
 
     <dt>Latency / throughput</dt>
-    <dd>Latency: time to complete one request. Throughput: how many tokens or requests per unit time. Both matter in production.</dd>
+    <dd>Latency: time from request to a usable response. Throughput: tokens or requests completed per unit time. Both matter in production. See also <b>time to first token</b> under Issues.</dd>
 
     <dt>Agent</dt>
     <dd>A system that uses a model to plan and act—calling tools, browsing, or updating memory—over multiple steps toward a goal.</dd>
@@ -278,6 +279,89 @@
 
     <dt>MCP (Model Context Protocol)</dt>
     <dd>A standard way for applications to expose tools and context to AI models through a shared protocol, rather than one-off integrations.</dd>
+  </dl>
+
+  <h2 id="issues">Issues &amp; failure modes</h2>
+  <p class="lead" style="margin-top:0;margin-bottom:18px">
+    Operational and product problems that show up when models leave the lab.
+    <b>Hallucination</b> and <b>overfitting</b> are defined in Generation and Training above — not repeated here.
+    <b>Latency / throughput</b> is defined under Systems.
+  </p>
+  <dl>
+    <dt>Time to first token (TTFT)</dt>
+    <dd>How long until the model emits the first output token. Often what users feel as “thinking delay,” even when the rest of the answer streams quickly.</dd>
+
+    <dt>Token overconsumption</dt>
+    <dd>Using far more tokens than the task needs—verbose answers, oversized prompts, redundant history, or unnecessary tool loops—raising cost and often latency.</dd>
+
+    <dt>Context bloat</dt>
+    <dd>Prompt and conversation history grow so large that cost rises, quality drops, or the context window is exhausted. Related to token overconsumption, but focused on the filled window itself.</dd>
+
+    <dt>KV-cache memory pressure</dt>
+    <dd>Long contexts make the stored key–value cache huge, limiting concurrent users, forcing shorter windows, or increasing serving cost. (The KV cache mechanism is defined under Memory.)</dd>
+
+    <dt>Cold start</dt>
+    <dd>Extra delay when a model or server must load into memory (or scale from zero) before handling the first real request.</dd>
+
+    <dt>Confabulation</dt>
+    <dd>Inventing plausible-sounding details to fill gaps in knowledge or context. In product language often grouped with hallucination; here it stresses gap-filling rather than outright false claims about known facts.</dd>
+
+    <dt>Grounding failure</dt>
+    <dd>The model ignores or misuses provided documents, retrieval results, or tool outputs and answers from parametric memory instead—or cites sources incorrectly.</dd>
+
+    <dt>Instruction following failure</dt>
+    <dd>The model misses stated constraints: required format, length, steps, tone, or banned content, even when the request was clear.</dd>
+
+    <dt>Tool-use error</dt>
+    <dd>Wrong tool chosen, invalid arguments, failed calls mishandled, or tool results misread—so the final answer is wrong even if the base model is capable.</dd>
+
+    <dt>Cascading agent error</dt>
+    <dd>In a multi-step agent run, one early mistake poisons later plans and tool calls, compounding into a large failure from a small start.</dd>
+
+    <dt>Nondeterminism</dt>
+    <dd>The same prompt yields different outputs across runs because of sampling, batching, concurrency, or backend routing—harder to test, reproduce, and audit.</dd>
+
+    <dt>Jailbreak / prompt injection</dt>
+    <dd>Inputs designed to override system rules or sneak instructions through untrusted content (web pages, documents, tool output) so the model does something it was told not to.</dd>
+
+    <dt>Data leakage</dt>
+    <dd>The system reveals secrets, private user data, or sensitive text memorized from training—through answers, logs, or side channels.</dd>
+
+    <dt>Toxic / harmful output</dt>
+    <dd>Content that is abusive, dangerous, illegal to assist with, or otherwise violates safety policy.</dd>
+
+    <dt>Bias</dt>
+    <dd>Systematic unfair or skewed behavior across groups, dialects, topics, or regions—often reflecting imbalances in data or feedback.</dd>
+
+    <dt>Sycophancy</dt>
+    <dd>The model agrees with the user (or flatters them) even when the user is wrong, instead of correcting errors.</dd>
+
+    <dt>Catastrophic forgetting</dt>
+    <dd>Fine-tuning or continued training improves a new task but erases or degrades older capabilities the model previously had.</dd>
+
+    <dt>Distribution shift</dt>
+    <dd>Real traffic differs from the data used for training or evaluation, so lab metrics stop predicting production quality.</dd>
+
+    <dt>Reward hacking</dt>
+    <dd>The model optimizes a proxy score (e.g. “sounds helpful,” passes an automatic judge) without truly solving the underlying task.</dd>
+
+    <dt>Mode collapse</dt>
+    <dd>Outputs become repetitive or narrowly similar—limited diversity of answers or styles—more often discussed for some generative setups, but also seen as stuck patterns in chat models.</dd>
+
+    <dt>Truncation</dt>
+    <dd>Input or output is cut off by max-token or context limits mid-thought, producing incomplete answers or silently dropped instructions.</dd>
+
+    <dt>Repetition loop</dt>
+    <dd>The model gets stuck repeating phrases, lists, or structures instead of progressing to a finish.</dd>
+
+    <dt>Stale knowledge</dt>
+    <dd>Parametric knowledge is outdated; the model does not know recent facts unless retrieval, tools, or fresh fine-tuning supply them.</dd>
+
+    <dt>Overrefusal</dt>
+    <dd>The model refuses safe, allowed requests because safety or policy filters are too aggressive.</dd>
+
+    <dt>Underrefusal</dt>
+    <dd>The model answers when it should refuse—a safety miss on disallowed or dangerous requests.</dd>
   </dl>
 
   <footer>

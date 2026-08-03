@@ -18,7 +18,7 @@ No install. Open [`index.html`](index.html) in a browser, or visit the GitHub Pa
 
 Landing page: [index.html](index.html) — includes industry-standard definitions for pond, notebook, and multi-head.
 
-Glossary: [glossary.html](glossary.html) — AI / ML terms and short definitions.
+Glossary: [glossary.html](glossary.html) — AI / ML terms, plus an **Issues & failure modes** section (latency-related costs, safety, agent errors, etc.).
 
 ---
 
