@@ -31,15 +31,6 @@
   .warn{font-size:10px;line-height:1.55;color:var(--mute);border-left:2px solid var(--brass);
     padding-left:10px;margin-bottom:14px}
 
-  .prereq{border:1px solid rgba(47,184,179,.22);border-radius:3px;padding:12px 13px;
-    margin-bottom:16px;background:rgba(14,42,49,.45);font-size:11px;line-height:1.55;color:var(--mute)}
-  .prereq b{color:var(--foam)}
-  .prereq a{color:var(--water);text-decoration:none;border-bottom:1px dotted rgba(47,184,179,.4)}
-  .pill{display:inline-block;font-size:8px;letter-spacing:.06em;padding:2px 6px;margin:2px 3px 2px 0;
-    border-radius:2px;border:1px solid rgba(47,184,179,.3);color:var(--mute)}
-  .pill.on{border-color:rgba(47,184,179,.65);color:var(--water)}
-  .pill.off{border-color:rgba(210,104,94,.4);color:var(--rose)}
-
   .toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:14px}
   .tabs{display:flex;flex-wrap:wrap;gap:6px;flex:1}
   .tab{
@@ -145,16 +136,6 @@
   <p class="warn">
     Illustrative teaching tool — not a security audit, load test, or production benchmark.
   </p>
-
-  <div class="prereq" id="prereq">
-    <b>Depends on interactive lessons</b>
-    <div style="margin-top:6px">
-      <a href="pond-continuous.html"><span class="pill" data-pill="pond">01 Pond</span></a>
-      <a href="pond-vs-attention.html"><span class="pill" data-pill="notebook">02 Pond vs Notebook</span></a>
-      <a href="multi-head.html"><span class="pill" data-pill="heads">03 Many Heads</span></a>
-    </div>
-    <div id="prereq-msg" style="margin-top:8px"></div>
-  </div>
 
   <div class="toolbar">
     <div class="tabs" role="tablist" aria-label="Scenarios">
@@ -341,11 +322,6 @@
   "use strict";
 
   var BUDGET = 120, RATE = 0.00002, POND_N = 24;
-  var KEYS = {
-    pond: "pondscope_visited_pond",
-    notebook: "pondscope_visited_notebook",
-    heads: "pondscope_visited_heads"
-  };
   var defaults = {
     tokens: { style: "verbose", history: false, trim: false },
     latency: { delay: 400, coldChecked: true, cold: true },
@@ -370,9 +346,6 @@
   var DOC_WORDS = ["PondScope", "release", "note", "hybrid", "drawer", "held-out", "exact", "accuracy", "79%", "training"];
 
   function $(id) { return document.getElementById(id); }
-  function visited(k) {
-    try { return localStorage.getItem(KEYS[k]) === "1"; } catch (e) { return false; }
-  }
   function estTokens(text) { return Math.max(1, Math.round(String(text).length / 4)); }
   function setBar(el, frac) {
     var f = Math.max(0, Math.min(1, frac));
@@ -387,22 +360,6 @@
     var ctx = cv.getContext("2d");
     ctx.setTransform(r, 0, 0, r, 0, 0);
     return [ctx, w, h];
-  }
-
-  /* ----- prerequisite UI (soft — no hard lock / no regression) ----- */
-  function refreshPrereq() {
-    var all = true;
-    ["pond", "notebook", "heads"].forEach(function (k) {
-      var on = visited(k);
-      if (!on) all = false;
-      document.querySelectorAll('[data-pill="' + k + '"]').forEach(function (el) {
-        el.classList.toggle("on", on);
-        el.classList.toggle("off", !on);
-      });
-    });
-    $("prereq-msg").innerHTML = all
-      ? '<span class="ok" style="color:var(--ok)">Prerequisites met — visualizations match systems you already ran.</span>'
-      : 'Open <a href="pond-continuous.html">01</a> → <a href="pond-vs-attention.html">02</a> → <a href="multi-head.html">03</a> first for full context. Deep links from the glossary still work.';
   }
 
   /* ----- drawing helpers from the three labs ----- */
@@ -700,7 +657,6 @@
   $("resetall").addEventListener("click", resetAll);
   window.addEventListener("resize", function () { showScenario(currentScenario()); });
 
-  refreshPrereq();
   resetAll();
   var hash = (location.hash || "").replace(/^#/, "");
   if (hash === "ttft") hash = "latency";
