@@ -87,13 +87,36 @@
     changes the ground it moves through.
   </div>
 
-  <nav class="jump" aria-label="Jump">
+  <!-- INDEX FIRST -->
+  <h2 id="index">Reverse index</h2>
+  <p>For readers who meet a term mid-lesson and need it fast.</p>
+  <table>
+    <tr><th>If you read…</th><th>It means</th></tr>
+    <tr><td>the land</td><td>the base model’s weights</td></tr>
+    <tr><td>sediment</td><td>the pre-training corpus</td></tr>
+    <tr><td>the pond</td><td>a fine-tune or adapter, and its live state</td></tr>
+    <tr><td>the water</td><td>the hidden state at runtime</td></tr>
+    <tr><td>a pebble</td><td>one token</td></tr>
+    <tr><td>the dials</td><td>the state’s independent coordinates</td></tr>
+    <tr><td>the notebook</td><td>attention and its stored entries</td></tr>
+    <tr><td>the readers</td><td>attention heads</td></tr>
+    <tr><td>the surveyor</td><td>a reward model</td></tr>
+    <tr><td>the sea</td><td>a checkable, objective outcome</td></tr>
+    <tr><td>the leash</td><td>the KL penalty</td></tr>
+    <tr><td>the blueprint</td><td>supervised demonstrations</td></tr>
+    <tr><td>the grass</td><td>the tool/context protocol</td></tr>
+    <tr><td>the lake</td><td>an external document store</td></tr>
+    <tr><td>the inlet</td><td>retrieval</td></tr>
+    <tr><td>the watershed</td><td>graph structure over the sources</td></tr>
+    <tr><td>the region</td><td>a council of models</td></tr>
+  </table>
+
+  <nav class="jump" aria-label="Jump" style="margin-top:22px">
     <a href="#pretraining">Pre-training</a>
     <a href="#posttraining">Post-training</a>
     <a href="#runtime">Runtime</a>
     <a href="#surroundings">Surroundings</a>
     <a href="#breaks">Where it breaks</a>
-    <a href="#index">Reverse index</a>
     <a href="glossary.html#metaphor-reference">Glossary →</a>
   </nav>
 
@@ -229,30 +252,6 @@
     <h3>The land is not really immovable.</h3>
     <p>Continued pre-training, merges, and further fine-tuning all change the base. The site treats the land as fixed because <em>at runtime it is</em>, and that is the distinction worth protecting — but over a model’s life the ground does move.</p>
   </div>
-
-  <!-- INDEX -->
-  <h2 id="index">Reverse index</h2>
-  <p>For readers who meet a term mid-lesson and need it fast.</p>
-  <table>
-    <tr><th>If you read…</th><th>It means</th></tr>
-    <tr><td>the land</td><td>the base model’s weights</td></tr>
-    <tr><td>sediment</td><td>the pre-training corpus</td></tr>
-    <tr><td>the pond</td><td>a fine-tune or adapter, and its live state</td></tr>
-    <tr><td>the water</td><td>the hidden state at runtime</td></tr>
-    <tr><td>a pebble</td><td>one token</td></tr>
-    <tr><td>the dials</td><td>the state’s independent coordinates</td></tr>
-    <tr><td>the notebook</td><td>attention and its stored entries</td></tr>
-    <tr><td>the readers</td><td>attention heads</td></tr>
-    <tr><td>the surveyor</td><td>a reward model</td></tr>
-    <tr><td>the sea</td><td>a checkable, objective outcome</td></tr>
-    <tr><td>the leash</td><td>the KL penalty</td></tr>
-    <tr><td>the blueprint</td><td>supervised demonstrations</td></tr>
-    <tr><td>the grass</td><td>the tool/context protocol</td></tr>
-    <tr><td>the lake</td><td>an external document store</td></tr>
-    <tr><td>the inlet</td><td>retrieval</td></tr>
-    <tr><td>the watershed</td><td>graph structure over the sources</td></tr>
-    <tr><td>the region</td><td>a council of models</td></tr>
-  </table>
 
   <p style="margin-top:16px;font-size:10.5px;line-height:1.6;color:var(--mute)">
     <em>The landscape is exposition, not a result. Every mechanism named here is

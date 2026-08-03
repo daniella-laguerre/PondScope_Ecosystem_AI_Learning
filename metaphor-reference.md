@@ -15,6 +15,32 @@ up:
 
 ---
 
+# Reverse index
+
+For readers who meet a term mid-lesson and need it fast.
+
+| If you read… | It means |
+|---|---|
+| the land | the base model's weights |
+| sediment | the pre-training corpus |
+| the pond | a fine-tune or adapter, and its live state |
+| the water | the hidden state at runtime |
+| a pebble | one token |
+| the dials | the state's independent coordinates |
+| the notebook | attention and its stored entries |
+| the readers | attention heads |
+| the surveyor | a reward model |
+| the sea | a checkable, objective outcome |
+| the leash | the KL penalty |
+| the blueprint | supervised demonstrations |
+| the grass | the tool/context protocol |
+| the lake | an external document store |
+| the inlet | retrieval |
+| the watershed | graph structure over the sources |
+| the region | a council of models |
+
+---
+
 # PART ONE — Pre-training: how the land formed
 
 Nothing here is designed. Land accumulates.
@@ -174,31 +200,6 @@ further fine-tuning all change the base. The site treats the land as fixed
 because *at runtime it is*, and that is the distinction worth protecting — but
 over a model's life the ground does move.
 
----
-
-# Reverse index
-
-For readers who meet a term mid-lesson and need it fast.
-
-| If you read… | It means |
-|---|---|
-| the land | the base model's weights |
-| sediment | the pre-training corpus |
-| the pond | a fine-tune or adapter, and its live state |
-| the water | the hidden state at runtime |
-| a pebble | one token |
-| the dials | the state's independent coordinates |
-| the notebook | attention and its stored entries |
-| the readers | attention heads |
-| the surveyor | a reward model |
-| the sea | a checkable, objective outcome |
-| the leash | the KL penalty |
-| the blueprint | supervised demonstrations |
-| the grass | the tool/context protocol |
-| the lake | an external document store |
-| the inlet | retrieval |
-| the watershed | graph structure over the sources |
-| the region | a council of models |
 
 ---
 
