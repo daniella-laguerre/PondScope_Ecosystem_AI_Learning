@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>AI Glossary — PondScope Ecosystem</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,340;9..144,560&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#081418;--deep:#0E2A31;--water:#2FB8B3;--foam:#D9E8E4;
+    --brass:#E0A94E;--mute:#5E7C7F;--rose:#D2685E;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{min-height:100%;background:var(--ink);color:var(--foam);
+    font-family:'IBM Plex Mono',monospace}
+  body{
+    background:
+      radial-gradient(ellipse 80% 40% at 10% 0%, rgba(47,184,179,.16), transparent 50%),
+      radial-gradient(ellipse 60% 40% at 100% 20%, rgba(224,169,78,.08), transparent 45%),
+      var(--ink);
+  }
+  main{max-width:760px;margin:0 auto;padding:clamp(24px,5vw,48px) 18px 56px}
+  a.back{display:inline-block;font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--water);text-decoration:none;border-bottom:1px dotted rgba(47,184,179,.4);
+    margin-bottom:18px}
+  .tag{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--brass)}
+  h1{font-family:'Fraunces',serif;font-weight:560;font-size:clamp(26px,6vw,38px);
+    line-height:1.08;margin-top:8px}
+  h1 em{font-style:italic;color:var(--water)}
+  .lead{margin:12px 0 22px;max-width:40em;font-size:12px;line-height:1.65;color:var(--mute)}
+  .lead b{color:var(--foam);font-weight:500}
+
+  .jump{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:28px}
+  .jump a{
+    font-size:9px;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;
+    color:var(--mute);padding:5px 8px;border:1px solid rgba(47,184,179,.22);border-radius:2px;
+  }
+  .jump a:hover{color:var(--water);border-color:rgba(47,184,179,.5)}
+
+  h2{font-family:'Fraunces',serif;font-size:18px;font-weight:560;color:var(--water);
+    margin:28px 0 12px;padding-top:8px;border-top:1px solid rgba(47,184,179,.14)}
+  h2:first-of-type{margin-top:8px}
+
+  dl{display:flex;flex-direction:column;gap:14px}
+  dt{font-size:12px;font-weight:500;color:var(--brass);letter-spacing:.02em}
+  dd{margin-top:4px;font-size:11px;line-height:1.65;color:var(--mute)}
+  dd b{color:var(--foam);font-weight:500}
+  dd code{font-family:inherit;color:var(--water);font-size:10.5px}
+
+  footer{margin-top:40px;padding-top:16px;border-top:1px solid rgba(47,184,179,.14);
+    font-size:10px;line-height:1.6;color:var(--mute)}
+  footer a{color:var(--water);text-decoration:none;border-bottom:1px dotted rgba(47,184,179,.4)}
+</style>
+</head>
+<body>
+<main>
+  <a class="back" href="index.html">← Home</a>
+  <p class="tag">PondScope Ecosystem · Reference</p>
+  <h1>Artificial intelligence<br><em>glossary</em></h1>
+  <p class="lead">
+    Short, industry-standard definitions for common AI / ML terms.
+    Teaching metaphors used in this site (<b>pond</b>, <b>notebook</b>) are noted where they map.
+  </p>
+
+  <nav class="jump" aria-label="Jump to section">
+    <a href="#foundations">Foundations</a>
+    <a href="#architectures">Architectures</a>
+    <a href="#memory">Memory &amp; attention</a>
+    <a href="#training">Training</a>
+    <a href="#generation">Generation</a>
+    <a href="#eval">Evaluation</a>
+    <a href="#systems">Systems</a>
+  </nav>
+
+  <h2 id="foundations">Foundations</h2>
+  <dl>
+    <dt>Artificial intelligence (AI)</dt>
+    <dd>Systems that perform tasks associated with human intelligence—perception, language, planning, or decision-making—usually by learning patterns from data rather than only following hand-written rules.</dd>
+
+    <dt>Machine learning (ML)</dt>
+    <dd>A subset of AI in which models improve performance on a task by fitting parameters to examples (or rewards), instead of being fully programmed for every case.</dd>
+
+    <dt>Deep learning</dt>
+    <dd>ML using multi-layer neural networks. “Deep” refers to many stacked layers of learned transformations.</dd>
+
+    <dt>Neural network</dt>
+    <dd>A model composed of interconnected units (neurons) organized in layers. Each connection has a learnable weight; nonlinear activations let the network approximate complex functions.</dd>
+
+    <dt>Parameter / weight</dt>
+    <dd>A number inside the model that is adjusted during training. Modern language models often have billions of parameters.</dd>
+
+    <dt>Activation</dt>
+    <dd>The numerical output of a neuron or layer for a given input. Intermediate activations are often inspected for interpretability and debugging.</dd>
+
+    <dt>Embedding</dt>
+    <dd>A dense vector representation of a discrete item (token, word, image patch). Nearby embeddings usually mean similar meaning or use.</dd>
+
+    <dt>Token</dt>
+    <dd>The atomic unit a language model reads and writes—often a subword piece, not necessarily a full word. Tokenization converts text into token IDs.</dd>
+
+    <dt>Vocabulary</dt>
+    <dd>The finite set of tokens the model knows. The output layer typically scores every vocabulary entry to pick the next token.</dd>
+
+    <dt>Representation / latent</dt>
+    <dd>An internal vector (or tensor) that encodes information the model has extracted so far. Not always human-readable.</dd>
+  </dl>
+
+  <h2 id="architectures">Architectures</h2>
+  <dl>
+    <dt>Feed-forward network (MLP)</dt>
+    <dd>Layers that transform a vector with linear maps and nonlinearities, usually without recurrence. In Transformers, the MLP block sits beside attention in each layer.</dd>
+
+    <dt>Recurrent neural network (RNN)</dt>
+    <dd>A network that updates a <b>hidden state</b> as it reads a sequence step by step. Memory size is fixed; long-range exact recall is hard. <b>Pond metaphor:</b> fixed-size evolving state.</dd>
+
+    <dt>LSTM / GRU</dt>
+    <dd>RNN variants with gates that control what to forget, write, and read. LSTM has a separate cell state; GRU combines gates more compactly.</dd>
+
+    <dt>Transformer</dt>
+    <dd>Architecture built on attention and feed-forward blocks (Vaswani et al., 2017). Dominant for large language models. Processes sequences with parallelizable attention rather than pure step-by-step recurrence.</dd>
+
+    <dt>State-space model (SSM)</dt>
+    <dd>Sequence model that maintains a dynamical state updated by structured linear (or selective) recurrences, often derived from continuous-time systems. Examples: S4, Mamba. <b>Pond metaphor:</b> continuous pond sampled once per token.</dd>
+
+    <dt>Mamba</dt>
+    <dd>A selective SSM architecture in which the state update depends on the current input, aiming for Transformer-like quality with linear-time sequence processing.</dd>
+
+    <dt>Hybrid model</dt>
+    <dd>An architecture that mixes mechanisms—e.g. mostly SSM/recurrent layers plus occasional attention—to balance constant-cost continuity with exact retrieval.</dd>
+
+    <dt>Mixture of experts (MoE)</dt>
+    <dd>A model that routes each token (or example) to a subset of specialist “expert” subnetworks via a learned router, increasing capacity without always running every parameter.</dd>
+
+    <dt>Encoder / decoder</dt>
+    <dd>Encoder maps input into representations; decoder generates outputs (often conditioned on the encoder). Many LLMs are decoder-only: they generate left to right from a prompt.</dd>
+
+    <dt>Diffusion model</dt>
+    <dd>Generative model that learns to reverse a noise process, widely used for images. The evolving noisy latent is another form of temporary state.</dd>
+  </dl>
+
+  <h2 id="memory">Memory &amp; attention</h2>
+  <dl>
+    <dt>Attention</dt>
+    <dd>A weighted lookup: a <b>query</b> is compared to <b>keys</b>; the resulting weights blend <b>values</b>. Lets the model focus on relevant positions or features. <b>Notebook metaphor:</b> look up entries in a growing record.</dd>
+
+    <dt>Self-attention</dt>
+    <dd>Attention where queries, keys, and values all come from the same sequence (each position can attend to others in that sequence).</dd>
+
+    <dt>Cross-attention</dt>
+    <dd>Attention where queries come from one stream (e.g. decoder) and keys/values from another (e.g. encoder or image features).</dd>
+
+    <dt>Multi-head attention (MHA)</dt>
+    <dd>Several attention heads run in parallel with different projections; their outputs are concatenated. Heads can specialize on different relations or distances.</dd>
+
+    <dt>Key–value cache (KV cache)</dt>
+    <dd>At inference, stored keys and values for past tokens so the model need not recompute them every step. Memory grows with context length.</dd>
+
+    <dt>Context window</dt>
+    <dd>The maximum span of tokens the model can attend to (or otherwise condition on) in one forward pass / generation session.</dd>
+
+    <dt>Positional encoding / position bias</dt>
+    <dd>Signals that tell the model token order. Absolute encodings, relative biases (e.g. T5), and ALiBi are common approaches. Pure RNNs/SSMs often get order “for free” from sequential updates.</dd>
+
+    <dt>Retrieval-augmented generation (RAG)</dt>
+    <dd>Fetching external documents or facts and inserting them into the prompt (or conditioning path) so the model can ground answers beyond its weights.</dd>
+  </dl>
+
+  <h2 id="training">Training</h2>
+  <dl>
+    <dt>Loss function</dt>
+    <dd>A scalar that measures how wrong the model’s predictions are. Training minimizes average loss (e.g. cross-entropy for next-token prediction).</dd>
+
+    <dt>Gradient descent / backpropagation</dt>
+    <dd>Compute how the loss changes with respect to each weight (gradients), then update weights to reduce loss. Backpropagation applies the chain rule through the network.</dd>
+
+    <dt>Learning rate</dt>
+    <dd>Step size for weight updates. Too large: unstable training. Too small: slow progress.</dd>
+
+    <dt>Batch / minibatch</dt>
+    <dd>A group of examples processed together to estimate the gradient. Larger batches are smoother but cost more memory.</dd>
+
+    <dt>Epoch</dt>
+    <dd>One full pass through the training dataset (or a defined data schedule).</dd>
+
+    <dt>Overfitting</dt>
+    <dd>Fitting the training data so closely that performance on new data suffers. Detected by watching held-out validation metrics.</dd>
+
+    <dt>Regularization</dt>
+    <dd>Techniques that discourage overfitting—e.g. weight decay, dropout, early stopping, data augmentation.</dd>
+
+    <dt>Fine-tuning</dt>
+    <dd>Further training a pretrained model on a narrower dataset or task so it adapts without training from scratch.</dd>
+
+    <dt>LoRA / adapter</dt>
+    <dd>Parameter-efficient fine-tuning: small trainable modules (or low-rank updates) are added while most base weights stay frozen.</dd>
+
+    <dt>Pretraining</dt>
+    <dd>Large-scale training (often next-token or masked prediction) that builds general capabilities before specialization.</dd>
+
+    <dt>Teacher forcing</dt>
+    <dd>During training, feed the model the correct previous token rather than its own prediction, stabilizing sequence learning.</dd>
+  </dl>
+
+  <h2 id="generation">Generation &amp; inference</h2>
+  <dl>
+    <dt>Inference</dt>
+    <dd>Running a trained model to produce outputs (no weight updates). Distinct from training.</dd>
+
+    <dt>Autoregressive generation</dt>
+    <dd>Producing a sequence one token at a time, each conditioned on what was already generated (and the prompt).</dd>
+
+    <dt>Logits</dt>
+    <dd>Raw scores over the vocabulary before softmax. Higher logit ⇒ model favors that token more.</dd>
+
+    <dt>Softmax / probability</dt>
+    <dd>Converts logits into a probability distribution over tokens. Sampling or argmax chooses the next token from that distribution.</dd>
+
+    <dt>Temperature</dt>
+    <dd>Softmax sharpness control. Lower → more peaked / deterministic; higher → more random / diverse.</dd>
+
+    <dt>Top-k / top-p (nucleus) sampling</dt>
+    <dd>Decode only from the k most likely tokens, or from the smallest set whose cumulative probability exceeds p. Limits low-probability noise.</dd>
+
+    <dt>Greedy decoding</dt>
+    <dd>Always pick the single highest-probability next token. Fast and deterministic; can be repetitive.</dd>
+
+    <dt>Prompt</dt>
+    <dd>The input text (and optionally system instructions) that conditions generation.</dd>
+
+    <dt>Hallucination</dt>
+    <dd>Fluent output that is factually wrong or unsupported. Not a separate module—an emergent failure mode of generative models.</dd>
+  </dl>
+
+  <h2 id="eval">Evaluation &amp; interpretability</h2>
+  <dl>
+    <dt>Training / validation / test split</dt>
+    <dd>Separate data for fitting, tuning, and final reporting so scores reflect generalization, not memorization of the train set.</dd>
+
+    <dt>Accuracy / exact match</dt>
+    <dd>Fraction of predictions that fully match the target (token, label, or sequence). Simple but strict for generation.</dd>
+
+    <dt>Perplexity</dt>
+    <dd>How “surprised” a language model is by held-out text; lower is better. Related to average next-token loss.</dd>
+
+    <dt>Ablation</dt>
+    <dd>Remove or disable a component (layer, head, branch) and measure the performance drop to test whether it was necessary.</dd>
+
+    <dt>Probe</dt>
+    <dd>A simple model (often linear) trained to read a property from activations. Shows <b>decodability</b>, not necessarily that the network uses that property.</dd>
+
+    <dt>Activation patching / causal tracing</dt>
+    <dd>Swap internal activations from a donor run into a recipient run to test whether that state <b>causes</b> a behavior change.</dd>
+
+    <dt>Double dissociation</dt>
+    <dd>Classic causal pattern: intervention A hurts function X but not Y; intervention B hurts Y but not X. Stronger than a single selective failure.</dd>
+  </dl>
+
+  <h2 id="systems">Systems &amp; practice</h2>
+  <dl>
+    <dt>GPU / accelerator</dt>
+    <dd>Hardware optimized for parallel linear algebra. Most deep learning training and large-model inference runs on GPUs or similar chips.</dd>
+
+    <dt>Quantization</dt>
+    <dd>Storing and/or computing with lower-precision numbers (e.g. 8-bit, 4-bit) to reduce memory and often speed, with some quality trade-off.</dd>
+
+    <dt>Checkpoint</dt>
+    <dd>A saved snapshot of model weights (and sometimes optimizer state) at a point in training, used for resume, deploy, or best-model selection.</dd>
+
+    <dt>Latency / throughput</dt>
+    <dd>Latency: time to complete one request. Throughput: how many tokens or requests per unit time. Both matter in production.</dd>
+
+    <dt>Agent</dt>
+    <dd>A system that uses a model to plan and act—calling tools, browsing, or updating memory—over multiple steps toward a goal.</dd>
+
+    <dt>Tool use / function calling</dt>
+    <dd>Letting a model request external actions (search, code execution, APIs) whose results are fed back into the conversation.</dd>
+
+    <dt>MCP (Model Context Protocol)</dt>
+    <dd>A standard way for applications to expose tools and context to AI models through a shared protocol, rather than one-off integrations.</dd>
+  </dl>
+
+  <footer>
+    <b>Daniella M. LaGuerre</b> · PondScope Ecosystem<br>
+    <a href="index.html">Home</a> ·
+    <a href="pond-continuous.html">Pond</a> ·
+    <a href="pond-vs-attention.html">Pond vs notebook</a> ·
+    <a href="multi-head.html">Multi-head</a><br>
+    Definitions are teaching summaries, not formal textbook citations.
+  </footer>
+</main>
+</body>
+</html>

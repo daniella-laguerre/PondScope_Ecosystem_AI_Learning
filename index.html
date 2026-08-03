@@ -18,31 +18,54 @@
     background:
       radial-gradient(ellipse 90% 55% at 15% -10%, rgba(47,184,179,.22), transparent 55%),
       radial-gradient(ellipse 70% 45% at 90% 10%, rgba(224,169,78,.10), transparent 50%),
-      radial-gradient(ellipse 80% 50% at 50% 100%, rgba(14,42,49,.9), transparent 55%),
+      radial-gradient(ellipse 80% 50% at 100% 80%, rgba(210,104,94,.08), transparent 45%),
       var(--ink);
   }
-  main{max-width:720px;margin:0 auto;padding:clamp(28px,6vw,56px) 18px 48px}
+  main{max-width:740px;margin:0 auto;padding:clamp(28px,6vw,56px) 18px 48px}
   .brand{font-family:'Fraunces',serif;font-weight:560;
     font-size:clamp(28px,7vw,44px);line-height:1.05;letter-spacing:-.02em}
   .brand em{font-style:italic;color:var(--water)}
   .tag{margin-top:10px;font-size:10px;letter-spacing:.14em;text-transform:uppercase;
     color:var(--brass)}
-  .lead{margin-top:14px;max-width:34em;font-size:12px;line-height:1.65;color:var(--mute)}
+  .lead{margin-top:14px;max-width:38em;font-size:12px;line-height:1.65;color:var(--mute)}
   .lead b{color:var(--foam);font-weight:500}
 
   .path{margin:34px 0 10px;font-size:8px;letter-spacing:.14em;text-transform:uppercase;
     color:var(--mute)}
+
+  .defs{display:flex;flex-direction:column;gap:12px;margin-top:8px}
+  .def{
+    padding:14px 15px 13px;border-radius:3px;
+    border-left:3px solid var(--water);
+    border:1px solid rgba(47,184,179,.18);
+    border-left-width:3px;
+    background:rgba(14,42,49,.45);
+  }
+  .def.nb{border-left-color:var(--rose)}
+  .def.mh{border-left-color:var(--violet)}
+  .def .meta{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--brass);
+    margin-bottom:5px}
+  .def h2{font-family:'Fraunces',serif;font-size:18px;font-weight:560;line-height:1.2;
+    color:var(--foam);margin-bottom:6px}
+  .def h2 em{font-style:italic;color:var(--water);font-weight:340}
+  .def.nb h2 em{color:var(--rose)}
+  .def.mh h2 em{color:var(--violet)}
+  .def p{font-size:11px;line-height:1.6;color:var(--mute)}
+  .def p b{color:var(--foam);font-weight:500}
+  .def .aka{margin-top:7px;font-size:10px;color:var(--mute)}
+  .def .aka span{color:var(--brass)}
+
   nav{display:flex;flex-direction:column;gap:10px}
-  a.lesson{
+  a.lesson, a.tool{
     display:block;text-decoration:none;color:inherit;
     padding:16px 16px 15px;border-radius:3px;
     border:1px solid rgba(47,184,179,.22);
     background:linear-gradient(135deg, rgba(47,184,179,.07), rgba(8,20,24,.35));
     transition:border-color .15s, transform .15s, background .15s;
   }
-  a.lesson:hover{border-color:rgba(47,184,179,.55);transform:translateY(-1px);
+  a.lesson:hover, a.tool:hover{border-color:rgba(47,184,179,.55);transform:translateY(-1px);
     background:linear-gradient(135deg, rgba(47,184,179,.12), rgba(8,20,24,.45))}
-  a.lesson:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+  a.lesson:focus-visible, a.tool:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
   .n{font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--brass);
     margin-bottom:6px}
   .title{font-family:'Fraunces',serif;font-size:clamp(17px,3.5vw,22px);line-height:1.15;
@@ -55,6 +78,7 @@
   footer{margin-top:36px;padding-top:16px;border-top:1px solid rgba(47,184,179,.14);
     font-size:10px;line-height:1.6;color:var(--mute)}
   footer b{color:var(--foam);font-weight:500}
+  footer a{color:var(--water);text-decoration:none;border-bottom:1px dotted rgba(47,184,179,.4)}
 </style>
 </head>
 <body>
@@ -62,38 +86,92 @@
   <p class="tag">PondScope Ecosystem · AI Learning Tool</p>
   <h1 class="brand">Three lessons in<br><em>machine memory</em></h1>
   <p class="lead">
-    Interactive pages that show how a fixed-size <b>pond</b> remembers,
-    how a growing <b>notebook</b> looks things up, and why attention needs
-    <b>many heads</b>. Open them in order — each builds on the last.
+    <b>Pond</b>, <b>notebook</b>, and <b>multi-head</b> are teaching metaphors.
+    Below are the industry-standard names they map to. Then open the interactive
+    lessons in order — each builds on the last.
   </p>
 
-  <p class="path">Start here</p>
+  <p class="path">Industry-standard definitions</p>
+  <section class="defs" aria-label="Core definitions">
+    <article class="def">
+      <div class="meta">Metaphor · Pond</div>
+      <h2>Recurrent / state-space <em>hidden state</em></h2>
+      <p>
+        A <b>fixed-size vector</b> (or set of vectors) that is updated at every time step
+        and carries a compressed summary of the past. In RNNs and LSTMs this is the
+        hidden (and cell) state. In modern <b>state-space models (SSMs)</b> such as S4
+        and Mamba, it is a structured dynamical state—often continuous-time underneath,
+        discretized once per token. Memory cost stays roughly constant as the sequence grows;
+        exact old details can fade or mix.
+      </p>
+      <p class="aka"><span>Also called:</span> latent state, SSM state, recurrent state, evolving context</p>
+    </article>
+
+    <article class="def nb">
+      <div class="meta">Metaphor · Notebook</div>
+      <h2>Attention <em>memory</em> (key–value cache)</h2>
+      <p>
+        A mechanism that <b>stores a record for each past position</b> and retrieves
+        relevant entries by comparing a query to keys, then blending values.
+        In Transformers this is <b>self-attention</b> or cross-attention; at inference the
+        stored keys and values are the <b>KV cache</b>. Memory and compute typically grow
+        with sequence length, but exact lookup of earlier tokens is reliable.
+      </p>
+      <p class="aka"><span>Also called:</span> attention, self-attention, cross-attention, KV cache, retrieval over context</p>
+    </article>
+
+    <article class="def mh">
+      <div class="meta">Metaphor · Multi-head</div>
+      <h2>Multi-head <em>attention</em></h2>
+      <p>
+        Running <b>several attention operations in parallel</b> on the same input, each with
+        its own projections (query, key, value). Outputs are concatenated (and usually
+        projected). Different heads can specialize on different relations or positions.
+        Standard since Vaswani et al., “Attention Is All You Need” (2017).
+      </p>
+      <p class="aka"><span>Also called:</span> MHA, multi-head self-attention (MHSA)</p>
+    </article>
+  </section>
+
+  <p class="path">Interactive lessons</p>
   <nav aria-label="Lessons">
     <a class="lesson" href="pond-continuous.html">
       <div class="n">01 · The Pond</div>
       <div class="title">A continuous system, <span>sampled once per token</span></div>
-      <p class="blurb">Feed symbols into a diagonal state-space memory. Watch ripples, dials, decay, and why fixed-size state stays cheap forever.</p>
+      <p class="blurb">Diagonal state-space memory: ripples, dials, decay, and why fixed-size state stays cheap forever.</p>
       <div class="go">Open pond-continuous →</div>
     </a>
 
     <a class="lesson" href="pond-vs-attention.html">
       <div class="n">02 · Pond vs Notebook</div>
       <div class="title">Two ways to remember <span>the same stream</span></div>
-      <p class="blurb">Teach both memories to recall K steps back. See where the pond fades, where the notebook wins, and why hybrids exist.</p>
+      <p class="blurb">SSM state vs attention on the same recall task — where each wins, and why hybrids exist.</p>
       <div class="go">Open pond-vs-attention →</div>
     </a>
 
     <a class="lesson" href="multi-head.html">
       <div class="n">03 · Many Heads</div>
       <div class="title">Looking in <span>several places at once</span></div>
-      <p class="blurb">Ask three lookback questions at once. One head must choose; more heads specialize. That is all multi-head means.</p>
+      <p class="blurb">Three lookback questions at once. One head must choose; more heads specialize.</p>
       <div class="go">Open multi-head →</div>
+    </a>
+  </nav>
+
+  <p class="path">Reference</p>
+  <nav aria-label="Reference">
+    <a class="tool" href="glossary.html">
+      <div class="n">Glossary</div>
+      <div class="title">Artificial intelligence <span>terms</span></div>
+      <p class="blurb">A list of common AI terms with short, industry-standard definitions — models, training, memory, and evaluation.</p>
+      <div class="go">Open glossary →</div>
     </a>
   </nav>
 
   <footer>
     <b>Daniella M. LaGuerre</b> · PondScope Ecosystem<br>
-    Self-contained HTML — no install. Works offline once opened.
+    Self-contained HTML — no install.
+    <a href="glossary.html">Glossary</a> ·
+    metaphors are for teaching; definitions above use standard ML names.
   </footer>
 </main>
 </body>

@@ -16,7 +16,9 @@ No install. Open [`index.html`](index.html) in a browser, or visit the GitHub Pa
 | 2 | [pond-vs-attention.html](pond-vs-attention.html) | Pond vs notebook on the same recall task |
 | 3 | [multi-head.html](multi-head.html) | Why attention needs many heads at once |
 
-Landing page: [index.html](index.html)
+Landing page: [index.html](index.html) — includes industry-standard definitions for pond, notebook, and multi-head.
+
+Glossary: [glossary.html](glossary.html) — AI / ML terms and short definitions.
 
 ---
 
