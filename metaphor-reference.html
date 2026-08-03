@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Metaphor Reference — PondScope Ecosystem</title>
+<style>
+  :root{
+    --ink:#081418;--deep:#0E2A31;--water:#2FB8B3;--foam:#D9E8E4;
+    --brass:#E0A94E;--mute:#5E7C7F;--rose:#D2685E;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{min-height:100%;background:var(--ink);color:var(--foam);
+    font-family:Arial,Helvetica,sans-serif}
+  body{
+    background:
+      radial-gradient(ellipse 80% 40% at 12% 0%, rgba(47,184,179,.14), transparent 50%),
+      radial-gradient(ellipse 55% 35% at 100% 10%, rgba(224,169,78,.08), transparent 45%),
+      var(--ink);
+  }
+  main{max-width:780px;margin:0 auto;padding:clamp(24px,5vw,48px) 18px 56px}
+  a.homebtn{display:inline-block;font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+    text-decoration:none;color:var(--ink);background:var(--brass);font-weight:500;
+    padding:8px 12px;border-radius:2px;margin-bottom:18px}
+  a.homebtn:hover{filter:brightness(1.05)}
+  .tag{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--brass)}
+  h1{font-weight:560;font-size:clamp(26px,6vw,36px);line-height:1.08;margin-top:8px}
+  h1 em{font-style:italic;color:var(--water)}
+  .lead{margin:12px 0 16px;max-width:46em;font-size:12px;line-height:1.65;color:var(--mute)}
+  .lead b{color:var(--foam);font-weight:500}
+  .pull{margin:0 0 20px;padding:12px 14px;border-left:3px solid var(--brass);
+    background:rgba(14,42,49,.45);font-size:12.5px;line-height:1.55;color:var(--foam)}
+  .pull b{color:var(--brass)}
+  .jump{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:22px}
+  .jump a{font-size:9px;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;
+    color:var(--mute);padding:5px 8px;border:1px solid rgba(47,184,179,.22);border-radius:2px}
+  .jump a:hover{color:var(--water);border-color:rgba(47,184,179,.5)}
+
+  h2{font-size:17px;font-weight:560;color:var(--water);margin:28px 0 10px;
+    padding-top:10px;border-top:1px solid rgba(47,184,179,.14)}
+  h2:first-of-type{margin-top:8px}
+  h3{font-size:12px;font-weight:500;color:var(--brass);margin:16px 0 8px;letter-spacing:.04em}
+  p,li{font-size:11.5px;line-height:1.65;color:var(--mute)}
+  p+p{margin-top:8px}
+  p b,li b{color:var(--foam);font-weight:500}
+  ul{margin:8px 0 8px 18px}
+  li{margin-bottom:6px}
+  .claim{margin:10px 0 0;font-size:11px;line-height:1.55;color:var(--mute);
+    border-left:2px solid rgba(47,184,179,.4);padding-left:10px}
+  .claim b{color:var(--foam)}
+  .limit{margin:10px 0 0;padding:8px 10px;border-left:2px solid rgba(210,104,94,.55);
+    font-size:11px;line-height:1.55;color:var(--mute)}
+  .limit b{color:var(--foam)}
+  .seam{margin:12px 0;padding:10px 12px;border:1px solid rgba(224,169,78,.28);
+    border-radius:2px;background:rgba(224,169,78,.05)}
+  .seam h3{margin-top:0}
+  .seam p{margin-top:6px}
+
+  table{width:100%;border-collapse:collapse;font-size:10.5px;margin:8px 0 12px}
+  th,td{text-align:left;padding:7px 6px;border-bottom:1px solid rgba(47,184,179,.12);
+    vertical-align:top;color:var(--mute)}
+  th{color:var(--brass);font-weight:500;font-size:8px;letter-spacing:.1em;text-transform:uppercase}
+  td:first-child{color:var(--foam);font-weight:500}
+  a.gloss{color:var(--water);text-decoration:none;border-bottom:1px dotted rgba(47,184,179,.4)}
+
+  footer{margin-top:36px;padding-top:16px;border-top:1px solid rgba(47,184,179,.14);
+    font-size:10px;line-height:1.6;color:var(--mute)}
+  footer a{color:var(--water);text-decoration:none;border-bottom:1px dotted rgba(47,184,179,.4)}
+</style>
+</head>
+<body>
+<main>
+  <a class="homebtn" href="index.html">← Home</a>
+  <p class="tag">PondScope Ecosystem · Metaphor reference</p>
+  <h1>The PondScope<br><em>metaphor reference</em></h1>
+  <p class="lead">
+    Every landscape term used across the site, what it stands for, and — where it
+    matters — where it stops being true. Industry names:
+    <a class="gloss" href="glossary.html#metaphor-reference">glossary</a>.
+  </p>
+
+  <div class="pull">
+    <b>The land forms. Then the pond is shaped. Then, and only then, water moves.</b><br><br>
+    Pre-training makes the land. Post-training shapes the hollow.
+    Both are finished before a single token arrives.
+    The water is what you watch at runtime — and nothing you see moving
+    changes the ground it moves through.
+  </div>
+
+  <nav class="jump" aria-label="Jump">
+    <a href="#pretraining">Pre-training</a>
+    <a href="#posttraining">Post-training</a>
+    <a href="#runtime">Runtime</a>
+    <a href="#surroundings">Surroundings</a>
+    <a href="#breaks">Where it breaks</a>
+    <a href="#index">Reverse index</a>
+    <a href="glossary.html#metaphor-reference">Glossary →</a>
+  </nav>
+
+  <!-- PART ONE -->
+  <h2 id="pretraining">Part one — Pre-training: how the land formed</h2>
+  <p>Nothing here is designed. Land accumulates.</p>
+  <table>
+    <tr><th>Landscape</th><th>Machine</th><th>Note</th></tr>
+    <tr><td>Sediment</td><td>the training corpus</td><td>deposited, not selected item by item</td></tr>
+    <tr><td>Grain size</td><td>tokenization</td><td>how finely the material is broken before it settles</td></tr>
+    <tr><td>The kinds of grain that exist</td><td>the vocabulary</td><td>a fixed, finite set of pieces</td></tr>
+    <tr><td>Grains of like kind settling together</td><td>embeddings</td><td>similar things end up near each other, by use not by decree</td></tr>
+    <tr><td>Aeons of deposition and pressure</td><td>pre-training compute</td><td>scale is time and weight, not cleverness</td></tr>
+    <tr><td>The rock that results</td><td>the weights</td><td>the shape the ground has, before anyone digs</td></tr>
+    <tr><td>Bedrock type</td><td>the architecture</td><td>decides which shapes are even possible above it</td></tr>
+    <tr><td>Featureless ground before deposition</td><td>random initialization</td><td>no structure yet, only a surface</td></tr>
+    <tr><td>Settling toward the low places</td><td>gradient descent</td><td>the ground finds its own minima under a force</td></tr>
+    <tr><td>How fast the ground is allowed to settle</td><td>learning rate</td><td>too fast and it fractures, too slow and nothing sets</td></tr>
+    <tr><td>Ground moulded so exactly to one season’s rain that the next season floods it</td><td>overfitting</td><td>fits what fell, fails what falls next</td></tr>
+    <tr><td>Braces and drainage that stop it setting too rigidly</td><td>regularization</td><td>weight decay, dropout, early stopping</td></tr>
+    <tr><td>Polluted sediment</td><td>data contamination</td><td>benchmark answers already in the ground</td></tr>
+    <tr><td>Land built from sediment eroded off other people’s land</td><td>model collapse / synthetic-data feedback</td><td>why everything starts to look the same</td></tr>
+  </table>
+  <p class="claim"><b>The pre-training claim in one line:</b> you do not build this land. You choose what falls on it and how long you wait.</p>
+
+  <!-- PART TWO -->
+  <h2 id="posttraining">Part two — Post-training: shaping the pond</h2>
+  <p>Here there <em>is</em> a digger, and the questions become who judges the work and how the judgment reaches the shovel.</p>
+
+  <h3>Digging — no judge</h3>
+  <table>
+    <tr><th>Landscape</th><th>Machine</th></tr>
+    <tr><td>A hollow dug in the land</td><td><a class="gloss" href="glossary.html#sft">a fine-tune</a></td></tr>
+    <tr><td>A hollow dug without disturbing the land under it</td><td><a class="gloss" href="glossary.html#adapter">an adapter / LoRA</a></td></tr>
+    <tr><td>Digging to a handed-over blueprint</td><td><a class="gloss" href="glossary.html#sft">SFT</a> — copy the demonstrations</td></tr>
+    <tr><td>Dig several, keep the best, leave the land alone</td><td><a class="gloss" href="glossary.html#best-of-n">best-of-N / rejection sampling</a></td></tr>
+    <tr><td>Keeping the good ones as new blueprints and digging again</td><td><a class="gloss" href="glossary.html#star">STaR</a></td></tr>
+  </table>
+
+  <h3>Reshaping to a survey — a judge who has an opinion</h3>
+  <table>
+    <tr><th>Landscape</th><th>Machine</th></tr>
+    <tr><td>The surveyor</td><td><a class="gloss" href="glossary.html#reward-model">the reward model</a></td></tr>
+    <tr><td>Reshaping the banks toward what the surveyor scores well</td><td><a class="gloss" href="glossary.html#rlhf">RLHF</a></td></tr>
+    <tr><td>A pond that delights the surveyor and nobody wants to sit beside</td><td><a class="gloss" href="glossary.html#reward-hacking">reward hacking / overoptimization</a></td></tr>
+    <tr><td>The leash that stops the digger leaving the site</td><td><a class="gloss" href="glossary.html#kl-penalty">the KL penalty</a></td></tr>
+    <tr><td>The site as it was before this dig</td><td>the reference model</td></tr>
+    <tr><td>A survey conducted by another pond</td><td><a class="gloss" href="glossary.html#rlaif">RLAIF</a></td></tr>
+    <tr><td>Posted rules the surveyor must obey</td><td><a class="gloss" href="glossary.html#constitutional-ai">Constitutional AI</a></td></tr>
+    <tr><td>Reshaping straight from the comparison notes, no surveyor hired</td><td><a class="gloss" href="glossary.html#dpo">DPO</a></td></tr>
+    <tr><td>Not digging a canyon on a unanimous vote</td><td><a class="gloss" href="glossary.html#ipo">IPO</a></td></tr>
+    <tr><td>Reshaping from lone reactions rather than side-by-side pairs</td><td><a class="gloss" href="glossary.html#kto">KTO</a></td></tr>
+    <tr><td>One note: this one over that one</td><td><a class="gloss" href="glossary.html#preference-pair">a preference pair</a></td></tr>
+  </table>
+  <p class="limit"><b>The fact this section exists to carry:</b> you are never shaping toward the visitors. You are shaping toward a <em>model</em> of the visitors, built from a finite survey, and it will faithfully reward its own mistakes.</p>
+
+  <h3>Checking against the sea — a judge with no opinion</h3>
+  <table>
+    <tr><th>Landscape</th><th>Machine</th></tr>
+    <tr><td>The sea</td><td>a checkable outcome — test passes, proof holds, answer matches</td></tr>
+    <tr><td>Does the water reach the sea?</td><td><a class="gloss" href="glossary.html#rlvr">RLVR</a></td></tr>
+    <tr><td>Only the sea is checked; the route is nobody’s business</td><td><a class="gloss" href="glossary.html#outcome-rl">outcome-only RL</a></td></tr>
+    <tr><td>Inspecting the channel at every bend</td><td><a class="gloss" href="glossary.html#prm">process reward model</a></td></tr>
+    <tr><td>Two ponds shaping each other until the shoreline moves</td><td><a class="gloss" href="glossary.html#self-play">self-play</a></td></tr>
+  </table>
+  <p class="limit"><b>And its limit, stated whenever it is praised:</b> this only works where there <em>is</em> a sea. Most of what a model says has no checkable outcome, which is why these methods dominate maths and code and go quiet on essays and judgment.</p>
+
+  <!-- PART THREE -->
+  <h2 id="runtime">Part three — Runtime: the water</h2>
+  <p>Not on either map above. This is what you watch move.</p>
+  <table>
+    <tr><th>Landscape</th><th>Machine</th></tr>
+    <tr><td>The water</td><td>the hidden state, live, during a sequence</td></tr>
+    <tr><td>A pebble dropped in</td><td>one token arriving</td></tr>
+    <tr><td>Ripples spreading and fading</td><td>the state evolving and decaying</td></tr>
+    <tr><td>The pond’s dials — one ripple size each</td><td>the diagonal state coordinates</td></tr>
+    <tr><td>How far the system flows between two looks</td><td>Δ, the discretization step</td></tr>
+    <tr><td>The reader on the bank with a notebook</td><td>attention</td></tr>
+    <tr><td>One entry per pebble, never rewritten</td><td>the KV cache</td></tr>
+    <tr><td>How many pages the reader may keep</td><td>the context window</td></tr>
+    <tr><td>Several readers, each with their own index of what is worth flipping back to</td><td>multi-head attention</td></tr>
+    <tr><td>A gatekeeper deciding whether to consult the water or the notebook</td><td>the router (in a hybrid)</td></tr>
+    <tr><td>Which pond you are sent to at all</td><td>MoE routing</td></tr>
+    <tr><td>Water taking the steepest path every time</td><td>greedy decoding</td></tr>
+    <tr><td>Letting the water wander instead of always taking the steepest path</td><td>temperature / sampling</td></tr>
+    <tr><td>Only letting it wander into the few most likely channels</td><td>top-k / top-p</td></tr>
+  </table>
+  <p class="limit"><b>The line that must not blur:</b> the water never reshapes the bank. Nothing you see at runtime changes a weight. When someone taps a symbol in the visualization, no training of any kind is happening — a hollow that was already shaped is doing what its shape makes it do.</p>
+
+  <!-- PART FOUR -->
+  <h2 id="surroundings">Part four — The surroundings: everything outside the model</h2>
+  <table>
+    <tr><th>Landscape</th><th>Machine</th></tr>
+    <tr><td>The grass at the edge</td><td>the protocol (MCP) — a way in, holding nothing</td></tr>
+    <tr><td>A distant lake, larger than any pond</td><td>the external corpus</td></tr>
+    <tr><td>An inlet channelled from that lake</td><td>retrieval (RAG)</td></tr>
+    <tr><td>The watershed — the connected paths water arrives along</td><td>graph-structured retrieval</td></tr>
+    <tr><td>Silt that arrives and settles in the pond</td><td>context injected into the prompt</td></tr>
+    <tr><td>The region: several ponds, compared</td><td>a model council / ensemble</td></tr>
+    <tr><td>Standing where all the ponds agree, then deliberately walking elsewhere</td><td>the anti-council / divergence search</td></tr>
+  </table>
+  <p>Two of these are frequently misfiled and shouldn’t be:</p>
+  <ul>
+    <li><b>The grass is not memory.</b> A protocol is a standard doorway, not a store.</li>
+    <li><b>The region asks a different question.</b> Everything else asks <em>what does this model know</em>; a council asks <em>whose answer do we trust</em>.</li>
+  </ul>
+
+  <!-- PART FIVE -->
+  <h2 id="breaks">Part five — Where the metaphor breaks</h2>
+  <p>A metaphor you can’t puncture is a metaphor you’ll over-trust. These are the seams, and they belong in the published version.</p>
+
+  <div class="seam">
+    <h3>Depth has no landscape.</h3>
+    <p>A real model is dozens of layers stacked, each with its own state and attention. There is no natural picture of forty ponds in series, and pretending otherwise is the single biggest simplification on the whole site. What you see is <em>one layer</em>, honestly.</p>
+  </div>
+  <div class="seam">
+    <h3>The notebook is a different metaphor family.</h3>
+    <p>Stationery, not geology. That is deliberate — it is an object <em>carried to</em> the landscape, not part of it, which is exactly right for a mechanism that stores a separate record instead of blending everything into shared ground. But it is a seam, and worth admitting.</p>
+  </div>
+  <div class="seam">
+    <h3>Water is continuous; tokens are not.</h3>
+    <p>The pond flows all the time in the picture. The model is sampled once per token and is perfectly still between them. The visualization handles this correctly by freezing between taps — but the intuition water gives you is wrong here, and it needs saying.</p>
+  </div>
+  <div class="seam">
+    <h3>“Squeezed summary” flatters the pond.</h3>
+    <p>Real fixed-state memory is lossy in ways water isn’t: it doesn’t just fade with distance, it <em>interferes</em>, so two similar facts can corrupt each other rather than simply grow faint.</p>
+  </div>
+  <div class="seam">
+    <h3>Erosion and corrosion were rejected on purpose.</h3>
+    <p>They put the difference between RLHF and RLVR in the <em>force</em>, when the force is identical — the same algorithm, the same gradients. The difference is entirely in the <em>judge</em>. Any metaphor that reaches for weathering has already lost the point.</p>
+  </div>
+  <div class="seam">
+    <h3>The land is not really immovable.</h3>
+    <p>Continued pre-training, merges, and further fine-tuning all change the base. The site treats the land as fixed because <em>at runtime it is</em>, and that is the distinction worth protecting — but over a model’s life the ground does move.</p>
+  </div>
+
+  <!-- INDEX -->
+  <h2 id="index">Reverse index</h2>
+  <p>For readers who meet a term mid-lesson and need it fast.</p>
+  <table>
+    <tr><th>If you read…</th><th>It means</th></tr>
+    <tr><td>the land</td><td>the base model’s weights</td></tr>
+    <tr><td>sediment</td><td>the pre-training corpus</td></tr>
+    <tr><td>the pond</td><td>a fine-tune or adapter, and its live state</td></tr>
+    <tr><td>the water</td><td>the hidden state at runtime</td></tr>
+    <tr><td>a pebble</td><td>one token</td></tr>
+    <tr><td>the dials</td><td>the state’s independent coordinates</td></tr>
+    <tr><td>the notebook</td><td>attention and its stored entries</td></tr>
+    <tr><td>the readers</td><td>attention heads</td></tr>
+    <tr><td>the surveyor</td><td>a reward model</td></tr>
+    <tr><td>the sea</td><td>a checkable, objective outcome</td></tr>
+    <tr><td>the leash</td><td>the KL penalty</td></tr>
+    <tr><td>the blueprint</td><td>supervised demonstrations</td></tr>
+    <tr><td>the grass</td><td>the tool/context protocol</td></tr>
+    <tr><td>the lake</td><td>an external document store</td></tr>
+    <tr><td>the inlet</td><td>retrieval</td></tr>
+    <tr><td>the watershed</td><td>graph structure over the sources</td></tr>
+    <tr><td>the region</td><td>a council of models</td></tr>
+  </table>
+
+  <p style="margin-top:16px;font-size:10.5px;line-height:1.6;color:var(--mute)">
+    <em>The landscape is exposition, not a result. Every mechanism named here is
+    standard and cited in the site’s sources; the geography is only a way of
+    holding them in mind — and Part Five is there because a metaphor is only
+    trustworthy once you know where it fails. By Daniella M. LaGuerre.</em>
+  </p>
+
+  <footer>
+    <b>Daniella M. LaGuerre</b> · PondScope Ecosystem<br>
+    <a href="index.html">Home</a> ·
+    <a href="glossary.html#metaphor-reference">Glossary · Metaphor reference</a> ·
+    <a href="context.html">Context</a> ·
+    <a href="pond-continuous.html">01 Pond</a>
+  </footer>
+</main>
+</body>
+</html>

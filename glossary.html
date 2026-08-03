@@ -70,7 +70,7 @@
     <a href="#architectures">Architectures</a>
     <a href="#memory">Memory &amp; attention</a>
     <a href="#training">Training</a>
-    <a href="#post-training">Post-training</a>
+    <a href="#metaphor-reference">Metaphor reference</a>
     <a href="#generation">Generation</a>
     <a href="#eval">Evaluation</a>
     <a href="#systems">Systems</a>
@@ -194,7 +194,7 @@
     <dd>Techniques that discourage overfitting—e.g. weight decay, dropout, early stopping, data augmentation.</dd>
 
     <dt>Fine-tuning</dt>
-    <dd>Further training a pretrained model on a narrower dataset or task so it adapts without training from scratch. <b>Pond:</b> reshaping or digging a hollow in the land — see <a href="#post-training">post-training</a>.</dd>
+    <dd>Further training a pretrained model on a narrower dataset or task so it adapts without training from scratch. <b>Pond:</b> reshaping or digging a hollow in the land — see <a href="#metaphor-reference">metaphor reference</a>.</dd>
 
     <dt id="adapter">LoRA / adapter</dt>
     <dd>Parameter-efficient fine-tuning: small trainable modules (or low-rank updates) are added while most base weights stay frozen. <b>Pond:</b> a <em>place</em> (a pond dug in the land), not a training method — any post-training method can be applied to an adapter.</dd>
@@ -206,11 +206,12 @@
     <dd>During training, feed the model the correct previous token rather than its own prediction, stabilizing sequence learning.</dd>
   </dl>
 
-  <h2 id="post-training">Post-training (alignment &amp; specialization)</h2>
+  <h2 id="metaphor-reference"><span id="post-training"></span>Metaphor reference (industry names)</h2>
   <p class="lead" style="margin-top:0;margin-bottom:14px">
-    Methods that shape model behavior <b>after</b> pretraining and <b>before</b> you tap tokens at inference.
-    Full map in pond terms: <a href="post-training.html">post-training.html</a>.
-    Line to keep clean: <b>these shape the pond; they are not the water.</b>
+    Industry-standard names for mechanisms that appear in the landscape map.
+    Full geography (pre-training land, post-training hollow, runtime water, surroundings, and where the metaphor breaks):
+    <a href="metaphor-reference.html">metaphor-reference.html</a>.
+    Line to keep clean: <b>the land forms; then the pond is shaped; then, and only then, water moves.</b>
   </p>
   <dl>
     <dt id="post-training-term">Post-training</dt>
@@ -414,7 +415,7 @@
     <dd>Real traffic differs from the data used for training or evaluation, so lab metrics stop predicting production quality.</dd>
 
     <dt>Reward hacking</dt>
-    <dd>The model optimizes a proxy score (e.g. “sounds helpful,” passes an automatic judge) without truly solving the underlying task. See also <a href="#reward-hacking">reward hacking / overoptimization</a> under post-training.</dd>
+    <dd>The model optimizes a proxy score (e.g. “sounds helpful,” passes an automatic judge) without truly solving the underlying task. See also <a href="#reward-hacking">reward hacking / overoptimization</a> under metaphor reference.</dd>
 
     <dt>Mode collapse</dt>
     <dd>Outputs become repetitive or narrowly similar—limited diversity of answers or styles—more often discussed for some generative setups, but also seen as stuck patterns in chat models.</dd>
@@ -438,7 +439,7 @@
   <footer>
     <b>Daniella M. LaGuerre</b> · PondScope Ecosystem<br>
     <a href="index.html">Home</a> ·
-    <a href="post-training.html">Post-training</a> ·
+    <a href="metaphor-reference.html">Metaphor reference</a> ·
     <a href="context.html">Context</a> ·
     <a href="issues-lab.html">Issues lab</a> ·
     <a href="feedback.html">Comments / feedback / questions</a> ·
