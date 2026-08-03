@@ -71,16 +71,26 @@
 
   #embcv,#injcv,#wcv,#costcv,#losscv,#diskcv,#contcv{width:100%;display:block}
   #embcv{height:30px} #injcv{height:40px} #wcv{height:44px} #costcv{height:138px}
-  #issueban{display:none;position:fixed;left:0;right:0;top:0;z-index:12;
+  #issuenow{display:none;position:fixed;left:0;right:0;top:0;z-index:13;
+    padding:7px 12px;background:var(--brass);color:var(--ink);
+    font-size:11px;letter-spacing:.04em;line-height:1.35;font-weight:500}
+  #issuenow.on{display:block}
+  #issuenow .tag{text-transform:uppercase;letter-spacing:.12em;font-size:9px;opacity:.85;margin-right:6px}
+  #issuenow strong{font-weight:700}
+  #issuenow a{color:var(--ink);margin-left:10px;text-decoration:underline}
+  #issueban{display:none;position:fixed;left:0;right:0;top:32px;z-index:12;
     padding:9px 40px 9px 12px;background:rgba(14,42,49,.96);
     border-bottom:1px solid rgba(224,169,78,.45);font-size:10.5px;line-height:1.5;color:var(--foam)}
   #issueban.on{display:block}
   #issueban b{color:var(--brass)}
   #issueban a{color:var(--water);text-decoration:none;border-bottom:1px dotted rgba(47,184,179,.45)}
   #issueban .x{position:absolute;right:10px;top:8px;cursor:pointer;color:var(--mute);font-size:14px}
-  body.issue-on header{top:52px}
-  body.issue-on #tick{top:86px}
-  body.issue-on #helpbtn{top:60px}
+  body.issue-on header{top:34px}
+  body.issue-on.issue-help header{top:88px}
+  body.issue-on #tick{top:72px}
+  body.issue-on.issue-help #tick{top:122px}
+  body.issue-on #helpbtn{top:42px}
+  body.issue-on.issue-help #helpbtn{top:96px}
   #losscv{height:52px} #diskcv{height:150px} #contcv{height:46px} #scancv{height:168px}
   #dials{overflow-x:auto;scrollbar-width:none;margin:0 -3px}
   #dials::-webkit-scrollbar{display:none}
@@ -158,7 +168,8 @@
 </style>
 </head>
 <body>
-<div id="issueban" role="status"><span class="x" id="issuebanx" title="Dismiss">&times;</span><span id="issuebanmsg"></span></div>
+<div id="issuenow" role="status"><span class="tag">Now showing</span><strong id="issuenowlbl">issue</strong><a id="issuenowback" href="issues-lab.html">← Issues Lab</a></div>
+<div id="issueban" role="status"><span class="x" id="issuebanx" title="Dismiss help">&times;</span><span id="issuebanmsg"></span></div>
 <div id="stage"></div>
 <header>
   <h1>The Pond — <em>a continuous system, sampled once per token</em></h1>
@@ -1124,29 +1135,36 @@ function applyIssueState(){
   var q=new URLSearchParams(location.search);
   var issue=(q.get('issue')||'').toLowerCase();
   if(!issue)return;
+  var titles={tokens:'tokens issue',latency:'latency issue',grounding:'grounding issue'};
+  var now=document.getElementById('issuenow');
   var ban=document.getElementById('issueban');
   var msg=document.getElementById('issuebanmsg');
-  var back=' <a href="issues-lab.html#'+issue+'">← Issues Lab</a>';
-  document.body.classList.add('issue-on');
+  var backHref='issues-lab.html#'+issue;
+  document.getElementById('issuenowlbl').textContent=titles[issue]||(issue+' issue');
+  document.getElementById('issuenowback').href=backHref;
+  document.body.classList.add('issue-on','issue-help');
+  now.classList.add('on');
   ban.classList.add('on');
   document.getElementById('issuebanx').onclick=function(){
-    ban.classList.remove('on');document.body.classList.remove('issue-on');layout();
+    ban.classList.remove('on');
+    document.body.classList.remove('issue-help');
+    layout();
   };
   if(issue==='tokens'){
-    msg.innerHTML='<b>Issue state · tokens / context bloat.</b> Cost tab: KV cache grows with T; pond state stays flat. '+
-      'This is a <b>memory-system</b> cost — the pond dynamics can be fine while history storage balloons.'+back;
+    msg.innerHTML='Cost tab: KV cache grows with T; pond state stays flat. '+
+      'This is a <b>memory-system</b> cost — the pond dynamics can be fine while history storage balloons.';
     selectTab('cost');
     var ctx=document.getElementById('ctxT');ctx.value='2048';
     document.getElementById('ctxv').textContent='2048';drawCost();
   }else if(issue==='latency'){
-    msg.innerHTML='<b>Issue state · latency / TTFT.</b> Each token is one pond step (Pipeline). '+
-      'Waiting before the first step is TTFT; cold load is serving delay. Often <b>not</b> a wrong model — a stepping / infrastructure timing issue.'+back;
+    msg.innerHTML='Each token is one pond step (Pipeline). '+
+      'Waiting before the first step is TTFT; cold load is serving delay. Often <b>not</b> a wrong model — a stepping / infrastructure timing issue.';
     selectTab('pipe');
     STEP_MS=700;
     streaming=true;document.getElementById('streambtn').textContent='Pause';
   }else if(issue==='grounding'){
-    msg.innerHTML='<b>Issue state · grounding / exact fact.</b> Learn tab, large K: the pond compresses — far-back exact symbols fade. '+
-      'That is a <b>fixed-size memory limit</b>, not necessarily a failed Fit. Compare the notebook in lesson 02.'+back;
+    msg.innerHTML='Learn tab, large K: the pond compresses — far-back exact symbols fade. '+
+      'That is a <b>fixed-size memory limit</b>, not necessarily a failed Fit. Compare the notebook in lesson 02.';
     selectTab('learn');
     var kd=document.getElementById('kdelay');kd.value='24';S.K=24;
     document.getElementById('kv').textContent='24';
@@ -1157,7 +1175,7 @@ function applyIssueState(){
     document.getElementById('trainstat').textContent='issue state — press Fit, then compare notebook';
     drawLoss();drawW();
   }else{
-    msg.innerHTML='<b>Issue state.</b> Opened from Issues Lab.'+back;
+    msg.innerHTML='Opened from Issues Lab with an unknown issue flag.';
   }
   setTimeout(layout,80);
 }
