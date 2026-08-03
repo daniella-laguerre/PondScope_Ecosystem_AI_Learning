@@ -70,6 +70,7 @@
     <a href="#architectures">Architectures</a>
     <a href="#memory">Memory &amp; attention</a>
     <a href="#training">Training</a>
+    <a href="#post-training">Post-training</a>
     <a href="#generation">Generation</a>
     <a href="#eval">Evaluation</a>
     <a href="#systems">Systems</a>
@@ -193,16 +194,81 @@
     <dd>Techniques that discourage overfitting—e.g. weight decay, dropout, early stopping, data augmentation.</dd>
 
     <dt>Fine-tuning</dt>
-    <dd>Further training a pretrained model on a narrower dataset or task so it adapts without training from scratch.</dd>
+    <dd>Further training a pretrained model on a narrower dataset or task so it adapts without training from scratch. <b>Pond:</b> reshaping or digging a hollow in the land — see <a href="#post-training">post-training</a>.</dd>
 
-    <dt>LoRA / adapter</dt>
-    <dd>Parameter-efficient fine-tuning: small trainable modules (or low-rank updates) are added while most base weights stay frozen.</dd>
+    <dt id="adapter">LoRA / adapter</dt>
+    <dd>Parameter-efficient fine-tuning: small trainable modules (or low-rank updates) are added while most base weights stay frozen. <b>Pond:</b> a <em>place</em> (a pond dug in the land), not a training method — any post-training method can be applied to an adapter.</dd>
 
     <dt>Pretraining</dt>
-    <dd>Large-scale training (often next-token or masked prediction) that builds general capabilities before specialization.</dd>
+    <dd>Large-scale training (often next-token or masked prediction) that builds general capabilities before specialization. <b>Pond:</b> forming the land before anyone digs.</dd>
 
     <dt>Teacher forcing</dt>
     <dd>During training, feed the model the correct previous token rather than its own prediction, stabilizing sequence learning.</dd>
+  </dl>
+
+  <h2 id="post-training">Post-training (alignment &amp; specialization)</h2>
+  <p class="lead" style="margin-top:0;margin-bottom:14px">
+    Methods that shape model behavior <b>after</b> pretraining and <b>before</b> you tap tokens at inference.
+    Full map in pond terms: <a href="post-training.html">post-training.html</a>.
+    Line to keep clean: <b>these shape the pond; they are not the water.</b>
+  </p>
+  <dl>
+    <dt id="post-training-term">Post-training</dt>
+    <dd>The family of procedures after pretraining that adapt a model for instruction-following, preferences, or checkable tasks (SFT, preference optimization, RL with verifiable rewards, etc.). Distinct from the runtime hidden state.</dd>
+
+    <dt id="sft">SFT (supervised fine-tuning)</dt>
+    <dd>Training on demonstration pairs (prompt → desired completion) with a supervised loss, usually next-token cross-entropy. The model imitates labeled examples. <b>Pond:</b> digging to a handed-over blueprint.</dd>
+
+    <dt id="best-of-n">Rejection sampling / best-of-N</dt>
+    <dd>Generate several candidates, score them, and keep the best. At inference this need not update weights; survivors can also be reused as new SFT data. <b>Pond:</b> dig several ponds, keep the best one.</dd>
+
+    <dt id="star">STaR (Self-Taught Reasoner)</dt>
+    <dd>A bootstrap loop: generate rationales/answers, keep those that reach a correct outcome, and fine-tune on the survivors — rejection sampling turned into more training data.</dd>
+
+    <dt id="rlhf">RLHF (reinforcement learning from human feedback)</dt>
+    <dd>Collect human preference comparisons, train a <b>reward model</b> on them, then optimize the policy (often with PPO or similar) to raise reward while staying near a reference model. <b>Pond:</b> reshaping to a survey via a surveyor — optimizing a <em>model of</em> preference, not people directly.</dd>
+
+    <dt id="reward-model">Reward model (RM)</dt>
+    <dd>A model trained to score outputs the way preference labels would. Used as a stand-in for human judgment during RLHF-style training. <b>Pond:</b> the surveyor.</dd>
+
+    <dt id="reward-hacking">Reward hacking / overoptimization</dt>
+    <dd>The policy exploits quirks of the reward model (or proxy) and scores highly while becoming less useful to humans. Structural risk when optimizing a proxy surveyor for too long.</dd>
+
+    <dt id="kl-penalty">KL penalty (KL regularization)</dt>
+    <dd>A term that penalizes the trained policy for diverging too far from a reference model (often the SFT model), limiting collapse into high-reward but degenerate outputs. <b>Pond:</b> the leash that keeps the digger from leaving the site.</dd>
+
+    <dt id="rlaif">RLAIF (reinforcement learning from AI feedback)</dt>
+    <dd>Like RLHF, but preference labels (or critiques) come from an AI judge rather than humans. Cheaper and scalable; inherits the judge model’s biases. <b>Pond:</b> the survey is conducted by another pond.</dd>
+
+    <dt id="constitutional-ai">Constitutional AI</dt>
+    <dd>Alignment via a written list of principles: the model critiques and revises its own outputs against those rules, then trains on the revised data (often with RLAIF). Principles are inspectable. <b>Pond:</b> posted rules the surveyor must obey.</dd>
+
+    <dt id="dpo">DPO (direct preference optimization)</dt>
+    <dd>Preference fine-tuning that updates the policy directly from preferred/dispreferred pairs without a separate reward model and RL loop. Widely used in open fine-tunes. <b>Pond:</b> reshape from the comparison notes — skip hiring a surveyor.</dd>
+
+    <dt id="ipo">IPO (identity preference optimization)</dt>
+    <dd>A preference objective related to DPO that better controls how far a single comparison can push the policy when preferences are nearly unanimous. <b>Pond:</b> don’t dig a canyon on a unanimous vote.</dd>
+
+    <dt id="kto">KTO (Kahneman–Tversky optimization)</dt>
+    <dd>Alignment from unpaired desirables/undesirables (thumbs up/down) rather than required A/B pairs, drawing on prospect-theory style asymmetry between losses and gains. <b>Pond:</b> reshape from lone reactions.</dd>
+
+    <dt id="rlvr">RLVR (reinforcement learning from verifiable rewards)</dt>
+    <dd>RL where the reward is a checkable fact (unit test, exact answer, proof checker) rather than a preference model. No surveyor to fool when the checker is sound. <b>Pond:</b> does the water reach the sea? Only works where a sea exists.</dd>
+
+    <dt id="outcome-rl">Outcome-only RL</dt>
+    <dd>Reward based solely on the final result (correct/incorrect), with no supervision of intermediate steps. Can discover novel solution paths; weak on credit assignment and can reward lucky shortcuts. <b>Pond:</b> only the sea is checked.</dd>
+
+    <dt id="prm">Process reward model (PRM)</dt>
+    <dd>A scorer for intermediate reasoning steps, not only the final answer. Improves credit assignment; reintroduces a step-level judge. <b>Pond:</b> inspect at every bend, not only at the mouth.</dd>
+
+    <dt id="self-play">Self-play / iterated self-improvement</dt>
+    <dd>The model generates and competes against or judges copies of itself, then trains on the outcomes, repeating. Strong with hard win conditions; can homogenize without one. <b>Pond:</b> two ponds feeding each other until the shoreline moves.</dd>
+
+    <dt id="preference-pair">Preference pair</dt>
+    <dd>A labeled comparison of two outputs for the same prompt (A preferred over B). The usual data unit for RLHF reward modeling and for DPO/IPO.</dd>
+
+    <dt>Reference model</dt>
+    <dd>A frozen (or slowly updated) baseline policy used in RLHF/DPO-style training to measure divergence and keep the new policy from drifting arbitrarily far.</dd>
   </dl>
 
   <h2 id="generation">Generation &amp; inference</h2>
@@ -348,7 +414,7 @@
     <dd>Real traffic differs from the data used for training or evaluation, so lab metrics stop predicting production quality.</dd>
 
     <dt>Reward hacking</dt>
-    <dd>The model optimizes a proxy score (e.g. “sounds helpful,” passes an automatic judge) without truly solving the underlying task.</dd>
+    <dd>The model optimizes a proxy score (e.g. “sounds helpful,” passes an automatic judge) without truly solving the underlying task. See also <a href="#reward-hacking">reward hacking / overoptimization</a> under post-training.</dd>
 
     <dt>Mode collapse</dt>
     <dd>Outputs become repetitive or narrowly similar—limited diversity of answers or styles—more often discussed for some generative setups, but also seen as stuck patterns in chat models.</dd>
@@ -372,6 +438,7 @@
   <footer>
     <b>Daniella M. LaGuerre</b> · PondScope Ecosystem<br>
     <a href="index.html">Home</a> ·
+    <a href="post-training.html">Post-training</a> ·
     <a href="context.html">Context</a> ·
     <a href="issues-lab.html">Issues lab</a> ·
     <a href="feedback.html">Comments / feedback / questions</a> ·

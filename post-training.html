@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Post-Training Map — PondScope Ecosystem</title>
+<style>
+  :root{
+    --ink:#081418;--deep:#0E2A31;--water:#2FB8B3;--foam:#D9E8E4;
+    --brass:#E0A94E;--mute:#5E7C7F;--rose:#D2685E;--violet:#9B7BD4;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{min-height:100%;background:var(--ink);color:var(--foam);
+    font-family:Arial,Helvetica,sans-serif}
+  body{
+    background:
+      radial-gradient(ellipse 80% 40% at 12% 0%, rgba(47,184,179,.14), transparent 50%),
+      radial-gradient(ellipse 55% 35% at 100% 10%, rgba(224,169,78,.08), transparent 45%),
+      var(--ink);
+  }
+  main{max-width:760px;margin:0 auto;padding:clamp(24px,5vw,48px) 18px 56px}
+  a.homebtn{display:inline-block;font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+    text-decoration:none;color:var(--ink);background:var(--brass);font-weight:500;
+    padding:8px 12px;border-radius:2px;margin-bottom:18px}
+  a.homebtn:hover{filter:brightness(1.05)}
+  .tag{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--brass)}
+  h1{font-weight:560;font-size:clamp(26px,6vw,36px);line-height:1.08;margin-top:8px}
+  h1 em{font-style:italic;color:var(--water)}
+  .lead{margin:12px 0 16px;max-width:44em;font-size:12px;line-height:1.65;color:var(--mute)}
+  .lead b{color:var(--foam);font-weight:500}
+  .pull{margin:0 0 22px;padding:12px 14px;border-left:3px solid var(--brass);
+    background:rgba(14,42,49,.45);font-size:13px;line-height:1.5;color:var(--foam)}
+  .jump{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:24px}
+  .jump a{font-size:9px;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;
+    color:var(--mute);padding:5px 8px;border:1px solid rgba(47,184,179,.22);border-radius:2px}
+  .jump a:hover{color:var(--water);border-color:rgba(47,184,179,.5)}
+
+  h2{font-size:18px;font-weight:560;color:var(--water);margin:28px 0 10px;
+    padding-top:10px;border-top:1px solid rgba(47,184,179,.14)}
+  h2:first-of-type{margin-top:8px}
+  h3{font-size:13px;font-weight:500;color:var(--brass);margin:16px 0 6px}
+  p,li{font-size:11.5px;line-height:1.65;color:var(--mute)}
+  p+p{margin-top:8px}
+  p b,li b{color:var(--foam);font-weight:500}
+  ul{margin:8px 0 8px 18px}
+  li{margin-bottom:6px}
+  .limit{margin:8px 0 0;padding:8px 10px;border-left:2px solid rgba(210,104,94,.55);
+    font-size:11px;line-height:1.55;color:var(--mute)}
+  .limit b{color:var(--foam)}
+  .note{margin:12px 0;padding:10px 12px;border:1px solid rgba(224,169,78,.3);
+    border-radius:2px;font-size:11px;line-height:1.55;color:var(--mute);background:rgba(224,169,78,.05)}
+  .note b{color:var(--brass)}
+
+  table{width:100%;border-collapse:collapse;font-size:10.5px;margin:10px 0 14px}
+  th,td{text-align:left;padding:7px 6px;border-bottom:1px solid rgba(47,184,179,.12);
+    vertical-align:top;color:var(--mute)}
+  th{color:var(--brass);font-weight:500;font-size:8px;letter-spacing:.1em;text-transform:uppercase}
+  td:first-child{color:var(--foam);font-weight:500;white-space:nowrap}
+
+  a.gloss{color:var(--water);text-decoration:none;border-bottom:1px dotted rgba(47,184,179,.4)}
+  .sources{font-size:10.5px;line-height:1.6;color:var(--mute)}
+  .sources p{margin-bottom:7px;font-size:10.5px}
+  .sources a{color:var(--water);text-decoration:none;border-bottom:1px dotted rgba(47,184,179,.4)}
+  .sources b{color:var(--foam)}
+
+  footer{margin-top:36px;padding-top:16px;border-top:1px solid rgba(47,184,179,.14);
+    font-size:10px;line-height:1.6;color:var(--mute)}
+  footer a{color:var(--water);text-decoration:none;border-bottom:1px dotted rgba(47,184,179,.4)}
+</style>
+</head>
+<body>
+<main>
+  <a class="homebtn" href="index.html">← Home</a>
+  <p class="tag">PondScope Ecosystem · Post-training</p>
+  <h1>The post-training map,<br>in <em>pond terms</em></h1>
+  <p class="lead">
+    Everything here happens <b>before anyone taps a token</b>. The water you watch move
+    in the lessons runs through a hollow whose shape was already settled by the methods below.
+    Industry names are in the <a class="gloss" href="glossary.html#post-training">glossary</a>.
+  </p>
+  <p class="pull"><b>These shape the pond. They are not the water.</b></p>
+  <p class="lead" style="margin-top:0">
+    The pond is the fixed-size state that carries information <em>while a sequence runs</em>.
+    Post-training is how the pond got its shape. Confusing the two is the single most common
+    way explainers of this material go wrong.
+  </p>
+
+  <nav class="jump" aria-label="Jump">
+    <a href="#geography">Geography</a>
+    <a href="#digging">Digging</a>
+    <a href="#survey">Preference</a>
+    <a href="#sea">Verifiable</a>
+    <a href="#not-here">Not on this map</a>
+    <a href="#table">Table</a>
+    <a href="#sources">Sources</a>
+    <a href="glossary.html#post-training">Glossary terms →</a>
+  </nav>
+
+  <h2 id="geography">The ground rules of the geography</h2>
+  <table>
+    <tr><th>Landscape</th><th>Machine</th></tr>
+    <tr><td>The land</td><td>the base model after pretraining</td></tr>
+    <tr><td>A pond dug in it</td><td>a fine-tune or adapter — local reshape, land untouched</td></tr>
+    <tr><td>The water</td><td>the state that moves at inference time</td></tr>
+    <tr><td>The sea</td><td>a checkable outcome (test passes, answer correct)</td></tr>
+    <tr><td>A surveyor</td><td>a learned reward model standing in for human judgment</td></tr>
+  </table>
+
+  <h2 id="digging">1. Digging — supervised methods</h2>
+
+  <h3><a class="gloss" href="glossary.html#sft">SFT</a> (supervised fine-tuning)</h3>
+  <p><b>Digging to a handed-over blueprint.</b> Someone gives you the shape they want and you dig to match it. No judgment is involved anywhere: copy the plan, example by example. Every method below assumes this has already happened — you cannot usefully reshape a hollow that doesn't exist yet.</p>
+  <p class="limit"><b>Limit:</b> you can only ever reach shapes someone has already drawn. The model learns to imitate demonstrations, not to exceed them.</p>
+
+  <h3><a class="gloss" href="glossary.html#best-of-n">Rejection sampling / best-of-N</a> / <a class="gloss" href="glossary.html#star">STaR</a></h3>
+  <p><b>Dig several ponds, keep the best one, leave the land alone.</b> Generate many candidate answers, filter to the good ones, and either just serve those (best-of-N, a pure inference-time move that changes no weights) or feed the survivors back in as new blueprints and re-dig (STaR, rejection-sampling fine-tuning).</p>
+  <p class="limit"><b>Why it earns its place:</b> it is the cheapest thing that works, and it is often the honest baseline any fancier method has to beat.</p>
+
+  <h2 id="survey">2. Reshaping to a survey — preference methods</h2>
+  <p>The common problem: you cannot ask the water whether the pond is good, and you cannot stand there forever watching visitors. So you collect judgments and reshape toward them. Everything in this section differs only in <b>who judges</b> and <b>how the judgment reaches the shovel.</b></p>
+
+  <h3><a class="gloss" href="glossary.html#rlhf">RLHF</a> (reinforcement learning from human feedback)</h3>
+  <p><b>Reshaping to a survey, not to the visitors.</b> Show people pairs of ponds, ask which they prefer, train a <b>surveyor</b> (<a class="gloss" href="glossary.html#reward-model">reward model</a>) on their answers, then reshape the banks toward whatever the surveyor scores highly.</p>
+  <p class="limit"><b>The fact no weathering metaphor can carry:</b> you are not optimizing human preference. You are optimizing <b>a model of</b> human preference. The surveyor was trained on a finite sample and will faithfully reward its own mistakes. Dig long enough and you get a pond that delights the surveyor and that nobody wants to sit beside — that is <a class="gloss" href="glossary.html#reward-hacking">reward hacking</a>, and it is structural, not a bug.</p>
+  <p class="limit" style="margin-top:8px"><b>The leash:</b> training keeps a penalty for drifting too far from the original shape (a <a class="gloss" href="glossary.html#kl-penalty">KL term</a>). Without it the digger finds a shape that scores brilliantly and is not a pond at all.</p>
+
+  <h3><a class="gloss" href="glossary.html#rlaif">RLAIF</a> (RL from AI feedback)</h3>
+  <p><b>The survey is conducted by another pond.</b> Identical machinery, but the preference labels come from a model rather than people. Vastly cheaper, scales without limit — and inherits whatever that model is wrong about. The surveyor's survey now has a surveyor.</p>
+
+  <h3><a class="gloss" href="glossary.html#constitutional-ai">Constitutional AI</a></h3>
+  <p><b>Written rules posted at the site that the surveyor must obey.</b> Rather than labeling preferences one at a time, you write down principles, have a model critique and revise its own answers against them, and train on the result. The rules are inspectable, which is the point: you can read what shaped the pond instead of inferring it from a pile of labels.</p>
+
+  <h3><a class="gloss" href="glossary.html#dpo">DPO</a> (direct preference optimization)</h3>
+  <p><b>Reshape straight from the comparison notes — skip hiring a surveyor.</b> The insight is that you don't need a separate reward model and an RL loop; the preference data can drive the weight update directly. Simpler, more stable, much cheaper. This is what most open fine-tunes actually use.</p>
+
+  <h3><a class="gloss" href="glossary.html#ipo">IPO</a> (identity preference optimization)</h3>
+  <p><b>Don't dig a canyon on a unanimous vote.</b> DPO has a quiet failure: when every judgment favors A over B, the objective keeps widening that gap without bound. IPO caps how far any single comparison can move the ground, however lopsided the vote.</p>
+
+  <h3><a class="gloss" href="glossary.html#kto">KTO</a> (Kahneman–Tversky optimization)</h3>
+  <p><b>You don't need pairs, just reactions.</b> DPO and IPO need someone comparing two ponds side by side, which is expensive to collect. KTO works from lone judgments — <em>this one, good</em> / <em>this one, bad</em> — which is what ordinary usage already produces. It also borrows a behavioral-economics finding: a bad pond is felt more strongly than a good one is enjoyed, so complaints are weighted more heavily than compliments, deliberately.</p>
+  <p class="note"><b>Honest note on DPO / IPO / KTO:</b> these are three answers to a real problem, not a progression where each fixes the last. DPO is far more widely deployed; whether IPO or KTO beats it depends heavily on dataset and setup, and the published comparisons do not settle cleanly.</p>
+
+  <h2 id="sea">3. Checking against the sea — verifiable methods</h2>
+  <p>The common move: stop asking anyone's opinion. Dig an outlet, run the water, and let the terrain answer. Ungameable, because you are not being <em>scored</em> — you are being <em>checked</em>.</p>
+
+  <h3><a class="gloss" href="glossary.html#rlvr">RLVR</a> (RL from verifiable rewards)</h3>
+  <p><b>Does the water reach the sea?</b> The reward is a fact: the test passes, the proof checks, the answer matches. No surveyor, so no surveyor to fool.</p>
+  <p class="limit"><b>The limit, which must be stated whenever RLVR is praised:</b> this only works where there <b>is</b> a sea. Maths, code, formal proof, structured extraction — fine. Most of what a model says has no checkable outcome at all, which is exactly why RLVR shines on some tasks and goes silent on essays, advice, and judgment.</p>
+
+  <h3><a class="gloss" href="glossary.html#outcome-rl">Outcome-only RL</a></h3>
+  <p><b>Only the sea is checked.</b> Dig the channel however you like — a hundred bends, a stretch that doubles back, a route no one would have sanctioned. Nobody inspects it. Water arrives or it doesn't.</p>
+  <p class="limit"><b>Strength:</b> it doesn't impose your idea of how a channel should run, which is where the surprising results come from — this is the setup behind the reasoning models, where letting the model find its own route to a verified answer beat teaching it the route.</p>
+  <p class="limit" style="margin-top:8px"><b>Two weaknesses, both about the silence in between:</b> <b>credit assignment</b> — the water didn't arrive and you have no idea which bend was wrong, so one signal smears across every decision; and <b>arriving by accident</b> — a channel that reaches the sea through a leak in the terrain scores the same as a good one. Right answer, incoherent reasoning.</p>
+
+  <h3><a class="gloss" href="glossary.html#prm">Process rewards (PRM)</a></h3>
+  <p><b>Inspect at every bend, not only at the mouth.</b> Fixes credit assignment completely — you know exactly where it went wrong — at the cost of needing a judge for each bend, which quietly reintroduces the surveyor you were trying to escape. The trade is diagnosis versus freedom: process rewards constrain the route to what a judge recognizes.</p>
+
+  <h3><a class="gloss" href="glossary.html#self-play">Self-play / iterated methods</a></h3>
+  <p><b>Two ponds feeding each other until the shoreline moves.</b> The model generates, judges or competes against a copy of itself, and trains on the outcome; repeat. Powerful where there is a hard win condition. Where there isn't, the pair can drift together into a shared consensus that neither questions — a failure mode worth naming, since it is the same collapse that makes model outputs homogeneous.</p>
+
+  <h2 id="not-here">4. Where it does <em>not</em> go</h2>
+  <p>Three things sit elsewhere on the map, and putting them here is the mistake to avoid:</p>
+  <ul>
+    <li><b>Adapters</b> are a <em>place</em> (a pond dug in the land), not a <em>method</em>. Any method above can be applied to one, without touching the land underneath.</li>
+    <li><b>RAG</b> is the inlet from a distant lake — it changes what flows in at runtime, not the shape of the ground.</li>
+    <li><b>A council</b> is a different question entirely: not <em>what shape should this pond be</em> but <em>whose answer do we trust</em>.</li>
+  </ul>
+  <p style="margin-top:10px">And the one to hold on to:</p>
+  <ul>
+    <li><b>The water is not on this map at all.</b> Everything here is finished before the first token arrives. When you tap a symbol in the visualization and watch ripples move, none of these methods are running — you are watching a hollow that was already shaped, doing what its shape makes it do.</li>
+  </ul>
+
+  <h2 id="table">The map in one table</h2>
+  <table>
+    <tr><th>Method</th><th>Pond reading</th><th>Judge</th><th>Needs</th></tr>
+    <tr><td>SFT</td><td>dig to a blueprint</td><td>none</td><td>demonstrations</td></tr>
+    <tr><td>Best-of-N</td><td>dig several, keep one</td><td>a scorer</td><td>inference budget</td></tr>
+    <tr><td>RLHF</td><td>reshape to a survey</td><td>learned surveyor</td><td>preference pairs</td></tr>
+    <tr><td>RLAIF</td><td>survey run by another pond</td><td>a model</td><td>a judging model</td></tr>
+    <tr><td>Constitutional AI</td><td>posted rules the surveyor obeys</td><td>written principles</td><td>rules + critique loop</td></tr>
+    <tr><td>DPO</td><td>reshape from the notes directly</td><td>the notes</td><td>preference pairs</td></tr>
+    <tr><td>IPO</td><td>same, with a cap on any one vote</td><td>the notes</td><td>preference pairs</td></tr>
+    <tr><td>KTO</td><td>reshape from thumbs up/down</td><td>lone judgments</td><td>unpaired labels</td></tr>
+    <tr><td>RLVR</td><td>does the water reach the sea</td><td>the terrain</td><td>a checkable outcome</td></tr>
+    <tr><td>Outcome-only RL</td><td>only the sea is checked</td><td>the terrain</td><td>a checkable outcome</td></tr>
+    <tr><td>PRM</td><td>checked at every bend</td><td>a step judge</td><td>step-level labels</td></tr>
+    <tr><td>Self-play</td><td>two ponds shaping each other</td><td>a win condition</td><td>an opponent or copy</td></tr>
+  </table>
+
+  <h2 id="sources">Sources</h2>
+  <div class="sources">
+    <p><b>RLHF</b> — Christiano et al., NeurIPS 2017, <a href="https://arxiv.org/abs/1706.03741">arXiv:1706.03741</a>; Ouyang et al. (InstructGPT), 2022, <a href="https://arxiv.org/abs/2203.02155">arXiv:2203.02155</a>.</p>
+    <p><b>Reward hacking / overoptimization</b> — Gao, Schulman &amp; Hilton, 2022, <a href="https://arxiv.org/abs/2210.10760">arXiv:2210.10760</a>.</p>
+    <p><b>RLAIF</b> — Lee et al., 2023, <a href="https://arxiv.org/abs/2309.00267">arXiv:2309.00267</a>.</p>
+    <p><b>Constitutional AI</b> — Bai et al., 2022, <a href="https://arxiv.org/abs/2212.08073">arXiv:2212.08073</a>.</p>
+    <p><b>DPO</b> — Rafailov et al., NeurIPS 2023, <a href="https://arxiv.org/abs/2305.18290">arXiv:2305.18290</a>.</p>
+    <p><b>IPO</b> — Azar et al., 2023, <a href="https://arxiv.org/abs/2310.12036">arXiv:2310.12036</a>.</p>
+    <p><b>KTO</b> — Ethayarajh et al., 2024, <a href="https://arxiv.org/abs/2402.01306">arXiv:2402.01306</a>.</p>
+    <p><b>Process rewards</b> — Lightman et al., 2023, <a href="https://arxiv.org/abs/2305.20050">arXiv:2305.20050</a>.</p>
+    <p><b>STaR</b> — Zelikman et al., 2022, <a href="https://arxiv.org/abs/2203.14465">arXiv:2203.14465</a>.</p>
+    <p><b>RLVR / outcome-only reasoning training</b> — DeepSeek-AI, DeepSeek-R1, 2025, <a href="https://arxiv.org/abs/2501.12948">arXiv:2501.12948</a>.</p>
+    <p style="margin-top:12px"><em>The pond framing is exposition, not a result. The methods and their trade-offs are from the literature above; the landscape is a way of holding them in mind. By Daniella M. LaGuerre.</em></p>
+  </div>
+
+  <footer>
+    <b>Daniella M. LaGuerre</b> · PondScope Ecosystem<br>
+    <a href="index.html">Home</a> ·
+    <a href="glossary.html#post-training">Glossary · Post-training</a> ·
+    <a href="context.html">Context</a> ·
+    <a href="pond-continuous.html">01 Pond</a>
+  </footer>
+</main>
+</body>
+</html>

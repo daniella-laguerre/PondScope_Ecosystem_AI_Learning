@@ -247,19 +247,21 @@
   <h3>The wider landscape</h3>
   <p>Everything so far happens <em>inside</em> one layer. But the reason the rest of an AI system exists is the limit you just saw: this memory is small and lossy, so anything it cannot hold has to live somewhere else. Here is that whole world as one piece of ground.</p>
 
-  <p><b>The land is the base model.</b> The frozen weights &mdash; the shape of the ground before anyone digs. Everything else sits in it or flows across it.</p>
+  <p><b>The land is the base model</b> after pretraining &mdash; the shape of the ground before anyone digs. Everything else sits in it or flows across it.</p>
 
-  <p><b>Ponds are adapters.</b> Dig a different hollow in the same land and you get a different pond: same ground, different shape, different behaviour. That is what a small fine-tune is &mdash; the base is untouched, only the shape on top changes. This is why you can keep a library of adapters and swap between them without re-downloading anything.</p>
+  <p><b>A pond dug in the land is a fine-tune or adapter</b> &mdash; a local reshape; the land underneath can stay frozen. That is a <em>place</em> to apply methods, not a method itself. Dig a different hollow and you get different behaviour without re-downloading the whole base.</p>
+
+  <p><b>How the hollow got its shape is post-training</b> &mdash; and it finishes <em>before</em> anyone taps a token. SFT digs to a blueprint. Preference methods (RLHF, DPO, &hellip;) reshape toward a <b>surveyor</b> (a reward model) or straight from comparison notes. Verifiable methods (RLVR) ask whether the water reaches the <b>sea</b> (a checkable outcome). Line to keep clean: <b>these shape the pond; they are not the water</b> you watch move in this lesson. Full map: <a href="post-training.html" style="color:var(--water)">post-training.html</a> · terms: <a href="glossary.html#post-training" style="color:var(--water)">glossary</a>.</p>
 
   <p><b>The grass at the edge is the protocol</b> (MCP and its kin). It is the margin you cross to reach the water &mdash; the same approach whatever lies beyond it. Grass stores nothing; it is a way in. That matters: a protocol is not a kind of memory, it is the standard doorway that outside things arrive through.</p>
 
-  <p><b>An inlet from a distant lake is retrieval</b> (RAG). The library of documents is a lake somewhere else entirely, far bigger than any pond. Retrieval opens a channel and lets some of it flow in. This also names the weakness honestly: you only get what you channel, and you have to know which lake to open. Nothing arrives that you did not ask for.</p>
+  <p><b>An inlet from a distant lake is retrieval</b> (RAG). The library of documents is a lake somewhere else entirely, far bigger than any pond. Retrieval opens a channel and lets some of it flow in at <em>runtime</em> &mdash; it does not reshape the ground. You only get what you channel, and you have to know which lake to open.</p>
 
   <p><b>The watershed is the graph.</b> Water does not arrive from nowhere &mdash; it comes down connected paths. Structuring your sources as a graph keeps those connections, so what flows in arrives <em>related</em> rather than as a pile of disconnected buckets. That relatedness is the thing plain retrieval loses.</p>
 
-  <p><b>The region is a council.</b> Several ponds, compared. Different bases and different adapters answering the same question, so you can see where they agree and where they part. Note this is a different question from all the others: everything above asks <em>what does the model know</em>; a council asks <em>whose answer do we trust</em>. It is worth keeping those apart in your head, because mixing them is how architecture diagrams turn into soup.</p>
+  <p><b>The region is a council.</b> Several ponds, compared. Different bases and different adapters answering the same question, so you can see where they agree and where they part. This is a different question from post-training: not <em>what shape should this pond be</em>, but <em>whose answer do we trust</em>.</p>
 
-  <p>One useful way to read the whole map: these are layers of memory sorted by how permanent they are and what they cost. Baked into the weights is permanent and free to use but slow to change. The pond state is this moment, cheap and fading. The notebook of attention is this conversation, exact but growing. The lake is everything else, unlimited but only reachable on request.</p>
+  <p>One useful way to read the whole map: baked weights (land + shaped hollow) are permanent and free to use but slow to change. The <em>water</em> &mdash; pond state at inference &mdash; is this moment, cheap and fading. The notebook of attention is this conversation, exact but growing. The lake is everything else, unlimited but only reachable on request.</p>
 
   <h3>Making this into a real model</h3>
   <p>What you have here is one layer. A real model stacks many, with a couple of standard parts between them:</p>
@@ -306,11 +308,13 @@
     <p><b>DLinear</b> &mdash; Zeng et al., "Are Transformers Effective for Time Series Forecasting?" AAAI 2023. <a href="https://arxiv.org/abs/2205.13504">arXiv:2205.13504</a>. The baseline any forecasting claim has to beat.</p>
 
     <h4>The wider landscape</h4>
+    <p><b>Post-training map (this site)</b> &mdash; <a href="post-training.html">post-training.html</a> and <a href="glossary.html#post-training">glossary · post-training</a>. Surveyor / sea language for SFT, RLHF, DPO, RLVR, and kin.</p>
     <p><b>Retrieval (RAG)</b> &mdash; Lewis et al., "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks," NeurIPS 2020. <a href="https://arxiv.org/abs/2005.11401">arXiv:2005.11401</a>.</p>
     <p><b>Graph-structured retrieval</b> &mdash; Edge et al., "From Local to Global: A Graph RAG Approach to Query-Focused Summarization," 2024. <a href="https://arxiv.org/abs/2404.16130">arXiv:2404.16130</a>.</p>
     <p><b>Adapters on a frozen base</b> &mdash; Houlsby et al., "Parameter-Efficient Transfer Learning for NLP," ICML 2019, <a href="https://arxiv.org/abs/1902.00751">arXiv:1902.00751</a>; Hu et al., "LoRA," ICLR 2022, <a href="https://arxiv.org/abs/2106.09685">arXiv:2106.09685</a>.</p>
     <p><b>Model Context Protocol</b> &mdash; open standard for connecting models to external tools and data. <a href="https://modelcontextprotocol.io">modelcontextprotocol.io</a>.</p>
     <p><b>Councils / multi-model debate</b> &mdash; Du et al., "Improving Factuality and Reasoning in Language Models through Multiagent Debate," 2023. <a href="https://arxiv.org/abs/2305.14325">arXiv:2305.14325</a>.</p>
+    <p><b>RLHF</b> &mdash; Christiano et al., NeurIPS 2017, <a href="https://arxiv.org/abs/1706.03741">arXiv:1706.03741</a>; Ouyang et al. (InstructGPT), 2022, <a href="https://arxiv.org/abs/2203.02155">arXiv:2203.02155</a>. <b>DPO</b> &mdash; Rafailov et al., 2023, <a href="https://arxiv.org/abs/2305.18290">arXiv:2305.18290</a>. <b>RLVR / reasoning RL</b> &mdash; DeepSeek-R1, 2025, <a href="https://arxiv.org/abs/2501.12948">arXiv:2501.12948</a>.</p>
 
     <h4>The best existing walkthrough</h4>
     <p><b>The Annotated S4</b> &mdash; Sasha Rush &amp; Sidd Karamcheti. <a href="https://srush.github.io/annotated-s4/">srush.github.io/annotated-s4</a>. Code-level, where this page is picture-level.</p>
