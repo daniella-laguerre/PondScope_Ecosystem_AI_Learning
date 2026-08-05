@@ -13,7 +13,22 @@
   })
 </script>
 <script defer src="https://plausible.io/js/pa-CeSdB1DmEDb_Iusspnqy4.js"></script>
+<link rel="stylesheet" href="enrich/lab-connect.css">
 <style>
+  .issue-welcome{margin:0 0 16px;padding:14px 14px 12px;border-radius:3px;
+    border:1px solid rgba(47,184,179,.28);border-left:3px solid var(--brass);
+    background:rgba(14,42,49,.45)}
+  .issue-welcome h2{font-size:16px;font-weight:560;margin:0 0 8px;color:var(--foam)}
+  .issue-welcome h2 em{font-style:italic;color:var(--water);font-weight:340}
+  .issue-welcome p{font-size:11px;line-height:1.6;color:var(--mute);margin:0}
+  .issue-welcome p+p{margin-top:8px}
+  .issue-welcome b{color:var(--foam);font-weight:500}
+  .issue-welcome .triple{margin-top:10px;display:grid;gap:8px}
+  .issue-welcome .triple div{padding:8px 10px;border:1px solid rgba(47,184,179,.16);
+    border-radius:2px;background:rgba(8,20,24,.35);font-size:10.5px;line-height:1.5;color:var(--mute)}
+  .issue-welcome .triple strong{display:block;color:var(--brass);font-size:9px;letter-spacing:.1em;
+    text-transform:uppercase;margin-bottom:4px;font-weight:500}
+
   :root{
     --ink:#081418;--deep:#0E2A31;--water:#2FB8B3;--foam:#D9E8E4;
     --brass:#E0A94E;--mute:#5E7C7F;--rose:#D2685E;--violet:#9B7BD4;--ok:#3dba7a;
@@ -136,6 +151,51 @@
 <body>
 <main>
   <a class="homebtn" href="index.html">← Home</a>
+  <aside class="lab-connect" aria-label="How this lab connects">
+    <div class="meta">Lab 04 · connective guide (additive)</div>
+    <h2>Lab 04 · Issues <em>Lab</em></h2>
+    <p>
+      Experiment with pressure on the ecosystem. When the pond becomes overloaded, slowed down, or
+      disconnected from its surroundings, you can see how different AI failure modes appear. Each issue
+      connects back to the pond, notebook, and heads from earlier labs.
+      <a href="education-context.html#architectures">Architecture trade-offs</a> ·
+      <a href="index.html#discover">What you can discover</a>
+    </p>
+  </aside>
+
+  <div class="issue-welcome">
+    <h2>Experiment with <em>failure modes</em></h2>
+    <p>
+      Explore what happens when the ecosystem is placed under stress. You can see how token bloat,
+      latency, and grounding issues change the behavior of the system. Each issue connects a visible
+      change in the pond to a meaningful AI concept.
+    </p>
+    <p>
+      <b>What changed in the ecosystem?</b> When a scenario shows stress, connect what you see to the
+      AI idea behind it — then use <b>See in the labs</b> to watch lessons 01–03 in that issue state.
+    </p>
+    <div class="triple">
+      <div>
+        <strong>Token bloat</strong>
+        <b>What you see:</b> the water / notebook becomes crowded; movement slows.<br>
+        <b>In AI:</b> the context window is overloaded with too many tokens.<br>
+        <b>What you learn:</b> why long conversations can get slower, costlier, or harder to manage.
+      </div>
+      <div>
+        <strong>Latency / TTFT</strong>
+        <b>What you see:</b> the pond takes longer before the next step feels responsive.<br>
+        <b>In AI:</b> time to first token / step delay under load.<br>
+        <b>What you learn:</b> how visual delay maps to real performance cost.
+      </div>
+      <div>
+        <strong>Grounding</strong>
+        <b>What you see:</b> the ecosystem drifts from reliable surroundings.<br>
+        <b>In AI:</b> weak connection to external facts, tools, or context.<br>
+        <b>What you learn:</b> why grounding matters for reliable answers.
+      </div>
+    </div>
+  </div>
+
   <p class="tag">PondScope Ecosystem · Issues Lab</p>
   <h1>Break what you learned — <em>visualized</em></h1>
   <p class="lead">

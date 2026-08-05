@@ -1,0 +1,178 @@
+---
+import { withBase } from "../lib/base";
+---
+
+<section class="enrich" id="welcome" aria-labelledby="welcome-title">
+  <p class="path">Start here <span class="hint">— additive guide · nothing below was removed</span></p>
+  <h2 id="welcome-title">Welcome to the <em>Pond</em></h2>
+  <p>
+    PondScope is an interactive way to explore how AI systems learn, remember, focus, and sometimes
+    struggle. Explore how AI learns, remembers, focuses, and responds — one layer at a time.
+  </p>
+  <p>
+    Here, the pond is more than a scene. Each part represents a real idea in machine learning. You can
+    explore at your own pace. Start with the pond twin above, follow the labs in order, open
+    <a href={withBase("education-context.html")}>Education Context</a> for “what is a model?”, or use the
+    <a href={withBase("glossary.html")}>glossary</a> whenever you want a clearer definition.
+  </p>
+
+  <div class="depth-toggle" role="group" aria-label="Choose your depth">
+    <button type="button" id="depth-metaphor" aria-pressed="true">Explore the metaphor</button>
+    <button type="button" id="depth-ai" aria-pressed="false">See the AI concepts</button>
+  </div>
+  <p class="depth-metaphor" style="font-size:0.86rem;color:var(--mute);margin-bottom:4px">
+    New to AI? Labels emphasize plain-language pond meanings. Technical names stay available everywhere else.
+  </p>
+  <p class="depth-ai" style="font-size:0.86rem;color:var(--mute);margin-bottom:4px">
+    Already familiar with AI? Labels emphasize industry terms. The metaphor remains an intuitive guide.
+  </p>
+
+  <div class="map-grid" aria-label="Pond elements">
+    <div class="map-card">
+      <div class="k">Sediment</div>
+      <div class="v" data-mode="metaphor">Long-term memory</div>
+      <div class="v" data-mode="ai">Pre-training weights</div>
+    </div>
+    <div class="map-card">
+      <div class="k">Water</div>
+      <div class="v" data-mode="metaphor">Active conversation</div>
+      <div class="v" data-mode="ai">Runtime context / hidden state</div>
+    </div>
+    <div class="map-card">
+      <div class="k">Notebook / heads</div>
+      <div class="v" data-mode="metaphor">Focus &amp; lookback</div>
+      <div class="v" data-mode="ai">Attention / KV cache / multi-head</div>
+    </div>
+    <div class="map-card">
+      <div class="k">Surveyor / sea</div>
+      <div class="v" data-mode="metaphor">Shaping the banks (after training)</div>
+      <div class="v" data-mode="ai">Reward model / post-training goals</div>
+    </div>
+    <div class="map-card">
+      <div class="k">Surroundings</div>
+      <div class="v" data-mode="metaphor">Outside world</div>
+      <div class="v" data-mode="ai">Grounding / tools / external context</div>
+    </div>
+    <div class="map-card">
+      <div class="k">Ripples · seams</div>
+      <div class="v" data-mode="metaphor">Current input · connections</div>
+      <div class="v" data-mode="ai">Token stream · integration points</div>
+    </div>
+  </div>
+
+  <p class="enrich-note">
+    <b>Site canon (kept intact):</b> the <b>surveyor</b> is the post-training reward model; the
+    <b>notebook</b> and <b>heads</b> are attention. Land forms → pond is shaped → then water moves. See the
+    <a href={withBase("metaphor-reference.html")}>Metaphor reference</a>.
+  </p>
+</section>
+
+<section class="enrich" id="discover" aria-labelledby="discover-title">
+  <h2 id="discover-title">What you can <em>discover</em> here</h2>
+  <ul>
+    <li><b>How AI remembers information</b> — sediment and pre-training (Lab 01 · Pond).</li>
+    <li><b>How AI follows a conversation</b> — water and runtime context.</li>
+    <li><b>How AI focuses on important details</b> — notebook and multi-head attention (Labs 02–03).</li>
+    <li><b>How AI can become overloaded</b> — token bloat and context limits (Issues Lab).</li>
+    <li><b>How AI stays connected to reality</b> — grounding and surroundings.</li>
+    <li>
+      <b>How models are made and behave</b> — plus Hugging Face, Ollama, architectures, and coding agents in
+      <a href={withBase("education-context.html")}>Education Context</a>.
+    </li>
+  </ul>
+</section>
+
+<section class="enrich" id="connect" aria-labelledby="connect-title">
+  <h2 id="connect-title">How the ideas <em>connect</em></h2>
+  <ul>
+    <li><b>Sediment</b> connects to pre-training, long-term memory, and base knowledge.</li>
+    <li><b>Water</b> connects to runtime context, hidden state, and the current conversation.</li>
+    <li><b>Notebook / heads</b> connect to attention, focus, and exact lookback.</li>
+    <li><b>Surveyor / sea</b> connect to post-training: reward models and checkable outcomes.</li>
+    <li><b>Surroundings</b> connect to grounding, external tools, and real-world context.</li>
+    <li><b>Seams</b> mark where different mechanisms (or metaphors) meet — and where they can break.</li>
+    <li>
+      <b>Issues Lab</b> shows what happens when memory, focus, context, or grounding become strained —
+      experiment with the ecosystem under pressure.
+    </li>
+  </ul>
+</section>
+
+<section class="enrich" id="friendly-path" aria-labelledby="friendly-path-title">
+  <h2 id="friendly-path-title">A friendly path through the <em>pond</em></h2>
+  <p>
+    Start with the story and metaphor, then explore the interactive labs step by step. Discover the ideas
+    behind the pond, one layer at a time. Follow the path from metaphor to mechanism.
+  </p>
+  <ol class="friendly-path">
+    <li>
+      <a href={withBase("context.html")}>Context</a> — Learn where the pond came from.
+    </li>
+    <li>
+      <a href={withBase("education-context.html")}>Education Context</a> — What models are, how they are made
+      and behave, Hugging Face, Ollama, architectures, coding agents.
+    </li>
+    <li>
+      <a href={withBase("metaphor-reference.html")}>Metaphor reference</a> — Discover what each landscape term
+      represents.
+    </li>
+    <li>
+      <a href="https://github.com/daniella-laguerre/PondScope_AI_Debugger" target="_blank" rel="noopener"
+        >AI Debugger</a
+      > — Technical companion for deeper investigation.
+    </li>
+    <li>
+      <a href={withBase("pond-continuous.html")}>Lab 01 · Pond</a> — Experience the basic ecosystem.
+    </li>
+    <li>
+      <a href={withBase("pond-vs-attention.html")}>Lab 02 · Notebook</a> — Look at the mechanics behind the pond.
+    </li>
+    <li>
+      <a href={withBase("multi-head.html")}>Lab 03 · Heads</a> — Explore attention and focus.
+    </li>
+    <li>
+      <a href={withBase("issues-lab.html")}>Lab 04 · Issues Lab</a> — Experiment with stress, limits, and failure
+      modes.
+    </li>
+    <li>
+      <a href={withBase("feedback.html")}>Comments</a> — Share feedback, ask questions, or point to a specific lab.
+    </li>
+  </ol>
+  <p class="enrich-note" style="margin-top:14px">
+    <b>Original suggested path (unchanged):</b>
+    Context → Metaphor reference → AI Debugger → Lab 01 Pond → 02 Notebook → 03 Heads → 04 Issues Lab →
+    Comments / feedback / questions.
+  </p>
+</section>
+
+<script>
+  const KEY = "pondscope_depth";
+  const root = document.documentElement;
+  const btnM = document.getElementById("depth-metaphor");
+  const btnA = document.getElementById("depth-ai");
+
+  function apply(mode: "metaphor" | "ai") {
+    root.setAttribute("data-depth", mode);
+    if (btnM && btnA) {
+      btnM.setAttribute("aria-pressed", mode === "metaphor" ? "true" : "false");
+      btnA.setAttribute("aria-pressed", mode === "ai" ? "true" : "false");
+    }
+    try {
+      localStorage.setItem(KEY, mode);
+    } catch {
+      /* ignore */
+    }
+  }
+
+  let start: "metaphor" | "ai" = "metaphor";
+  try {
+    const saved = localStorage.getItem(KEY);
+    if (saved === "ai" || saved === "metaphor") start = saved;
+  } catch {
+    /* ignore */
+  }
+  apply(start);
+
+  btnM?.addEventListener("click", () => apply("metaphor"));
+  btnA?.addEventListener("click", () => apply("ai"));
+</script>

@@ -74,7 +74,44 @@
     Teaching metaphors used in this site (<b>pond</b>, <b>notebook</b>) are noted where they map.
   </p>
 
+  <section id="plain-companion" style="margin:0 0 22px;padding:14px 14px 12px;border-radius:3px;border:1px solid rgba(47,184,179,.28);border-left:3px solid var(--brass);background:rgba(14,42,49,.4)">
+    <p class="tag" style="margin-bottom:6px">Additive · plain-language companion</p>
+    <h2 style="margin:0 0 8px;border:0;padding:0;font-size:16px">Beginner layer — <em style="color:var(--water);font-style:italic">keeps every term below</em></h2>
+    <p style="font-size:11px;line-height:1.6;color:var(--mute);margin:0 0 10px">
+      Technical definitions remain fully intact. These short companions sit beside them.
+      Fuller primer: <a href="education-context.html" style="color:var(--water)">Education Context</a>.
+    </p>
+    <dl style="gap:10px">
+      <dt>Pre-training sediment</dt>
+      <dd><b>Technical:</b> knowledge encoded during pre-training (weights / land).<br>
+        <b>Plain language:</b> the model’s long-term memory — everything learned before this conversation.</dd>
+      <dt>Runtime water</dt>
+      <dd><b>Technical:</b> active context or hidden state during inference.<br>
+        <b>Plain language:</b> the mental space where the current conversation is happening.</dd>
+      <dt>Notebook / attention (KV cache)</dt>
+      <dd><b>Technical:</b> per-position keys and values for lookback.<br>
+        <b>Plain language:</b> a notepad of past tokens the model can flip through exactly.</dd>
+      <dt>Multi-head attention</dt>
+      <dd><b>Technical:</b> several attention heads with different Q/K/V projections.<br>
+        <b>Plain language:</b> several lookers viewing the pond from different angles to decide what matters.</dd>
+      <dt>Surveyor / sea (post-training)</dt>
+      <dd><b>Technical:</b> reward model (surveyor) and checkable outcomes (sea).<br>
+        <b>Plain language:</b> how the banks were shaped to be helpful — after the land formed, before water moves.</dd>
+      <dt>Surroundings / grounding</dt>
+      <dd><b>Technical:</b> external facts, tools, RAG, environment signals.<br>
+        <b>Plain language:</b> the world outside the pond the model can stay connected to.</dd>
+      <dt>Adapter / LoRA</dt>
+      <dd><b>Technical:</b> small trainable modules on a frozen base.<br>
+        <b>Plain language:</b> a specialized upgrade that needs a base pond — not a whole new ecosystem.</dd>
+      <dt>Token bloat · Latency/TTFT · Grounding issues</dt>
+      <dd><b>Technical:</b> context overload · time-to-first-token · weak external grounding.<br>
+        <b>Plain language:</b> crowded water · slow first response · drifting from the surroundings —
+        explore in the <a href="issues-lab.html" style="color:var(--water)">Issues Lab</a>.</dd>
+    </dl>
+  </section>
+
   <nav class="jump" aria-label="Jump to section">
+    <a href="#plain-companion">Plain companion</a>
     <a href="#foundations">Foundations</a>
     <a href="#architectures">Architectures</a>
     <a href="#memory">Memory &amp; attention</a>
@@ -164,13 +201,15 @@
     <dd>Attention where queries come from one stream (e.g. decoder) and keys/values from another (e.g. encoder or image features).</dd>
 
     <dt>Multi-head attention (MHA)</dt>
-    <dd>Several attention heads run in parallel with different projections; their outputs are concatenated. Heads can specialize on different relations or distances.</dd>
+    <dd>Several attention heads run in parallel with different projections; their outputs are concatenated. Heads can specialize on different relations or distances.
+      <br><b>Plain language:</b> several lookers viewing the pond from different angles (see companion above).</dd>
 
     <dt>Key–value cache (KV cache)</dt>
     <dd>At inference, stored keys and values for past tokens so the model need not recompute them every step. Memory grows with context length.</dd>
 
     <dt>Context window</dt>
-    <dd>The maximum span of tokens the model can attend to (or otherwise condition on) in one forward pass / generation session.</dd>
+    <dd>The maximum span of tokens the model can attend to (or otherwise condition on) in one forward pass / generation session.
+      <br><b>Plain language:</b> how much active water the looker can see at once.</dd>
 
     <dt>Positional encoding / position bias</dt>
     <dd>Signals that tell the model token order. Absolute encodings, relative biases (e.g. T5), and ALiBi are common approaches. Pure RNNs/SSMs often get order “for free” from sequential updates.</dd>
@@ -206,10 +245,12 @@
     <dd>Further training a pretrained model on a narrower dataset or task so it adapts without training from scratch. <b>Pond:</b> reshaping or digging a hollow in the land — see <a href="#metaphor-reference">metaphor reference</a>.</dd>
 
     <dt id="adapter">LoRA / adapter</dt>
-    <dd>Parameter-efficient fine-tuning: small trainable modules (or low-rank updates) are added while most base weights stay frozen. <b>Pond:</b> a <em>place</em> (a pond dug in the land), not a training method — any post-training method can be applied to an adapter.</dd>
+    <dd>Parameter-efficient fine-tuning: small trainable modules (or low-rank updates) are added while most base weights stay frozen. <b>Pond:</b> a <em>place</em> (a pond dug in the land), not a training method — any post-training method can be applied to an adapter.
+      <br><b>Plain language:</b> a specialized upgrade that attaches to an existing pond — not usually a full new model by itself. See <a href="education-context.html#adapters">Education Context · adapters</a>.</dd>
 
     <dt>Pretraining</dt>
-    <dd>Large-scale training (often next-token or masked prediction) that builds general capabilities before specialization. <b>Pond:</b> forming the land before anyone digs.</dd>
+    <dd>Large-scale training (often next-token or masked prediction) that builds general capabilities before specialization. <b>Pond:</b> forming the land before anyone digs.
+      <br><b>Plain language:</b> how the sediment (long-term memory) first forms.</dd>
 
     <dt>Teacher forcing</dt>
     <dd>During training, feed the model the correct previous token rather than its own prediction, stabilizing sequence learning.</dd>

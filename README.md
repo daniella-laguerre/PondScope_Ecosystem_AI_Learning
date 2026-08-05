@@ -12,7 +12,8 @@ Interactive lessons on machine memory: fixed-size **pond** state, growing **note
 
 | # | Page | Idea |
 |---|---|---|
-| — | Home (Astro) | Interactive WebGL-style pond twin + learning path |
+| — | Home (Astro) | Interactive pond twin + Start Here / depth toggle / guided path |
+| — | [education-context.html](src/pages/education-context.astro) | What models are, HF/Ollama, architectures, coding agents |
 | 1 | [pond-continuous.html](public/pond-continuous.html) | Continuous SSM pond, sampled once per token |
 | 2 | [pond-vs-attention.html](public/pond-vs-attention.html) | Pond vs notebook on the same recall task |
 | 3 | [multi-head.html](public/multi-head.html) | Why attention needs many heads at once |

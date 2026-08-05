@@ -1,0 +1,22 @@
+/* Additive connective banners for static labs — does not alter lab behavior */
+.lab-connect{
+  position:relative;z-index:5;
+  margin:10px 12px 0;padding:12px 14px 11px;
+  border-radius:4px;border:1px solid rgba(47,184,179,.35);
+  border-left:3px solid #2FB8B3;
+  background:rgba(14,42,49,.82);
+  font-family:Arial,Helvetica,sans-serif;
+  max-width:720px;
+}
+.lab-connect h2{
+  margin:0 0 6px;font-size:14px;font-weight:560;color:#D9E8E4;line-height:1.25;
+}
+.lab-connect h2 em{font-style:italic;color:#2FB8B3;font-weight:400}
+.lab-connect p{margin:0;font-size:11px;line-height:1.55;color:#5E7C7F}
+.lab-connect p b{color:#D9E8E4;font-weight:500}
+.lab-connect a{color:#2FB8B3;text-decoration:none;border-bottom:1px dotted rgba(47,184,179,.45)}
+.lab-connect .meta{
+  font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#E0A94E;margin-bottom:5px;
+}
+/* pond-continuous uses fixed layout — keep banner under home button */
+body > .lab-connect{margin:8px 14px 0}

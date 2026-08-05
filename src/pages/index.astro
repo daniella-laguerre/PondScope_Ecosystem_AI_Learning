@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import PondHero from "../components/PondHero.astro";
+import WelcomeGuide from "../components/WelcomeGuide.astro";
 import { withBase } from "../lib/base";
 ---
 
@@ -8,10 +9,13 @@ import { withBase } from "../lib/base";
   <PondHero />
 
   <main class="site-main content-shell" id="path">
-    <p class="path">Learning path <span class="hint">— scroll the twin, then walk the labs</span></p>
+    <WelcomeGuide />
+
+    <p class="path">Learning path <span class="hint">— existing path preserved below</span></p>
     <p class="lead" style="margin-top:0;margin-bottom:4px">
-      Path on this page: <b>Context</b> → <b>Metaphor reference</b> → <b>AI Debugger</b> →
-      <b>Labs</b> (interactive lessons + Issues Lab) → <b>Comments / feedback / questions</b>.
+      Path on this page: <b>Context</b> → <b>Education Context</b> → <b>Metaphor reference</b> →
+      <b>AI Debugger</b> → <b>Labs</b> (interactive lessons + Issues Lab) →
+      <b>Comments / feedback / questions</b>.
     </p>
 
     <div class="stack">
@@ -23,6 +27,16 @@ import { withBase } from "../lib/base";
           with Grok 4.5. Includes the source PDF.
         </p>
         <div class="go">Open context →</div>
+      </a>
+      <a class="panel" href={withBase("education-context.html")}>
+        <div class="n">01b · Education Context</div>
+        <div class="title">What models are — <span>made, behave, tools, agents</span></div>
+        <p class="blurb">
+          Additive primer: models and families, adapters vs full models, Hugging Face and Ollama,
+          how models are made (including architectures), how they behave, and coding agents like Cursor
+          and Lovable — all mapped to the pond.
+        </p>
+        <div class="go">Open education context →</div>
       </a>
       <a class="panel" href={withBase("metaphor-reference.html")}>
         <div class="n">02 · Metaphor reference</div>
@@ -130,10 +144,11 @@ import { withBase } from "../lib/base";
     <div class="below">
       <a class="panel" id="issues-card" href={withBase("issues-lab.html")}>
         <div class="n">Lab 04 · Issues Lab</div>
-        <div class="title">Break what you learned — <span>visualized failures</span></div>
+        <div class="title">Experiment with the ecosystem — <span>discover under pressure</span></div>
         <p class="blurb">
-          Token bloat, latency/TTFT, and grounding — shown on the pond, notebook, and multi-head
-          machinery from lessons 01–03.
+          Explore how token bloat, latency/TTFT, and grounding change the pond, notebook, and multi-head
+          systems from lessons 01–03. (Original lab title “Break what you learned” still appears on the
+          Issues Lab page — content preserved.)
         </p>
         <div class="dep" id="issues-dep">
           <b>Depends on interactive lessons:</b>
@@ -208,7 +223,7 @@ import { withBase } from "../lib/base";
         </div>
       </div>
       <p class="howto-path">
-        <b>Suggested path:</b>
+        <b>Suggested path (original, preserved):</b>
         <a href={withBase("context.html")}>Context</a> →
         <a href={withBase("metaphor-reference.html")}>Metaphor reference</a> →
         <a href="https://github.com/daniella-laguerre/PondScope_AI_Debugger" target="_blank" rel="noopener"
@@ -219,7 +234,8 @@ import { withBase } from "../lib/base";
         <a href={withBase("multi-head.html")}>03 Heads</a> →
         <a href={withBase("issues-lab.html")}>04 Issues Lab</a> →
         <a href={withBase("feedback.html")}>Comments / feedback / questions</a>. In the Issues Lab, use
-        <b>Reset</b> / <b>Reset all</b>.
+        <b>Reset</b> / <b>Reset all</b>. For the guided onboarding path, see
+        <a href="#friendly-path">A friendly path through the pond</a> above (includes Education Context).
       </p>
     </section>
 
@@ -227,6 +243,7 @@ import { withBase } from "../lib/base";
       <b>Daniella M. LaGuerre</b> · PondScope Ecosystem<br />
       Interactive home twin + self-contained labs.
       <a href={withBase("context.html")}>Context</a> ·
+      <a href={withBase("education-context.html")}>Education Context</a> ·
       <a href={withBase("metaphor-reference.html")}>Metaphor reference</a> ·
       <a href="https://github.com/daniella-laguerre/PondScope_AI_Debugger" target="_blank" rel="noopener"
         >AI Debugger</a

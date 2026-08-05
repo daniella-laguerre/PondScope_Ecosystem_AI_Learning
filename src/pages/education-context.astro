@@ -1,0 +1,597 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { withBase } from "../lib/base";
+---
+
+<BaseLayout
+  title="Education Context — What models are · PondScope Ecosystem"
+  description="What AI models are, popular families and adapters, Hugging Face and Ollama, how models are made and behave, architectures, and coding agents — mapped to the PondScope metaphor."
+>
+  <main class="prose-page">
+    <a class="homebtn" href={withBase("index.html")}>← Home</a>
+    <p class="tag">PondScope Ecosystem · Education Context</p>
+    <h1>Education Context: <em>what models are</em></h1>
+    <p class="lead">
+      PondScope helps visitors understand AI models by connecting familiar ideas to a living ecosystem. This
+      page is an <b>additive</b> learning path. All existing sections, labs, glossary entries, metaphors,
+      sources, and navigation remain intact.
+    </p>
+
+    <nav class="jump-row" aria-label="Jump on this page">
+      <a href="#what-models">What models are</a>
+      <a href="#popular">Popular models</a>
+      <a href="#adapters">Adapters</a>
+      <a href="#huggingface">Hugging Face</a>
+      <a href="#ollama">Ollama</a>
+      <a href="#made">How made</a>
+      <a href="#architectures">Architectures</a>
+      <a href="#behave">How behave</a>
+      <a href="#agents">Coding agents</a>
+    </nav>
+
+    <div class="enrich-note">
+      <b>New to AI?</b> Start with the pond. You do not need advanced math. First explore memory, context,
+      focus, and grounding — then reveal technical terms when ready.<br /><br />
+      <b>Already familiar?</b> Keep the metaphor as a guide while reading labels such as pre-training weights,
+      context windows, attention heads, adapters, grounding, and inference behavior.
+    </div>
+
+    <section id="what-models">
+      <h2>What is an <em>AI model</em>?</h2>
+      <p>
+        An AI model is a trained software system that learns patterns from examples. Instead of following only
+        a fixed set of handwritten rules, it learns from large amounts of data so it can generate text, answer
+        questions, summarize, translate, write code, and reason through prompts.
+      </p>
+      <p>
+        A model is not magic, and it is not “thinking” the way a person thinks. It is a highly trained pattern
+        system. When you give it new input, it uses what it learned to predict what should come next.
+      </p>
+      <p>In the pond metaphor:</p>
+      <ul>
+        <li>Learned knowledge is like <b>sediment</b>.</li>
+        <li>The current conversation or task is like <b>water</b>.</li>
+        <li>Focus and lookback are like the <b>notebook</b> and <b>heads</b>.</li>
+        <li>Outside world, tools, and documents are like the <b>surroundings</b>.</li>
+        <li>Post-training goals are shaped by the <b>surveyor</b> (reward model) and the <b>sea</b> (checkable outcomes).</li>
+      </ul>
+    </section>
+
+    <section id="popular">
+      <h2>Popular models and <em>model families</em></h2>
+      <p>
+        Names such as GPT, Claude, Gemini, Llama, Mistral, Qwen, Phi, or DeepSeek often refer to
+        <b>model families</b>, not one single object. A family can include a base model, instruct/chat versions,
+        fine-tunes, quantized packages, and adapters.
+      </p>
+      <table class="prose-table">
+        <thead>
+          <tr>
+            <th>What people call a “model”</th>
+            <th>What it often is</th>
+            <th>Pond metaphor</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Hosted frontier models (GPT, Claude, Gemini…)</td>
+            <td>Full models via a provider’s API or product</td>
+            <td>A remote pond cared for by a provider</td>
+          </tr>
+          <tr>
+            <td>Open-weight families (Llama, Mistral, Qwen, Phi, DeepSeek…)</td>
+            <td>Weights you can often download, run, or adapt</td>
+            <td>A pond species you can study or host locally</td>
+          </tr>
+          <tr>
+            <td>Base models</td>
+            <td>General language patterns</td>
+            <td>Deep sediment and raw landscape</td>
+          </tr>
+          <tr>
+            <td>Instruct / chat models</td>
+            <td>Refined to follow instructions helpfully</td>
+            <td>Banks and surveyors trained for careful navigation</td>
+          </tr>
+          <tr>
+            <td>Fine-tuned models</td>
+            <td>Further trained for a task or domain</td>
+            <td>A pond shaped for a particular purpose</td>
+          </tr>
+          <tr>
+            <td>Adapters / LoRA</td>
+            <td>Small updates attached to a base model</td>
+            <td>Removable lenses or signposts for the lookers</td>
+          </tr>
+          <tr>
+            <td>Quantized models</td>
+            <td>Compressed for easier local runs</td>
+            <td>A smaller, more portable pond</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="adapters">
+      <h2>Are popular models <em>adapters</em>?</h2>
+      <p>
+        Most well-known model families are <b>not</b> adapters by themselves. They are full model families or
+        hosted systems. An <b>adapter</b> is a smaller piece of training that attaches to an existing base
+        model. Instead of rebuilding the whole model, it changes behavior in a focused way.
+      </p>
+      <ul>
+        <li>A <b>model</b> is the whole trained system.</li>
+        <li>A <b>fine-tune</b> may update a larger part of that system.</li>
+        <li>An <b>adapter</b> is a small add-on that plugs into an existing model.</li>
+      </ul>
+      <p>
+        Pond mapping: the <b>base model</b> is landscape and sediment; an <b>adapter</b> adds signposts or lenses
+        that guide lookback and style — it does not dig a whole new pond from scratch. Glossary:
+        <a href={withBase("glossary.html#adapter")}>LoRA / adapter</a>.
+      </p>
+    </section>
+
+    <section id="huggingface">
+      <h2>What is <em>Hugging Face</em>?</h2>
+      <p>
+        Hugging Face is a platform and ecosystem where people find, share, train, evaluate, and run AI models —
+        often described as a community hub for machine learning. It can host full weights, base and instruct
+        models, fine-tunes, adapters/LoRA, tokenizers, datasets, evaluation tools, and model cards.
+      </p>
+      <p>
+        In the pond metaphor, Hugging Face is a <b>nursery, library, and field guide</b> for ponds: discover
+        species, read what each is good at, download weights or adapters, compare families, and find data for
+        training or evaluation. It does not replace the pond; it helps you find and bring one into your
+        environment.
+      </p>
+    </section>
+
+    <section id="ollama">
+      <h2>What is <em>Ollama</em>?</h2>
+      <p>
+        Ollama helps you run and manage AI models on your own computer — download, run, and interact through
+        simple commands or local interfaces. It is mainly a <b>runtime</b> and <b>model manager</b>, not primarily
+        a training hub.
+      </p>
+      <p>
+        In the pond metaphor, Ollama is a <b>local pond keeper</b>: choose a model, bring it onto your machine,
+        run it, chat or connect apps, manage versions, and experiment more privately. If Hugging Face is where
+        you discover seeds and blueprints, Ollama is one way to set up a local pond and watch it run.
+      </p>
+      <h3>How they fit together</h3>
+      <table class="prose-table">
+        <thead>
+          <tr>
+            <th>Tool / concept</th>
+            <th>Role in AI</th>
+            <th>Role at the pond</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Hugging Face</td>
+            <td>Hub, library, datasets, adapters</td>
+            <td>Nursery, field guide, model library</td>
+          </tr>
+          <tr>
+            <td>Ollama</td>
+            <td>Local runtime and manager</td>
+            <td>Local pond keeper</td>
+          </tr>
+          <tr>
+            <td>Base model</td>
+            <td>General patterns</td>
+            <td>Sediment and landscape</td>
+          </tr>
+          <tr>
+            <td>Adapter</td>
+            <td>Specialized update</td>
+            <td>Signposts / lenses</td>
+          </tr>
+          <tr>
+            <td>Prompt</td>
+            <td>User input</td>
+            <td>A ripple in the water</td>
+          </tr>
+          <tr>
+            <td>Context window</td>
+            <td>Active information</td>
+            <td>Visible water around the looker</td>
+          </tr>
+          <tr>
+            <td>Attention</td>
+            <td>What matters</td>
+            <td>Notebook / heads looking across the pond</td>
+          </tr>
+          <tr>
+            <td>Grounding</td>
+            <td>External facts / tools</td>
+            <td>Surroundings</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="made">
+      <h2>How models are <em>made</em></h2>
+      <p>Models are shaped through stages — not created all at once:</p>
+      <ol>
+        <li><b>Design</b> — architecture, size, learning approach.</li>
+        <li><b>Data preparation</b> — collect and clean examples.</li>
+        <li><b>Tokenization</b> — break language into processable pieces.</li>
+        <li><b>Pre-training</b> — learn broad patterns (sediment forms).</li>
+        <li><b>Post-training</b> — become more helpful and instruction-following (banks / surveyor / sea).</li>
+        <li><b>Fine-tuning or adapters</b> — specialize for tasks or domains.</li>
+        <li><b>Evaluation</b> — strengths, weaknesses, failure modes.</li>
+        <li><b>Deployment</b> — APIs, products, or local runtimes such as Ollama.</li>
+        <li><b>Feedback and improvement</b> — real use reveals where to improve.</li>
+      </ol>
+      <table class="prose-table">
+        <thead>
+          <tr>
+            <th>Stage</th>
+            <th>Pond metaphor</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Design</td><td>Decide what kind of pond ecosystem to build</td></tr>
+          <tr><td>Data preparation</td><td>Gather material that will settle into the pond</td></tr>
+          <tr><td>Tokenization</td><td>Turn inputs into ripples the pond can respond to</td></tr>
+          <tr><td>Pre-training</td><td>Sediment forms over time</td></tr>
+          <tr><td>Post-training</td><td>Surveyors and seas shape helpful banks</td></tr>
+          <tr><td>Fine-tuning / adapters</td><td>Signposts and lenses for specific behavior</td></tr>
+          <tr><td>Evaluation</td><td>Check the health of the pond</td></tr>
+          <tr><td>Deployment</td><td>Open the pond or run it locally</td></tr>
+          <tr><td>Feedback</td><td>New ripples reveal how the ecosystem responds</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="architectures">
+      <h2>Model architectures: different <em>pond designs</em></h2>
+      <p>
+        Not every AI model is built the same way. An <b>architecture</b> is the design plan for how a model
+        processes information: how it stores what it has seen, how it looks back at context, and how fast it
+        can respond. In pond terms: how the water flows, who looks at the pond, and how much can be seen at once.
+      </p>
+      <p>Four friendly families (a map, not a permanent rulebook):</p>
+      <table class="prose-table">
+        <thead>
+          <tr>
+            <th>Architecture</th>
+            <th>What it is</th>
+            <th>Popular examples</th>
+            <th>Pond metaphor</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Transformer (dense)</td>
+            <td>Tokens look back via attention</td>
+            <td>GPT family, Claude, Llama 3, Mistral, Phi, Qwen (dense), early Gemini</td>
+            <td>A looker who can instantly scan any point on the water</td>
+          </tr>
+          <tr>
+            <td>Mixture-of-Experts (MoE)</td>
+            <td>Many specialists; few activate per token</td>
+            <td>Mixtral, DeepSeek-V3/R1, Qwen-MoE, Grok, Llama 4, Gemini 1.5 Pro (reported)</td>
+            <td>A team of specialists — only the right ones wake for each ripple</td>
+          </tr>
+          <tr>
+            <td>SSM / Mamba-style</td>
+            <td>Streaming with compact hidden state</td>
+            <td>Mamba, Mamba-2, Cartesia Sonic, Falcon-H1</td>
+            <td>A flowing stream: the water carries memory at constant depth</td>
+          </tr>
+          <tr>
+            <td>Hybrid (SSM + attention)</td>
+            <td>Streaming layers plus attention where needed</td>
+            <td>Jamba, Nemotron-H, Zamba, Bamba, LFM2, Qwen3-Next</td>
+            <td>A current that flows — with lookers who glance back at key moments</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="arch-card highlight" style="margin-top:16px">
+        <h3>The architecture this demo shows: Hybrid</h3>
+        <p class="one-line">PondScope visualizes hybrid, SSM-style models — flowing water plus lookback.</p>
+        <p>
+          <b>Water</b> is the SSM side: a compact state that streams forward. <b>Notebook / heads</b> are the
+          attention side: focused lookback when precise recall matters. That is why Labs
+          <a href={withBase("pond-continuous.html")}>01</a> and
+          <a href={withBase("multi-head.html")}>03</a> pair so well — and why the
+          <a href={withBase("issues-lab.html")}>Issues Lab</a> can show trade-offs under stress.
+        </p>
+      </div>
+
+      <div class="arch-grid">
+        <article class="arch-card">
+          <h3>Transformer (dense attention)</h3>
+          <p class="one-line">The looker can scan anywhere on the water, instantly.</p>
+          <div class="lists">
+            <div>
+              <h4>Pros</h4>
+              <ol>
+                <li>Excellent associative recall across context</li>
+                <li>Training parallelizes well at scale</li>
+                <li>Largest ecosystem (tools, adapters, research)</li>
+                <li>Attention maps aid debugging</li>
+                <li>Proven quality across task sizes</li>
+              </ol>
+            </div>
+            <div>
+              <h4>Cons</h4>
+              <ol>
+                <li>Prefill cost grows quickly with length</li>
+                <li>KV cache grows with the conversation</li>
+                <li>TTFT slows on long prompts</li>
+                <li>Less efficient for very long streams</li>
+                <li>Harder long-context on edge hardware</li>
+              </ol>
+            </div>
+          </div>
+        </article>
+
+        <article class="arch-card">
+          <h3>Mixture-of-Experts (MoE)</h3>
+          <p class="one-line">A team of specialists; only the right ones wake for each ripple.</p>
+          <div class="lists">
+            <div>
+              <h4>Pros</h4>
+              <ol>
+                <li>Large capacity with less compute per token</li>
+                <li>Often faster than a dense model of same size</li>
+                <li>Strong quality-per-cost at frontier scale</li>
+                <li>Experts can specialize (code, languages…)</li>
+                <li>Parameters can grow without proportional training cost</li>
+              </ol>
+            </div>
+            <div>
+              <h4>Cons</h4>
+              <ol>
+                <li>All experts must be stored — large footprint</li>
+                <li>Often memory-bandwidth limited</li>
+                <li>Trickier training (routing, balance)</li>
+                <li>Fine-tunes/adapters more complex</li>
+                <li>Distributed serving adds latency variance</li>
+              </ol>
+            </div>
+          </div>
+        </article>
+
+        <article class="arch-card">
+          <h3>State Space Model (SSM / Mamba)</h3>
+          <p class="one-line">A flowing stream — the water itself carries memory forward.</p>
+          <div class="lists">
+            <div>
+              <h4>Pros</h4>
+              <ol>
+                <li>Cost grows linearly with length</li>
+                <li>Fixed-size state — no growing KV cache</li>
+                <li>Steady streaming, low per-token latency</li>
+                <li>Predictable memory for long documents</li>
+                <li>Suited to on-device / edge deployment</li>
+              </ol>
+            </div>
+            <div>
+              <h4>Cons</h4>
+              <ol>
+                <li>Weaker at precise long-range copy/recall</li>
+                <li>Fixed state compresses fine details</li>
+                <li>Smaller ecosystem than Transformers</li>
+                <li>Less interpretability tooling</li>
+                <li>Thinner frontier-scale track record</li>
+              </ol>
+            </div>
+          </div>
+        </article>
+
+        <article class="arch-card">
+          <h3>Hybrid (SSM + attention)</h3>
+          <p class="one-line">A stream that flows — with lookers who glance up at the right moments.</p>
+          <div class="lists">
+            <div>
+              <h4>Pros</h4>
+              <ol>
+                <li>Efficient streaming plus precise recall</li>
+                <li>Better long-context recall than pure SSMs</li>
+                <li>Smaller KV cache than pure Transformers</li>
+                <li>Strong efficiency–quality balance</li>
+                <li>Attention can be placed where needed</li>
+              </ol>
+            </div>
+            <div>
+              <h4>Cons</h4>
+              <ol>
+                <li>More design knobs (layer ratios)</li>
+                <li>Harder to implement and serve</li>
+                <li>Tooling still maturing</li>
+                <li>Harder to attribute behavior when debugging</li>
+                <li>Fewer public training recipes</li>
+              </ol>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <p class="enrich-note" style="margin-top:14px">
+        <b>Issues Lab tie-in:</b> each architecture handles stress differently. Watch how token bloat, latency,
+        and recall show up — then connect them to these designs.
+      </p>
+    </section>
+
+    <section id="behave">
+      <h2>How models <em>behave</em></h2>
+      <p>
+        Once made, a model still behaves in particular ways. It works with patterns, context, attention, and
+        probabilities — and can become overloaded or lose grounding.
+      </p>
+      <table class="prose-table">
+        <thead>
+          <tr>
+            <th>Behavior</th>
+            <th>What it means</th>
+            <th>Pond metaphor</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Next-token prediction</td>
+            <td>Predicts likely next pieces of text</td>
+            <td>Ripples moving across the water</td>
+          </tr>
+          <tr>
+            <td>Context window</td>
+            <td>Active information the model can use</td>
+            <td>Visible water around the looker</td>
+          </tr>
+          <tr>
+            <td>Attention</td>
+            <td>Deciding which parts matter</td>
+            <td>Notebook / heads focusing on areas</td>
+          </tr>
+          <tr>
+            <td>Memory</td>
+            <td>Learned knowledge from training</td>
+            <td>Sediment</td>
+          </tr>
+          <tr>
+            <td>Token bloat</td>
+            <td>Too much active context</td>
+            <td>Crowded or slow water</td>
+          </tr>
+          <tr>
+            <td>Latency / TTFT</td>
+            <td>Delay before responding</td>
+            <td>The looker takes longer to act</td>
+          </tr>
+          <tr>
+            <td>Grounding</td>
+            <td>Connection to reliable outside info</td>
+            <td>Surroundings</td>
+          </tr>
+          <tr>
+            <td>Hallucination</td>
+            <td>Confident but unreliable output</td>
+            <td>Misreading the pond</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>
+        Explore directly:
+        <a href={withBase("pond-continuous.html")}>pond</a> ·
+        <a href={withBase("pond-vs-attention.html")}>notebook</a> ·
+        <a href={withBase("multi-head.html")}>heads</a> ·
+        <a href={withBase("issues-lab.html")}>Issues Lab</a>.
+      </p>
+    </section>
+
+    <section id="agents">
+      <h2>Coding agents: <em>helpers at the workbench</em></h2>
+      <p>
+        A <b>coding agent</b> is software that uses one or more models to help you write, edit, explain, and
+        ship code — often with tools (file edit, terminal, search, browsers) and a loop of plan → act → check.
+        Agents are not a separate kind of “brain”; they are products and workflows that <b>orchestrate</b> models.
+      </p>
+      <p>In the pond metaphor:</p>
+      <ul>
+        <li>The <b>model</b> is the pond (sediment + water + lookback).</li>
+        <li>The <b>agent product</b> is the workbench and tools around the pond.</li>
+        <li>Your <b>prompt / task</b> is a ripple that may trigger many tool steps.</li>
+        <li><b>Repo context</b> is surroundings the agent can ground in (files, diffs, docs).</li>
+      </ul>
+
+      <h3>Types of coding agents (friendly map)</h3>
+      <table class="prose-table">
+        <thead>
+          <tr>
+            <th>Type</th>
+            <th>What it emphasizes</th>
+            <th>Examples (illustrative)</th>
+            <th>Pond role</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>IDE-native agent</td>
+            <td>Edits your project inside an editor, with repo awareness</td>
+            <td>Cursor, GitHub Copilot Chat / agent modes, Windsurf</td>
+            <td>Workbench built into the boathouse</td>
+          </tr>
+          <tr>
+            <td>App / UI builders</td>
+            <td>Generate apps from prompts; less raw-repo focus</td>
+            <td>Lovable, v0-style builders, Bolt-like tools</td>
+            <td>Prefabricated docks — fast shorelines</td>
+          </tr>
+          <tr>
+            <td>CLI / autonomous loops</td>
+            <td>Long-running tool use from a terminal or cloud VM</td>
+            <td>Claude Code-style CLIs, cloud agents, Aider-like flows</td>
+            <td>Remote keepers walking the banks with tools</td>
+          </tr>
+          <tr>
+            <td>Chat assistants with code</td>
+            <td>Conversation-first; paste/snippets more than deep repo loops</td>
+            <td>ChatGPT / Claude / Gemini web apps in coding mode</td>
+            <td>Visiting a well-kept remote pond</td>
+          </tr>
+          <tr>
+            <td>Local / open stacks</td>
+            <td>Run open models via Ollama or similar; more privacy control</td>
+            <td>Continue.dev + Ollama, local Open WebUI setups</td>
+            <td>Your own pond keeper + local habitat</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Cursor, Lovable, and model choice</h3>
+      <p>
+        <b>Cursor</b> is an IDE-native coding agent: it pairs an editor with agent features (chat, inline edit,
+        multi-file changes, tools). You typically choose a <b>frontier hosted model</b> (or a team-configured
+        option) for planning and edits; the product supplies the workbench, context assembly, and apply loop.
+      </p>
+      <p>
+        <b>Lovable</b> (and similar builders) leans toward <b>product generation</b>: describe an app, get UI and
+        scaffolding quickly. The model is still a next-token predictor under the hood, but the agent’s job is
+        scoped to shipping a front-end experience rather than deep surgery on an arbitrary legacy repo.
+      </p>
+      <p>What “model types” agents offer usually means one of:</p>
+      <ul>
+        <li><b>Hosted frontier chat/instruct models</b> — strong general coding via provider APIs.</li>
+        <li><b>Fast / cheaper models</b> — for autocomplete, small edits, or high-volume steps.</li>
+        <li><b>Reasoning-oriented variants</b> — more deliberation for hard debugging (when offered).</li>
+        <li><b>Bring-your-own / local models</b> — open weights through Ollama or compatible endpoints (varies by product).</li>
+        <li><b>Specialized coding fine-tunes</b> — models tuned for code completion or agent tool use.</li>
+      </ul>
+      <p>
+        Agents differ in <b>how</b> they offer models: picker in settings, automatic routing (fast vs strong),
+        org-locked models, or local endpoints. The pond stays the same idea — sediment + water + lookback —
+        while the agent changes which tools touch the surroundings (your files).
+      </p>
+      <div class="enrich-note">
+        PondScope itself was built with agentic IDE help (Cursor · Grok 4.5) after the metaphor was named in a
+        Claude conversation — see <a href={withBase("context.html")}>Context</a>. That is an example of an
+        IDE-native agent loop around a hybrid teaching metaphor, not a claim about any vendor’s internal stack.
+      </div>
+    </section>
+
+    <section>
+      <h2>Keep exploring</h2>
+      <p>
+        All original depth remains available:
+        <a href={withBase("metaphor-reference.html")}>Metaphor reference</a> ·
+        <a href={withBase("glossary.html")}>Glossary</a> ·
+        <a href={withBase("pond-continuous.html")}>Labs</a> ·
+        <a href={withBase("index.html")}>Home</a>.
+      </p>
+    </section>
+
+    <footer class="site-footer">
+      <b>Daniella M. LaGuerre</b> · Additive education layer ·
+      <a href={withBase("index.html")}>Home</a> ·
+      <a href={withBase("context.html")}>Context</a> ·
+      <a href={withBase("glossary.html")}>Glossary</a>
+    </footer>
+  </main>
+</BaseLayout>
