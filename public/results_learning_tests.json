@@ -1,0 +1,82 @@
+{
+  "demonstrated": [
+    "State-space model (SSM) / recurrent hidden state — pond-continuous + pond side",
+    "Attention / KV-style notebook memory — pond-vs-attention notebook side",
+    "Multi-head attention — multi-head demo specialization",
+    "Hybrid motivation — pond fades with K, notebook stays high",
+    "Context window / growing memory cost — notebook memory counter grows"
+  ],
+  "not_tested_by_learning_tool": [
+    "Token overconsumption, TTFT, cold start, KV-cache memory pressure (serving)",
+    "Jailbreak / prompt injection, data leakage, toxic output, bias, sycophancy",
+    "Agent cascades, tool-use errors, over/underrefusal",
+    "Catastrophic forgetting, reward hacking, distribution shift"
+  ],
+  "note": "The learning tool verifies pedagogical memory claims with tiny 4-symbol tasks. It is not a production issues harness.",
+  "raw": {
+    "pond_continuous": [
+      {
+        "demo": "pond-continuous",
+        "mode": "C only",
+        "result": "held-out recall 67% (chance 25%) dynamics frozen"
+      },
+      {
+        "demo": "pond-continuous",
+        "mode": "A, B, C, Δ",
+        "result": "held-out recall 97% (chance 25%) Δ=1.04"
+      }
+    ],
+    "pond_vs_attention": [
+      {
+        "demo": "pond-vs-attention",
+        "K": 4,
+        "pond_heldout": "96%",
+        "notebook_heldout": "100%",
+        "status": "taught at K=4 — now press Stream and watch them answer live"
+      },
+      {
+        "demo": "pond-vs-attention",
+        "K": 12,
+        "pond_heldout": "79%",
+        "notebook_heldout": "100%",
+        "status": "taught at K=12 — now press Stream and watch them answer live"
+      },
+      {
+        "demo": "pond-vs-attention",
+        "K": 20,
+        "pond_heldout": "61%",
+        "notebook_heldout": "100%",
+        "status": "taught at K=20 — now press Stream and watch them answer live"
+      },
+      {
+        "demo": "pond-vs-attention",
+        "K": 30,
+        "pond_heldout": "50%",
+        "notebook_heldout": "100%",
+        "status": "taught at K=30 — now press Stream and watch them answer live"
+      }
+    ],
+    "multi_head": [
+      {
+        "demo": "multi-head",
+        "heads": 1,
+        "result": "1 head → 4 back: 37% 13 back: 30% 25 back: 100% · heads parked at [25]"
+      },
+      {
+        "demo": "multi-head",
+        "heads": 2,
+        "result": "2 heads → 4 back: 96% 13 back: 100% 25 back: 86% · heads parked at [4, 13]"
+      },
+      {
+        "demo": "multi-head",
+        "heads": 3,
+        "result": "3 heads → 4 back: 100% 13 back: 100% 25 back: 100% · heads parked at [25, 4, 13]"
+      },
+      {
+        "demo": "multi-head",
+        "heads": 4,
+        "result": "4 heads → 4 back: 100% 13 back: 100% 25 back: 100% · heads parked at [4, 25, 4, 25]"
+      }
+    ]
+  }
+}

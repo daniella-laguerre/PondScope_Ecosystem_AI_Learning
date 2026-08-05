@@ -2,9 +2,9 @@
 
 **Author:** Daniella M. LaGuerre · August 2026
 
-Interactive HTML lessons on machine memory: fixed-size **pond** state, growing **notebook** attention, and **multi-head** specialization.
+Interactive lessons on machine memory: fixed-size **pond** state, growing **notebook** attention, and **multi-head** specialization — with an immersive **Astro** home that treats the pond as a playable digital twin.
 
-No install. Open [`index.html`](index.html) in a browser, or visit the GitHub Pages site after deploy.
+**Live:** https://daniella-laguerre.github.io/PondScope_Ecosystem_AI_Learning/
 
 ---
 
@@ -12,31 +12,34 @@ No install. Open [`index.html`](index.html) in a browser, or visit the GitHub Pa
 
 | # | Page | Idea |
 |---|---|---|
-| 1 | [pond-continuous.html](pond-continuous.html) | Continuous SSM pond, sampled once per token |
-| 2 | [pond-vs-attention.html](pond-vs-attention.html) | Pond vs notebook on the same recall task |
-| 3 | [multi-head.html](multi-head.html) | Why attention needs many heads at once |
-| 4 | [issues-lab.html](issues-lab.html) | Failures **visualized on** the pond / notebook / multi-head systems from 01–03 — with **Reset** / **Reset all** |
+| — | Home (Astro) | Interactive WebGL-style pond twin + learning path |
+| 1 | [pond-continuous.html](public/pond-continuous.html) | Continuous SSM pond, sampled once per token |
+| 2 | [pond-vs-attention.html](public/pond-vs-attention.html) | Pond vs notebook on the same recall task |
+| 3 | [multi-head.html](public/multi-head.html) | Why attention needs many heads at once |
+| 4 | [issues-lab.html](public/issues-lab.html) | Failures visualized on the systems from 01–03 |
 
-Landing page: [index.html](index.html) — **interactive lessons** are primary; industry definitions sit beside them. Issues Lab is after; glossary deep links still work.
-
-Metaphor reference: [metaphor-reference.html](metaphor-reference.html) (source: [metaphor-reference.md](metaphor-reference.md)) — every landscape term: pre-training land, post-training hollow, runtime water, surroundings, and where the metaphor breaks. **The land forms; then the pond is shaped; then, and only then, water moves.** (`post-training.html` redirects here.)
-
-Context: [context.html](context.html) — origin of the pond metaphor (conversation with Claude) and how this site was built (Cursor · Grok 4.5), with the embedded PDF `assets/from-tan-to-the-pond.pdf`.
-
-Glossary: [glossary.html](glossary.html) — AI / ML terms, including a **Metaphor reference** section (industry names for SFT, RLHF, DPO, RLVR, …) and **Issues & failure modes** with **Try it** links (`#tokens`, `#latency`, `#grounding`).
-
-Comments / feedback / questions: [feedback.html](feedback.html) — labs listed; **comments** are live on the page (Giscus / GitHub Discussions); **feedback** and **questions** open GitHub Issues.
+Content pages (static, same URLs): [context](public/context.html) · [metaphor reference](public/metaphor-reference.html) · [glossary](public/glossary.html) · [feedback](public/feedback.html).
 
 ---
 
-## Local use
+## Develop
 
 ```bash
-open index.html
-# or
-python3 -m http.server 8000
-# then http://localhost:8000/
+npm install
+npm run dev      # http://localhost:4321/PondScope_Ecosystem_AI_Learning/
+npm run build    # → dist/
+npm run preview
 ```
+
+GitHub Pages deploys via [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) (Actions → Pages). In the repo **Settings → Pages**, set source to **GitHub Actions** (not “Deploy from a branch”).
+
+---
+
+## Architecture notes
+
+- **Astro** builds the home experience (`src/pages/index.astro`) with Fraunces + Source Sans 3, Lenis smooth scroll, and a canvas pond twin (`src/scripts/pond-hero.ts`).
+- **Labs stay self-contained HTML** under `public/` so deep links (`pond-continuous.html`, Issues Lab `?issue=…`) keep working.
+- Plausible analytics remain in the Astro layout head.
 
 ---
 

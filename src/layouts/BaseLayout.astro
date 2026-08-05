@@ -1,0 +1,59 @@
+---
+import "../styles/global.css";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = "PondScope Ecosystem — AI Learning Tool",
+  description = "Interactive labs for machine memory: pond (SSM state), notebook (attention), multi-head, and issues — as a living digital twin.",
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <title>{title}</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,450;0,9..144,560;1,9..144,450;1,9..144,560&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Privacy-friendly analytics by Plausible -->
+    <script is:inline>
+      window.plausible =
+        window.plausible ||
+        function () {
+          (plausible.q = plausible.q || []).push(arguments);
+        };
+      plausible.init =
+        plausible.init ||
+        function (i) {
+          plausible.o = i || {};
+        };
+      plausible.init({
+        domain: "daniella-laguerre.github.io",
+        endpoint: "https://plausible.io/api/event",
+      });
+    </script>
+    <script defer src="https://plausible.io/js/pa-CeSdB1DmEDb_Iusspnqy4.js"></script>
+  </head>
+  <body>
+    <slot />
+    <script>
+      import { initSmoothScroll } from "../scripts/smooth-scroll";
+      initSmoothScroll();
+    </script>
+  </body>
+</html>

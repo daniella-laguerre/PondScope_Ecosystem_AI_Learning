@@ -1,0 +1,28 @@
+{
+  "name": "pondscope_ecosystem_ai_learning_tool",
+  "version": "1.0.0",
+  "description": "**Author:** Daniella M. LaGuerre · August 2026",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/daniella-laguerre/PondScope_Ecosystem_AI_Learning.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/daniella-laguerre/PondScope_Ecosystem_AI_Learning/issues"
+  },
+  "homepage": "https://github.com/daniella-laguerre/PondScope_Ecosystem_AI_Learning#readme",
+  "dependencies": {
+    "astro": "^7.1.6",
+    "lenis": "^1.3.25"
+  }
+}

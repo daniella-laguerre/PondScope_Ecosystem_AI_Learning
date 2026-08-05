@@ -1,8 +1,13 @@
+# build
+dist/
+.astro/
 
-*.pyc
+# deps / local
+node_modules/
 .DS_Store
+*.pyc
 .venv/
 __pycache__/
-node_modules/
-package-lock.json
-results_learning_tests.json
+
+# local leftovers
+index.legacy.html

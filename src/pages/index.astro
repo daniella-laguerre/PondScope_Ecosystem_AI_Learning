@@ -1,0 +1,275 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PondHero from "../components/PondHero.astro";
+import { withBase } from "../lib/base";
+---
+
+<BaseLayout>
+  <PondHero />
+
+  <main class="site-main content-shell" id="path">
+    <p class="path">Learning path <span class="hint">— scroll the twin, then walk the labs</span></p>
+    <p class="lead" style="margin-top:0;margin-bottom:4px">
+      Path on this page: <b>Context</b> → <b>Metaphor reference</b> → <b>AI Debugger</b> →
+      <b>Labs</b> (interactive lessons + Issues Lab) → <b>Comments / feedback / questions</b>.
+    </p>
+
+    <div class="stack">
+      <a class="panel" href={withBase("context.html")}>
+        <div class="n">01 · Context</div>
+        <div class="title">From tan to the <span>pond</span></div>
+        <p class="blurb">
+          Origin story: the pond metaphor from a conversation with Claude; this site built in Cursor
+          with Grok 4.5. Includes the source PDF.
+        </p>
+        <div class="go">Open context →</div>
+      </a>
+      <a class="panel" href={withBase("metaphor-reference.html")}>
+        <div class="n">02 · Metaphor reference</div>
+        <div class="title">Land, pond, water — <span>and where it breaks</span></div>
+        <p class="blurb">
+          Every landscape term on the site: pre-training sediment, post-training surveyor/sea, runtime
+          water, surroundings, and the seams.
+        </p>
+        <div class="go">Open metaphor reference →</div>
+      </a>
+      <a
+        class="panel"
+        href="https://github.com/daniella-laguerre/PondScope_AI_Debugger"
+        target="_blank"
+        rel="noopener"
+      >
+        <div class="n">03 · AI Debugger · GitHub</div>
+        <div class="title">PondScope AI <span>Debugger</span></div>
+        <p class="blurb">
+          Separate Python causal debugger for hybrid drawer / SSM-style models — probes, interventions,
+          and evidence analyses.
+        </p>
+        <div class="go">Open debugger repo →</div>
+      </a>
+    </div>
+
+    <div class="stack lab-block">
+      <p class="path">04 · Labs <span class="hint">— interactive lessons, then Issues Lab</span></p>
+    </div>
+
+    <div class="split">
+      <div class="col-lessons">
+        <p class="path">Interactive lessons <span class="hint">— in order</span></p>
+        <nav class="lessons" aria-label="Interactive lessons">
+          <a class="panel" href={withBase("pond-continuous.html")} data-lesson="pond">
+            <div class="n">Lab 01 · The Pond</div>
+            <div class="title">A continuous system, <span>sampled once per token</span></div>
+            <p class="blurb">
+              Diagonal state-space memory: ripples, dials, decay, and why fixed-size state stays cheap
+              forever.
+            </p>
+            <div class="go">Open pond-continuous →</div>
+          </a>
+
+          <a class="panel" href={withBase("pond-vs-attention.html")} data-lesson="notebook">
+            <div class="n">Lab 02 · Pond vs Notebook</div>
+            <div class="title">Two ways to remember <span>the same stream</span></div>
+            <p class="blurb">
+              SSM state vs attention on the same recall task — where each wins, and why hybrids exist.
+            </p>
+            <div class="go">Open pond-vs-attention →</div>
+          </a>
+
+          <a class="panel" href={withBase("multi-head.html")} data-lesson="heads">
+            <div class="n">Lab 03 · Many Heads</div>
+            <div class="title">Looking in <span>several places at once</span></div>
+            <p class="blurb">Three lookback questions at once. One head must choose; more heads specialize.</p>
+            <div class="go">Open multi-head →</div>
+          </a>
+        </nav>
+      </div>
+
+      <aside class="col-defs" aria-label="Industry-standard definitions">
+        <p class="path">Definitions <span class="hint">— beside the path</span></p>
+        <section class="defs">
+          <article class="def">
+            <div class="meta">Metaphor · Pond · lesson 01</div>
+            <h2>Recurrent / state-space <em>hidden state</em></h2>
+            <p>
+              A <b>fixed-size</b> evolving summary of the past (RNN/LSTM hidden state; SSM state in
+              S4/Mamba). Cost stays flat; exact old details can fade.
+            </p>
+            <p class="aka"><span>Also:</span> latent state, SSM state, recurrent state</p>
+          </article>
+
+          <article class="def nb">
+            <div class="meta">Metaphor · Notebook · lesson 02</div>
+            <h2>Attention <em>memory</em> (KV cache)</h2>
+            <p>
+              A <b>record per past position</b>; query matches keys and blends values. Exact lookup;
+              memory grows with length.
+            </p>
+            <p class="aka"><span>Also:</span> self/cross-attention, KV cache</p>
+          </article>
+
+          <article class="def mh">
+            <div class="meta">Metaphor · Multi-head · lesson 03</div>
+            <h2>Multi-head <em>attention</em></h2>
+            <p>
+              Several attention heads in <b>parallel</b>, each with its own Q/K/V. Heads can specialize
+              on different places or relations.
+            </p>
+            <p class="aka"><span>Also:</span> MHA, MHSA</p>
+          </article>
+          <a class="panel" href={withBase("glossary.html")} style="margin-top:4px">
+            <div class="n">Glossary</div>
+            <div class="title">AI <span>terms</span></div>
+            <p class="blurb">Full industry definitions and failure modes.</p>
+            <div class="go">Open glossary →</div>
+          </a>
+        </section>
+      </aside>
+    </div>
+
+    <div class="below">
+      <a class="panel" id="issues-card" href={withBase("issues-lab.html")}>
+        <div class="n">Lab 04 · Issues Lab</div>
+        <div class="title">Break what you learned — <span>visualized failures</span></div>
+        <p class="blurb">
+          Token bloat, latency/TTFT, and grounding — shown on the pond, notebook, and multi-head
+          machinery from lessons 01–03.
+        </p>
+        <div class="dep" id="issues-dep">
+          <b>Depends on interactive lessons:</b>
+          <span class="pill" data-pill="pond">01 Pond</span>
+          <span class="pill" data-pill="notebook">02 Notebook</span>
+          <span class="pill" data-pill="heads">03 Heads</span>
+          <span id="issues-status"></span>
+        </div>
+        <div class="go">Open issues lab →</div>
+      </a>
+    </div>
+
+    <div class="stack" style="margin-top:12px">
+      <a class="panel" href={withBase("feedback.html")}>
+        <div class="n">05 · Comments · Feedback · Questions</div>
+        <div class="title">Write back — <span>by channel, by lab</span></div>
+        <p class="blurb">
+          Comments are live on the page. Feedback and questions go to GitHub. Labs are listed so you can
+          point at 01–04, the glossary, or the whole site.
+        </p>
+        <div class="go">Open feedback page →</div>
+      </a>
+    </div>
+
+    <section class="howto" aria-labelledby="howto-title">
+      <p class="path">How to navigate</p>
+      <h2 id="howto-title">Find your way — <em>and the extra detail</em></h2>
+      <p class="intro">
+        Lessons put the controls at the <b>bottom</b>. Use the marks below when you want the short path,
+        a fuller explanation, papers, or a term defined.
+      </p>
+      <div class="howto-grid">
+        <div class="howto-item">
+          <div class="k">
+            <span class="glyph" aria-hidden="true">?</span>
+            <span class="name">Question mark · lesson 01</span>
+          </div>
+          <p>
+            Top-right on <b>The Pond</b>. Opens the plain-words guide: what the water means, how to tap /
+            stream / fit, and what the demo is <b>not</b> claiming.
+          </p>
+        </div>
+        <div class="howto-item">
+          <div class="k">
+            <span class="glyph bar" aria-hidden="true">═</span>
+            <span class="name">Bottom bar · lesson 01</span>
+          </div>
+          <p>
+            Drag the handle to show or hide the control panel. Tabs switch Feed / Learn / Spectrum / Scan /
+            Cost. Tap shapes to step the pond; <b>Stream</b> feeds automatically.
+          </p>
+        </div>
+        <div class="howto-item">
+          <div class="k">
+            <span class="glyph src" aria-hidden="true">SRC</span>
+            <span class="name">Show sources</span>
+          </div>
+          <p>
+            At the bottom of each interactive lesson. Papers and further reading for that page — hide again
+            when you are done.
+          </p>
+        </div>
+        <div class="howto-item">
+          <div class="k">
+            <span class="glyph book" aria-hidden="true">Aa</span>
+            <span class="name">Definitions &amp; glossary</span>
+          </div>
+          <p>
+            Industry names sit <b>beside</b> the lessons on this page. For every term plus failure modes,
+            open the <a href={withBase("glossary.html")}>glossary</a> — <b>Try it</b> jumps into the Issues Lab.
+          </p>
+        </div>
+      </div>
+      <p class="howto-path">
+        <b>Suggested path:</b>
+        <a href={withBase("context.html")}>Context</a> →
+        <a href={withBase("metaphor-reference.html")}>Metaphor reference</a> →
+        <a href="https://github.com/daniella-laguerre/PondScope_AI_Debugger" target="_blank" rel="noopener"
+          >AI Debugger</a
+        > →
+        <a href={withBase("pond-continuous.html")}>Lab 01 Pond</a> →
+        <a href={withBase("pond-vs-attention.html")}>02 Notebook</a> →
+        <a href={withBase("multi-head.html")}>03 Heads</a> →
+        <a href={withBase("issues-lab.html")}>04 Issues Lab</a> →
+        <a href={withBase("feedback.html")}>Comments / feedback / questions</a>. In the Issues Lab, use
+        <b>Reset</b> / <b>Reset all</b>.
+      </p>
+    </section>
+
+    <footer class="site-footer">
+      <b>Daniella M. LaGuerre</b> · PondScope Ecosystem<br />
+      Interactive home twin + self-contained labs.
+      <a href={withBase("context.html")}>Context</a> ·
+      <a href={withBase("metaphor-reference.html")}>Metaphor reference</a> ·
+      <a href="https://github.com/daniella-laguerre/PondScope_AI_Debugger" target="_blank" rel="noopener"
+        >AI Debugger</a
+      > ·
+      <a href={withBase("issues-lab.html")}>Labs</a> ·
+      <a href={withBase("feedback.html")}>Comments / feedback / questions</a> ·
+      <a href={withBase("glossary.html")}>Glossary</a>
+    </footer>
+  </main>
+
+  <script>
+    (function () {
+      const keys = {
+        pond: "pondscope_visited_pond",
+        notebook: "pondscope_visited_notebook",
+        heads: "pondscope_visited_heads",
+      };
+      function visited(k: keyof typeof keys) {
+        try {
+          return localStorage.getItem(keys[k]) === "1";
+        } catch {
+          return false;
+        }
+      }
+      let all = true;
+      (Object.keys(keys) as (keyof typeof keys)[]).forEach((k) => {
+        const on = visited(k);
+        if (!on) all = false;
+        document.querySelectorAll(`[data-pill="${k}"]`).forEach((el) => {
+          el.classList.add(on ? "on" : "off");
+        });
+      });
+      const st = document.getElementById("issues-status");
+      const card = document.getElementById("issues-card");
+      if (!st || !card) return;
+      if (all) {
+        st.textContent = " — prerequisites met.";
+        card.classList.remove("locked");
+      } else {
+        st.textContent =
+          " — open 01→03 first so the lab can visualize those systems (you can still enter).";
+        card.classList.add("locked");
+      }
+    })();
+  </script>
+</BaseLayout>
