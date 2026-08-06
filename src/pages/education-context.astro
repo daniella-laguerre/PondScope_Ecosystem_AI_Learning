@@ -5,7 +5,7 @@ import { withBase } from "../lib/base";
 
 <BaseLayout
   title="Education Context — What models are · PondScope Ecosystem"
-  description="What AI models are, popular families and adapters, Hugging Face and Ollama, how models are made and behave, architectures, and coding agents — mapped to the PondScope metaphor."
+  description="What AI models are, popular families and adapters, Hugging Face and Ollama, sequence and broader architectures, open vs closed weights, evals and benchmarks, how models behave, and coding agents — mapped to the PondScope metaphor."
 >
   <main class="prose-page">
     <a class="homebtn" href={withBase("index.html")}>← Home</a>
@@ -25,6 +25,9 @@ import { withBase } from "../lib/base";
       <a href="#ollama">Ollama</a>
       <a href="#made">How made</a>
       <a href="#architectures">Architectures</a>
+      <a href="#broader-designs">Broader designs</a>
+      <a href="#weights">Weights</a>
+      <a href="#evals">Evals &amp; benchmarks</a>
       <a href="#behave">How behave</a>
       <a href="#agents">Coding agents</a>
     </nav>
@@ -418,6 +421,334 @@ import { withBase } from "../lib/base";
         <b>Issues Lab tie-in:</b> each architecture handles stress differently. Watch how token bloat, latency,
         and recall show up — then connect them to these designs.
       </p>
+    </section>
+
+    <section id="broader-designs">
+      <h2>Core &amp; specialized designs: <em>other pond species</em></h2>
+      <p>
+        The section above focuses on <b>sequence / language memory designs</b> (what PondScope’s labs
+        visualize). AI also uses other architectures for vision, generation, compression, and mixed media.
+        These are <b>additive</b> — they do not replace Transformers, MoE, SSMs, or hybrids. Modern systems
+        often <b>compose</b> several of them.
+      </p>
+      <table class="prose-table">
+        <thead>
+          <tr>
+            <th>Design</th>
+            <th>What it is</th>
+            <th>Typical uses</th>
+            <th>Pond metaphor</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Convolutional Neural Networks (CNNs)</td>
+            <td>Spatial filters that slide over grid-like data</td>
+            <td>Computer vision, image recognition, video frames</td>
+            <td>Reading a surface with local ripples — patches of shoreline, not a long token stream</td>
+          </tr>
+          <tr>
+            <td>Recurrent Neural Networks (RNNs / LSTMs)</td>
+            <td>Internal loops process sequences step-by-step with a hidden state</td>
+            <td>Classic time-series and language modeling; ancestor of modern state models</td>
+            <td>
+              Early “water carries memory forward” — closest ancestor of
+              <a href={withBase("pond-continuous.html")}>Lab 01 · Pond</a> / SSM-style flow
+            </td>
+          </tr>
+          <tr>
+            <td>Generative Adversarial Networks (GANs)</td>
+            <td>A generator and a discriminator compete</td>
+            <td>Synthesizing images, video, and other media</td>
+            <td>Two ponds in a contest: one invents shorescapes; the other judges whether they look real</td>
+          </tr>
+          <tr>
+            <td>Autoencoders</td>
+            <td>Compress input through a bottleneck, then reconstruct</td>
+            <td>Compression, denoising, anomaly detection</td>
+            <td>Squeeze the landscape into a deep well of features, then rebuild the shore from that well</td>
+          </tr>
+          <tr>
+            <td>Mixture-of-Experts (MoE)</td>
+            <td>Routes work to specialized subnetworks</td>
+            <td>Large language models with sparse activation</td>
+            <td>
+              Already covered above — see
+              <a href="#architectures">Architectures · MoE</a>
+            </td>
+          </tr>
+          <tr>
+            <td>Multimodal systems</td>
+            <td>Separate encoders (or shared stacks) for text, image, audio, video</td>
+            <td>Captioning, vision-language models, cross-modal search</td>
+            <td>Several inlets into one ecosystem — surroundings and sediment from different senses</td>
+          </tr>
+          <tr>
+            <td>Diffusion models</td>
+            <td>Learn to reverse a stepwise process of adding noise</td>
+            <td>High-quality image and media generation</td>
+            <td>Clearing murky water step by step until a clear scene appears</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>
+        <b>How this relates to PondScope:</b> Labs 01–03 are about <b>runtime sequence memory</b> (pond water,
+        notebook, heads). CNNs, GANs, autoencoders, and diffusion are different species — still neural networks
+        with weights (sediment), still trained and evaluated, but not what the interactive twin is simulating.
+        RNNs/LSTMs are the historical bridge: fixed-size evolving state → today’s SSM/pond story.
+      </p>
+    </section>
+
+    <section id="weights">
+      <h2>Weights: <em>what the sediment is made of</em></h2>
+      <p>
+        <b>Weights</b> (also called parameters) are the learned numbers inside a neural network — the result of
+        training. In PondScope terms, they are the <b>sediment</b>: the lasting knowledge shaped during
+        pre-training and later post-training or fine-tuning. When you run a model, the weights stay mostly
+        fixed while <b>water</b> (activations / context) moves.
+      </p>
+      <p>
+        A modern language model may have billions of weights. Together with the architecture (how those weights
+        are wired), they define the model’s capabilities. An <b>adapter</b> or LoRA adds a small set of extra
+        weights on top of a base — see <a href="#adapters">Adapters</a>.
+      </p>
+
+      <h3>Closed weights (proprietary)</h3>
+      <p>
+        <b>Closed weights</b> means you do not receive the parameter files. You typically access the model only
+        through a provider’s product or API. You can send prompts and get outputs, but you cannot download the
+        full sediment, freely inspect every parameter, or run the exact same checkpoint offline without the
+        provider’s permission and infrastructure.
+      </p>
+      <ul>
+        <li><b>Typical use:</b> call an API, use a hosted chat product, or an agent that routes to that API.</li>
+        <li>
+          <b>What you can usually do:</b> prompt, tool-use via the product, sometimes fine-tune through a
+          provider-managed service, evaluate via API outputs.
+        </li>
+        <li>
+          <b>What you usually cannot do:</b> host the full model yourself, deeply modify base weights, or
+          redistribute the checkpoint.
+        </li>
+        <li>
+          <b>Pond metaphor:</b> a well-maintained <b>remote pond</b> — you visit and interact; you don’t take
+          the sediment home.
+        </li>
+      </ul>
+
+      <h3>Open weights</h3>
+      <p>
+        <b>Open weights</b> means the parameter files (the sediment) are published so you can download them —
+        often from hubs like <a href="#huggingface">Hugging Face</a>. Licenses still matter: “open weights” is
+        not the same as fully open-source code, training data, and unrestricted commercial use. Always read the
+        model card and license.
+      </p>
+      <ul>
+        <li>
+          <b>Typical use:</b> download → run locally (e.g. <a href="#ollama">Ollama</a> or other runtimes) or
+          on your own servers; fine-tune or attach adapters; quantize for smaller machines.
+        </li>
+        <li>
+          <b>What you can usually do:</b> offline/private inference, custom serving, research, evaluation on
+          your hardware, domain adapters, experimentation with decoding and tooling.
+        </li>
+        <li>
+          <b>Limits:</b> you still need compute, software stacks, and compliance with the license; quality and
+          safety are your responsibility when you host.
+        </li>
+        <li>
+          <b>Pond metaphor:</b> a pond species you can <b>study, host, or adapt locally</b> — nursery at Hugging
+          Face, local keeper at Ollama.
+        </li>
+      </ul>
+
+      <h3>Open weights vs “open source”</h3>
+      <p>
+        People often blur these terms. <b>Open weights</b> = downloadable parameters.
+        <b>Open source</b> (in the strict software sense) usually means source code under an OSI-approved
+        license. A model can have open weights with a restrictive license, or release weights without releasing
+        training code or datasets. Treat each artifact separately: weights, code, data, and license.
+      </p>
+
+      <h3>How you use weights — and what you get</h3>
+      <table class="prose-table">
+        <thead>
+          <tr>
+            <th>Action</th>
+            <th>Closed weights</th>
+            <th>Open weights</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Chat / complete</td>
+            <td>Via API or product</td>
+            <td>Locally or self-hosted, or via someone else’s hosting of that checkpoint</td>
+          </tr>
+          <tr>
+            <td>Fine-tune / adapters</td>
+            <td>Only if the provider offers it</td>
+            <td>On your hardware or cloud GPUs; LoRA common</td>
+          </tr>
+          <tr>
+            <td>Quantize / compress</td>
+            <td>Usually not your choice</td>
+            <td>Common for laptops and edge (smaller portable pond)</td>
+          </tr>
+          <tr>
+            <td>Evaluate</td>
+            <td>Black-box: score outputs you can call</td>
+            <td>Black-box and white-box options; full control of harness</td>
+          </tr>
+          <tr>
+            <td>Build agents</td>
+            <td>Agent products call the API</td>
+            <td>Agent stack can point at local or self-hosted endpoints</td>
+          </tr>
+          <tr>
+            <td>Redistribute the checkpoint</td>
+            <td>No</td>
+            <td>Only if the license allows</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="evals">
+      <h2>Evals &amp; benchmarks: <em>checking the health of the pond</em></h2>
+      <p>
+        Training and clever demos are not enough. <b>Evaluation</b> is how we measure whether a model (or an
+        adapter, agent, or product) actually does what we claim — and where it fails. In pond terms: you check
+        the health of the ecosystem before you trust it with visitors.
+      </p>
+
+      <h3>What evals are vs what benchmarks are</h3>
+      <ul>
+        <li>
+          An <b>eval</b> (evaluation) is any systematic test: a task, a metric, a procedure, and a way to
+          score outputs. Evals can be public or private, automated or human-judged, narrow or broad.
+        </li>
+        <li>
+          A <b>benchmark</b> is a shared, named eval suite that the community uses to compare systems — fixed
+          (or versioned) datasets and scoring so scores are somewhat comparable across models and papers.
+        </li>
+      </ul>
+      <p>
+        Benchmarks are a kind of eval. Not every eval is a famous benchmark: your own holdout set for a medical
+        FAQ bot is an eval; MMLU or a coding suite is a benchmark many people recognize.
+      </p>
+
+      <h3>Why evals matter</h3>
+      <ul>
+        <li><b>Claims need evidence</b> — “better at coding” should mean measured improvement, not vibes.</li>
+        <li><b>Catch regressions</b> — a new fine-tune can help one task and hurt another.</li>
+        <li><b>Compare options</b> — closed API vs open weights vs adapter A vs adapter B.</li>
+        <li><b>Safety and reliability</b> — toxicity, jailbreaks, hallucination, and grounding failures show up in targeted evals.</li>
+        <li><b>Cost and latency</b> — quality is not the only scoreboard; TTFT and $/1K tokens matter in production.</li>
+        <li>
+          <b>Honest teaching</b> — PondScope’s Issues Lab and your own holdouts exist so failure modes stay
+          visible, not hidden behind a single happy demo.
+        </li>
+      </ul>
+
+      <h3>What evals do (what they measure)</h3>
+      <table class="prose-table">
+        <thead>
+          <tr>
+            <th>Kind of signal</th>
+            <th>Examples</th>
+            <th>What you learn</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Knowledge / QA</td>
+            <td>Multi-task academic suites, domain quizzes</td>
+            <td>Whether sediment covers the facts you care about</td>
+          </tr>
+          <tr>
+            <td>Reasoning</td>
+            <td>Math, logic, multi-step problems</td>
+            <td>Whether the model can chain steps, not only memorize</td>
+          </tr>
+          <tr>
+            <td>Coding</td>
+            <td>HumanEval-style, repo bugs, agent tool tasks</td>
+            <td>Whether code and tool use work under test harnesses</td>
+          </tr>
+          <tr>
+            <td>Instruction following</td>
+            <td>Format, constraints, refusals</td>
+            <td>Whether post-training / surveyor shaping stuck</td>
+          </tr>
+          <tr>
+            <td>Grounding / RAG</td>
+            <td>Answer-from-docs, citation checks</td>
+            <td>Whether surroundings are used correctly</td>
+          </tr>
+          <tr>
+            <td>Safety</td>
+            <td>Harmful content, bias probes</td>
+            <td>Where the banks fail under adversarial ripples</td>
+          </tr>
+          <tr>
+            <td>Systems metrics</td>
+            <td>Latency, TTFT, throughput, cost, memory</td>
+            <td>Whether the pond is usable at your scale</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>How to run evals (practical paths)</h3>
+      <ol>
+        <li>
+          <b>Define the question</b> — What decision will the score support? (Ship adapter? Pick a model?
+          Detect token-bloat sensitivity?)
+        </li>
+        <li>
+          <b>Choose or build a task set</b> — Use a public benchmark when comparability matters; use a
+          <b>private holdout</b> when you need honesty about your domain (avoid training on the test).
+        </li>
+        <li>
+          <b>Fix the protocol</b> — prompts, decoding settings (temperature), tool access, number of trials,
+          and scoring rules. Changing these silently breaks comparisons.
+        </li>
+        <li>
+          <b>Run the harness</b> — scripts or frameworks that call the model (API or local), collect outputs,
+          and compute metrics. For open weights, run on your stack; for closed weights, evaluate through the API.
+        </li>
+        <li>
+          <b>Score</b> — exact match, unit tests for code, rubric/LLM-as-judge (with care), or human review for
+          nuanced tasks.
+        </li>
+        <li>
+          <b>Analyze errors</b> — the value is often in <em>which</em> items failed (grounding? length? format?),
+          not only the headline number.
+        </li>
+        <li>
+          <b>Gate decisions</b> — e.g. “adapter must beat baseline on holdout and not collapse general probes”
+          — ship only if the gate passes.
+        </li>
+      </ol>
+
+      <h3>What you get from evals</h3>
+      <ul>
+        <li><b>Scores and comparisons</b> — numbers (and confidence intervals when you have enough samples).</li>
+        <li><b>Error reports</b> — concrete failure examples to fix data, prompts, or training.</li>
+        <li><b>Go / no-go signals</b> — whether to deploy, rollback, or keep iterating.</li>
+        <li><b>Trade-off maps</b> — quality vs latency vs cost; closed API vs local open weights.</li>
+        <li>
+          <b>Humility</b> — benchmarks can be contaminated, gamed, or too narrow. A high public score does not
+          guarantee your users’ tasks work. Pair leaderboards with <b>your</b> holdouts.
+        </li>
+      </ul>
+
+      <div class="enrich-note">
+        <b>PondScope link:</b> the Issues Lab is a teaching eval for failure modes (token bloat, latency,
+        grounding) — visual, not a leaderboard. Production teams use the same spirit with automated harnesses
+        and held-out sets. See also <a href={withBase("issues-lab.html")}>Issues Lab</a> and
+        <a href="#behave">How models behave</a>.
+      </div>
     </section>
 
     <section id="behave">
